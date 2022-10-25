@@ -18,46 +18,44 @@ def frontPageLanguage():
     os.system(f'adb -s ' + device_id + ' shell input tap 530 1250')
 
 def frontPage():
+    # Selamat datang di whatsapp
     os.system(f'adb -s ' + device_id + ' shell input tap 515 2060')
+    # Klik nomor telponnya
     os.system(f'adb -s ' + device_id + ' shell input tap 515 600')
+    # Masukkan nomor telepon
     for i in phone_num:
         helper.pressKey(i)
+    # Klik lanjutkan    
     os.system(f'adb -s ' + device_id + ' shell input tap 530 1250')
-    os.system(f'adb -s ' + device_id + ' shell input tap 885 1385')
 
 def contactMediaPerm():
+    # Klik lanjut
     os.system(f'adb -s ' + device_id + ' shell input tap 755 1585')
-
-def filePerm():
+    # Klik izinkan kontak
     os.system(f'adb -s ' + device_id + ' shell input tap 535 1980')
+    # Klik izinkkan media
     os.system(f'adb -s ' + device_id + ' shell input tap 535 1980')
 
 def drivePerm():
-    os.system(f'adb -s ' + device_id + ' shell input tap 830 1360')
-    os.system(f'adb -s ' + device_id + ' shell input tap 515 1110')
-    sleep(3)
-    os.system(f'adb -s ' + device_id + ' shell input tap 700 2110')
-    sleep(3)
-    os.system(f'adb -s ' + device_id + ' shell input tap 840 1350')
-    
-    
+    # Klik lewati
+    os.system(f'adb -s ' + device_id + ' shell input tap 645 1360')
+
 def profileSetup(name):
+    # Klik input nama
     os.system(f'adb -s ' + device_id + ' shell input tap 530 900')
+    # Input nama
     nama = [*name.upper()]
     for i in nama:
         if i == " ":
             helper.pressKey("SPACE")
         helper.pressKey(i)
+    # Klik lanjut
     os.system(f'adb -s ' + device_id + ' shell input tap 525 1300')
 
 
 frontPage()
 sleep(5)
 contactMediaPerm()
-sleep(5)
-drivePerm()
-sleep(5)
-filePerm()
 sleep(5)
 drivePerm()
 sleep(5)
