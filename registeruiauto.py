@@ -7,23 +7,28 @@ phone_num = "87815494888"
 packagename = "com.whatsapp"
 
 def frontPage():
-    if d(text="Selamat datang di WhatsApp").get_text().split()[0] == "Selamat":
-            d(resourceId="com.whatsapp:id/eula_accept").click()
-    d(resourceId="com.whatsapp:id/registration_phone").click()
-    for i in phone_num:
-        helper.pressKey(i)
-    d(text="LANJUT").click()
-    d(text="OKE").click()
+    # For Original Whatsapp and Whatsapp Business
+    try:
+        d(text="English").click()
+    except Exception:
+        print("No need to choose language")
+    finally:
+        d(resourceId="com.whatsapp:id/eula_accept").click()
+        d(resourceId="com.whatsapp:id/registration_phone").click()
+        for i in phone_num:
+            helper.pressKey(i)
+        d(text="NEXT").click()
+        d(text="OK").click()
 
 def contactMediaPerm():
-    if d(text="Kontak dan media").get_text().split()[0] == "Kontak":
-         d(text="LANJUT").click()
-    d(text="Izinkan").click()
-    d(text="Izinkan").click()
+    if d(text="Contacts and media").get_text().split()[0] == "Contacts":
+         d(text="CONTINUE").click()
+    d(text="Allow").click()
+    d(text="Allow").click()
 
 def drivePerm():
-     if d(resourceId="android:id/message").get_text().split()[0] == "Jika":
-         d(text="LEWATI").click()
+     if d(resourceId="android:id/message").get_text().split()[0] == "If":
+        d(text="SKIP").click()
 
 def profileSetup(name):
     d.click(280, 915)
@@ -33,7 +38,7 @@ def profileSetup(name):
             helper.pressKey("SPACE")
         helper.pressKey(i)
 
-    d(text="LANJUT").click()
+    d(text="NEXT").click()
 
 def mainFunction():
     frontPage()
