@@ -9,21 +9,29 @@ device_id = "R9CT4007GBM"
 phone_num = "87815494888"
 packagename = "com.whatsapp"
 
-def chooseLanguage():
-    os.system(f'adb -s ' + device_id + ' shell input tap 525 1023')
-    os.system(f'adb -s ' + device_id + ' shell input tap 955 2155')
+proc = subprocess.Popen('adb -s R9CT4007GBM shell dumpsys window | findstr "mFocusedApp"', stdout=subprocess.PIPE, shell=True)
+(out, _) = proc.communicate()
+data = str(out.decode("utf-8"))
+print(data)
+first = data.split('{', 1)[1]
+datafix = first.split(' ',2)[0]
+print(datafix)
 
 def frontPageLanguage():
-    chooseLanguage()
-    status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | findstr "mCurrentFocus"')
-    if status == " mCurrentFocus=Window{23d25ab u0 com.whatsapp/com.whatsapp.registration.EULA}":
-        os.system(f'adb -s ' + device_id + ' shell input tap 650 1660') 
-        os.system(f'adb -s ' + device_id + ' shell input tap 515 600')
-        for i in phone_num:
-            helper.pressKey(i)
-        os.system(f'adb -s ' + device_id + ' shell input tap 530 1250')
+    try:
+        d(text="Bahasa Indonesia", resourceId="com.whatsapp:id/language_name")
+    except:
+        print("Gak ketemu")
     else:
-        return
+        if d(resourceId="com.whatsapp:id/language_picker").get_text().split()[0] == "Bagikan":
+            d(text="SETUJU DAN LANJUTKAN", resourceId="com.whatsapp:id/eula_accept").click()
+            os.system(f'adb -s ' + device_id + ' shell input tap 515 600')
+            for i in phone_num:
+                helper.pressKey(i)
+            os.system(f'adb -s ' + device_id + ' shell input tap 530 1250')
+        else:
+            return
+
 def frontPage():
     # Selamat datang di whatsapp
     os.system(f'adb -s ' + device_id + ' shell input tap 515 2060')
@@ -32,24 +40,24 @@ def frontPage():
     # Masukkan nomor telepon
     for i in phone_num:
         helper.pressKey(i)
+    # Pencet lanjut
+    os.system(f'adb -s ' + device_id + ' shell input tap 540 1230')
+        
     # Check ada perlu pencet oke atau tidak
         # Pengecekan
-    proc = subprocess.Popen('adb -s R9CT4007GBM shell dumpsys window | findstr "mFocusedApp"', stdout=subprocess.PIPE, shell=True)
-    (out, _) = proc.communicate()
-    data = str(out.decode("utf-8"))
-    print("proc = " + data)
-    while "com.whatsapp/.registration.VerifyPhoneNumber" in data:
-        print("Masuk bro")
-        break
-        # Kondisi
-    if proc == "mFocusedApp=ActivityRecord{4f59308 u0 com.whatsapp/.registration.RegisterPhone t361}":
-        # Klik oke
-        os.system(f'adb -s ' + device_id + ' shell input tap 889 1370')
-    else:
-    # Klik lanjutkan    
-        os.system(f'adb -s ' + device_id + ' shell input tap 530 1250')
+   
+    while True:
+        # if data == "mFocusedApp=ActivityRecord{ "+ datafix +" u0 com.whatsapp/.registration.RegisterPhone t397}":
+        #     os.system(f'adb -s ' + device_id + ' shell input tap 885 1390')
+        #     break
 
-        
+        try:
+            # d(resourceId="android:id/message").get_text().split()[0] == "Anda"
+            d(text="OKE", resourceId="android:id/button1").click()
+            sleep(5)
+        except:
+            print("gagal cok")
+             
 def contactMediaPerm():
     status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | findstr "mCurrentFocus"')
     if status == "mCurrentFocus=Window{b356581 u0 com.whatsapp/com.whatsapp.RequestPermissionActivity}":
@@ -83,9 +91,9 @@ def profileSetup(name):
     os.system(f'adb -s ' + device_id + ' shell input tap 525 1300')
 
 def mainFunction():
-    frontPage()
-    #contactMediaPerm()
-    #drivePerm()
-    #profileSetup('Justin Timberlake')
+    frontPageLanguage()
+    contactMediaPerm()
+    drivePerm()
+    profileSetup('Justin Timberlake')
 
 mainFunction()
