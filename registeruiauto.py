@@ -3,10 +3,9 @@ import helper
 
 d = u2.connect("R9CT4007GBM")
 device_id = "R9CT4007GBM"
-phone_num = "87815494888"
 packagename = "com.whatsapp"
 
-def frontPage():
+def frontPage(phone_num):
     # For Original Whatsapp and Whatsapp Business
     try:
         d(text="English").click()
@@ -41,7 +40,7 @@ def profileSetup(name):
     d(text="NEXT").click()
 
 def mainFunction():
-    frontPage()
+    frontPage("87815494888")
     contactMediaPerm()
     drivePerm()
     profileSetup("Carlo Vigano")
