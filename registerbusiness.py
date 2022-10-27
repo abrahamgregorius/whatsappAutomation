@@ -13,6 +13,7 @@ def frontPage(phone_num):
         print("No need to choose language")
     finally:
         d(text="AGREE AND CONTINUE").click()
+        d(text="USE A DIFFERENT NUMBER").click()
         for i in phone_num:
             helper.pressKey(i)
         d(text="NEXT").click()
