@@ -7,7 +7,6 @@ d = u2.connect("R9CT4007GBM")
 def frontPage(phone_num):
      try:
           # Allow access media
-          d(text="Allow").click()
           d(text="NOT NOW").click()
           pass
      except Exception:
