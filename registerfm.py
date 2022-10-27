@@ -4,10 +4,9 @@ import helper
 d = u2.connect("R9CT4007GBM")
 
 
-def frontPage(phone_num):
+def frontPage(phone_num, name):
      try:
           # Allow access media
-          d(text="Allow").click()
           d(text="NOT NOW").click()
           pass
      except Exception:
@@ -29,4 +28,13 @@ def frontPage(phone_num):
           # Contacts and media permission
           d(text="CONTINUE").click()
 
-frontPage("87815494888")
+          nama = name.upper()
+          for i in nama:
+               if i == " ":
+                    helper.pressKey("SPACE")
+               helper.pressKey(i)
+          d(text="NEXT").click()
+          d(text="CLOSE").click()
+          
+
+frontPage("895410810679", "Carlo Vigano")

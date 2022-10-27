@@ -4,12 +4,12 @@ import helper
 d = u2.connect("R9CT4007GBM")
 
 
-def frontPage(phone_num):
+def frontPage(phone_num, name):
      try:
           # Allow access media
-          d(text="NOT NOW").click()
+          d(text="Allow").click()
           pass
-     except Exception:
+     except:
           print("There is no permission request")
      finally:
           # Front page
@@ -19,6 +19,11 @@ def frontPage(phone_num):
           for i in phone_num:
                helper.pressKey(i)
           d(text="NEXT").click()
+     try:
+          d(text="SWITCH").click()
+     except:
+          print("There is no switch request")
+     finally:
           # Confirmation
           d(text="OK").click()
           # Verify hanya 7 jam sekali
@@ -27,5 +32,17 @@ def frontPage(phone_num):
           
           # Contacts and media permission
           d(text="CONTINUE").click()
+          d(text="Allow").click()
+          
+          # Google permission request
+          d(text="SKIP").click()
 
-frontPage("87815494888")
+          nama = name.upper()
+          for i in nama:
+               if i == " ":
+                    helper.pressKey("SPACE")
+               helper.pressKey(i)
+          d(text="NEXT").click()
+          d(text="CLOSE").click()
+          
+frontPage("895410810677", "Carlo Vigano")
