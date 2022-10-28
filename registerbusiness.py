@@ -17,7 +17,7 @@ def frontPage(phone_num):
         for i in phone_num:
             helper.pressKey(i)
         d(text="NEXT").click()
-        d(text="OK").click()
+        d(text="CONTINUE").click()
 
 def contactMediaPerm():
     if d(text="Contacts and media").get_text().split()[0] == "Contacts":
@@ -26,21 +26,30 @@ def contactMediaPerm():
     d(text="Allow").click()
 
 def drivePerm():
-     if d(resourceId="android:id/message").get_text().split()[0] == "If":
-        d(text="SKIP").click()
+    d(text="SKIP").click()
 
 def profileSetup(name):
-    d.click(280, 915)
+    d.click(300, 840)
     nama = name.upper()
     for i in nama:
         if i == " ":
             helper.pressKey("SPACE")
         helper.pressKey(i)
+    d.click(990, 988)
+    
+    category = "other business"
+    kategori = category.upper()
+    for i in kategori:
+        if i == " ":
+            helper.pressKey("SPACE")
+        helper.pressKey(i)
 
+    d(text="Other Business").click()
     d(text="NEXT").click()
+    d(text="NOT NOW").click()
 
 def mainFunction():
-    frontPage("895410810680")
+    frontPage("895410808876")
     contactMediaPerm()
     drivePerm()
     profileSetup("Carlo Vigano")
