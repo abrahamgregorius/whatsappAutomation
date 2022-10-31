@@ -17,9 +17,17 @@ class Main:
         self.name = name
         self.phone_number = phone_number
         self.device_id = device_id
+
+    def startApp(self):
+        d.app_start("" + helper.generatePackageName(data) + "")
     
     def newNumber(self):
+        # Masuk ke menu adding contact
         os.system('adb -s '+ self.device_id +' shell "am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ self.name +' -e phone 0'+ self.phone_number +' ')
+        # Choose save contact to
+        os.system(f'adb -s ' + device_id + ' shell input tap 300 200')
+        os.system(f'adb -s ' + device_id + ' shell input tap 270 340')
+        # Click save
         d(packageName="com.samsung.android.app.contacts", resourceId="com.samsung.android.app.contacts:id/menu_done").click()
 
     def sendMessageWhatsapp(self, message, packageName):
@@ -33,11 +41,12 @@ class Main:
             if i == " ":
                 helper.pressKey("SPACE")
             helper.pressKey(i)
-        os.system(f'adb -s ' + device_id + ' shell input tap 1000 1332')
-
+        os.system(f'adb -s ' + device_id + ' shell input tap 996 2205')
         
 
 
         
 first = Main("Bambang", helper.generateNumber(data), "R9CT4007GBM")
-first.sendMessageWhatsapp("hello world", helper.generatePackageName(data))
+first.newNumber()
+first.sendMessageWhatsapp("Halo cuy mantap jiwa", helper.generatePackageName(data))
+

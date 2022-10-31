@@ -78,7 +78,7 @@ def generateNumber(arr):
 def generatePackageName(arr):
     b = []
     for i in arr:
-        b.append(i[0])
+        b.append(i[1])
     package = random.choice(b)
     return package
     
