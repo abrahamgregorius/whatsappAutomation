@@ -9,7 +9,7 @@ device_id = "R9CT4007GBM"
 phone_num = "87815494888"
 packagename = "com.whatsapp"
 
-proc = subprocess.Popen('adb -s R9CT4007GBM shell dumpsys window | findstr "mFocusedApp"', stdout=subprocess.PIPE, shell=True)
+proc = subprocess.Popen('adb -s R9CT4007GBM shell dumpsys window | grep "mFocusedApp"', stdout=subprocess.PIPE, shell=True)
 (out, _) = proc.communicate()
 data = str(out.decode("utf-8"))
 print(data)
@@ -59,17 +59,17 @@ def frontPage():
             print("gagal cok")
              
 def contactMediaPerm():
-    status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | findstr "mCurrentFocus"')
+    status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | grep "mCurrentFocus"')
     if status == "mCurrentFocus=Window{b356581 u0 com.whatsapp/com.whatsapp.RequestPermissionActivity}":
         # Klik lanjut
         os.system(f'adb -s ' + device_id + ' shell input tap 755 1585')
         # Pengecekan
-        status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | findstr "mCurrentFocus"')
+        status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | grep "mCurrentFocus"')
         if status == "mCurrentFocus=Window{6734374 u0 com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity}":
             # Klik izinkan kontak
             os.system(f'adb -s ' + device_id + ' shell input tap 535 1980')
             # Pengecekan 
-            status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | findstr "mCurrentFocus"')
+            status = os.system(f'adb -s R9CT4007GBM shell dumpsys window | grep "mCurrentFocus"')
             if status == "mCurrentFocus=Window{6734374 u0 com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity}":
                 # Klik izinkkan media
                 os.system(f'adb -s ' + device_id + ' shell input tap 535 1980')
