@@ -38,4 +38,4 @@ def frontPage(phone_num, name):
           d(text="NEXT").click()
           d(text="THANKS!")
 
-frontPage("895410808875", "Carlo Vigano")
+# frontPage("895410808875", "Carlo Vigano")

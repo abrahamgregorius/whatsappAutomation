@@ -5,7 +5,7 @@ d = u2.connect("R9CT4007GBM")
 device_id = "R9CT4007GBM"
 packagename = "com.whatsapp"
 
-def frontPage(phone_num):
+def frontPage(phone_num, name):
     # For Original Whatsapp and Whatsapp Business
     try:
         d(text="English").click()
@@ -19,39 +19,29 @@ def frontPage(phone_num):
         d(text="NEXT").click()
         d(text="CONTINUE").click()
 
-def contactMediaPerm():
-    if d(text="Contacts and media").get_text().split()[0] == "Contacts":
-         d(text="CONTINUE").click()
-    d(text="Allow").click()
-    d(text="Allow").click()
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+        d(text="Allow").click()
+        d(text="SKIP").click()
+        d.click(300, 840)
 
-def drivePerm():
-    d(text="SKIP").click()
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                helper.pressKey("SPACE")
+            helper.pressKey(i)
+        d.click(990, 988)
 
-def profileSetup(name):
-    d.click(300, 840)
-    nama = name.upper()
-    for i in nama:
-        if i == " ":
-            helper.pressKey("SPACE")
-        helper.pressKey(i)
-    d.click(990, 988)
-    
-    category = "other business"
-    kategori = category.upper()
-    for i in kategori:
-        if i == " ":
-            helper.pressKey("SPACE")
-        helper.pressKey(i)
+        category = "other business"
+        kategori = category.upper()
+        for i in kategori:
+            if i == " ":
+                helper.pressKey("SPACE")
+            helper.pressKey(i)
 
-    d(text="Other Business").click()
-    d(text="NEXT").click()
-    d(text="NOT NOW").click()
+        d(text="Other Business").click()
+        d(text="NEXT").click()
+        d(text="NOT NOW").click()
 
 def mainFunction():
-    frontPage("895410808876")
-    contactMediaPerm()
-    drivePerm()
-    profileSetup("Carlo Vigano")
-
-mainFunction()  
+    frontPage("895410808876", "Carlo Vigano")

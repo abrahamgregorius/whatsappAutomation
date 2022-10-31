@@ -96,4 +96,4 @@ def mainFunction():
     drivePerm()
     profileSetup('Justin Timberlake')
 
-mainFunction()
+# mainFunction()

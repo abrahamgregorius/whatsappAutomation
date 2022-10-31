@@ -44,4 +44,4 @@ def mainFunction():
     drivePerm()
     profileSetup("Carlo Vigano")
 
-mainFunction()  
+# mainFunction()  

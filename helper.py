@@ -4,7 +4,6 @@ import requests
 
 device_id = 'R9CT4007GBM'
 
-
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
 
@@ -69,6 +68,20 @@ def randomGender():
     res = random.choice(list(genderCoordinates.values()))
     return res
 
+def generateNumber(arr):
+    a = []
+    for i in arr:
+        a.append(i[0])
+    number = random.choice(a)
+    return number
+
+def generatePackageName(arr):
+    b = []
+    for i in arr:
+        b.append(i[0])
+    package = random.choice(b)
+    return package
+    
 
 
 
