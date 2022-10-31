@@ -52,6 +52,9 @@ class Main:
             helper.pressKey(i)
         os.system(f'adb -s ' + device_id + ' shell input tap 996 2205')
         
+    # Need further development
+    # def pushVideo():
+        
 
 
         
