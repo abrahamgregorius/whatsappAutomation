@@ -1,6 +1,4 @@
-import asyncio
 import os
-import threading
 from time import sleep
 import registerbusiness
 import registerfm
@@ -14,8 +12,6 @@ d = u2.connect("R9CT4007GBM")
 
 data = [["895410810664", "com.whatsapp"], ["895410810679", "com.fmwhatsapp"], ["895410810680", "com.yowhatsapp"], ["895410808876", "com.whatsapp.w4b"], ["81311951704", "com.aero"]]
 device_id = "R9CT4007GBM"
-
-nomortel = helper.generateNumber(data)
 
 class Main:
     def __init__(self, name="Bambang", phone_number="", device_id="R9CT4007GBM"):
@@ -51,16 +47,44 @@ class Main:
                 helper.pressKey("SPACE")
             helper.pressKey(i)
         os.system(f'adb -s ' + device_id + ' shell input tap 996 2205')
-        
-    # Need further development
-    # def pushVideo():
-        
 
+    def pushVideo(self, packageName):
+        # Push
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
+        sleep(2)
+        # Send menu
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
+        sleep(1)
+        # Pop up 
+        if d(resourceId="android:id/message").get_text().split()[0] == "Share":
+            d(text="OK").click()
+        # Click send
+        d(resourceId="com.whatsapp:id/send").click()
 
+    def pushPhoto(self, packageName):
+        # Push
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
+        sleep(2)
+        # Send menu
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
+        sleep(1)
+        # If packageName is com.fmwhatsapp
+        if packageName == "com.fmwhatsapp":
+            try:
+                registerfm.mediaPermission()
+                os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
+            except:
+                print("There is no request for media permission in FMWhatsapp")
+            finally:
+                # Press send
+                d(resourceId="com.whatsapp:id/send").click()
+        else:
+            # Click send
+            d(resourceId="com.whatsapp:id/send").click()
         
-first = Main("Kakak", nomortel, "R9CT4007GBM")
+    
+# first = Main("Kakak", "81311951704", "R9CT4007GBM")
+# first.pushPhoto(helper.generatePackageName(data))
 
-first.sendMessage("Halo cuy mantap jiwa", helper.generatePackageName(data))
-#second = Main("Sule", helper.generateNumber(data), "R9CT4007GBM")
-#first.newNumber()
-#first.sendMessage("Selamat pagi", helper.generatePackageName(data))
+testa = helper.generatePackageName(data)
+print(testa)
