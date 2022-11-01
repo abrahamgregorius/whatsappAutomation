@@ -230,18 +230,54 @@ def registerYo(phone_num, name):
         d(text="NEXT").click()
         d(text="CLOSE").click()
         
-def registerAero(phone_num, name):
-    # In development
-    pass 
 
-def mediaPermissionFm():
+def mediaSettings():
      d(text="SETTINGS").click()
      d(text="Permissions").click()
      os.system(f'adb -s' + device_id + ' shell input swipe 550 1690 550 970')
      d(text="Files and media").click()
-     d(resourceId="com.android.permissioncontroller:id/allow_radio_button")
+     d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
 
-
+def registerAero(phone_num, name):
+    try:
+        d(text="Allow").click()
+    except:
+        print("Gaada prompt")
+    finally:
+        pass
+    try:
+        mediaSettings()
+        d.app_stop("com.aero")
+        d.app_start("com.aero")
+        pass
+    except Exception:
+        print("There is no permission request")
+    finally:
+        # Front page
+        d(text="AGREE AND CONTINUE").click()
+        # Input number
+        d(text="phone number").click()
+        for i in phone_num:
+            pressKey(i)
+        d(text="NEXT").click()
+    try:
+        d(text="SWITCH").click()
+    except:
+        print("No switch requested")
+    finally:
+        # Confirmation
+        d(text="OK").click()
+        # Verify hanya 7 jam sekali
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+          
+        nama = name.upper()
+        for i in nama:
+             if i == " ":
+                  pressKey("SPACE")
+             pressKey(i)
+        d(text="NEXT").click()
+        d(text="THANKS!").click()
 
 # ALPHABET FUNCTION
 # def pressA():
