@@ -2,11 +2,8 @@ import os
 import uiautomator2 as u2
 import helper
 
-
 device_id = "R9CT4007GBM"
-
 d = u2.connect(device_id)
-
 
 def frontPage(phone_num, name):
      try:
