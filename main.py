@@ -51,10 +51,10 @@ class Main:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
         sleep(1)
         # Pop up 
-        if d(resourceId="android:id/message").get_text().split()[0] == "Share":
+        if d(resourceId="android:id/button1").get_text().split()[0] == "Share":
             d(text="OK").click()
         # Click send
-        d(resourceId="com.whatsapp:id/send").click()
+        # d(resourceId="" + packageName+ ":id/send").click()
 
     def pushPhoto(self, packageName):
         # Push
@@ -72,14 +72,15 @@ class Main:
                 print("There is no request for media permission in FMWhatsapp")
             finally:
                 # Press send
-                d(resourceId="com.whatsapp:id/send").click()
+                d(resourceId="" + packageName+ ":id/send").click()
         else:
             # Click send
-            d(resourceId="com.whatsapp:id/send").click()
+            d(resourceId="" + packageName+ ":id/send").click()
         
-    
-# first = Main("Kakak", "81311951704", "R9CT4007GBM")
-# first.pushPhoto(helper.generatePackageName(data))
 
-testa = helper.generatePackageName(data)
-print(testa)
+
+first = Main("Nenek", "81311951704", "R9CT4007GBM")
+first.pushPhoto(helper.generatePackageName(data))
+first.pushVideo(helper.generatePackageName(data))
+first.sendMessage("Hello world", helper.generatePackageName(data))
+first.newNumber()
