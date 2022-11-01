@@ -5,7 +5,7 @@ import helper
 
 d = u2.connect("R9CT4007GBM")
 
-data = [["895410810664", "com.whatsapp"], ["895410810679", "com.fmwhatsapp"], ["895410810680", "com.yowhatsapp"], ["895410808876", "com.whatsapp.w4b"], ["81311951704", "com.aero"]]
+data = [["895410810664", "com.whatsapp"], ["895410810679", "com.fmwhatsapp"], ["895410810680", "com.yowhatsapp"], ["895410808876", "com.whatsapp.w4b"], ["81527650313", "com.aero"]]
 device_id = "R9CT4007GBM"
 
 class Main:
@@ -51,8 +51,7 @@ class Main:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
         sleep(1)
         # Pop up 
-        if d(resourceId="android:id/button1").get_text().split()[0] == "Share":
-            d(text="OK").click()
+        d(text="OK").click()
         # Click send
         # d(resourceId="" + packageName+ ":id/send").click()
 
@@ -64,23 +63,21 @@ class Main:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
         sleep(1)
         # If packageName is com.fmwhatsapp
-        if packageName == "com.fmwhatsapp":
-            try:
-                helper.mediaPermissionFm()
-                os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
-            except:
-                print("There is no request for media permission in FMWhatsapp")
-            finally:
+#        if packageName == "com.fmwhatsapp":
+#            try:
+#                helper.mediaPermissionFm()
+#                os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
+#            except:
+#                print("There is no request for media permission in FMWhatsapp")
                 # Press send
-                d(resourceId="" + packageName+ ":id/send").click()
-        else:
-            # Click send
-            d(resourceId="" + packageName+ ":id/send").click()
+        d(resourceId="" + packageName+ ":id/send").click()
+        # Click send
+        d(resourceId="" + packageName+ ":id/send").click()
         
 
 
-first = Main("Nenek", "81311951704", "R9CT4007GBM")
-first.pushPhoto(helper.generatePackageName(data))
-first.pushVideo(helper.generatePackageName(data))
-first.sendMessage("Hello world", helper.generatePackageName(data))
-first.newNumber()
+while True:
+    first = Main("Nenek", helper.generateNumber(data), "R9CT4007GBM")
+    first.sendMessage("Hello world", helper.generatePackageName(data))
+    first.pushPhoto(helper.generatePackageName(data))
+    first.pushVideo(helper.generatePackageName(data))
