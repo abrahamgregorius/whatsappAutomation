@@ -1,10 +1,5 @@
 import os
 from time import sleep
-import registerbusiness
-import registerfm
-import registeraero
-import registeruiauto
-import registeryo
 import uiautomator2 as u2
 import helper
 
@@ -71,7 +66,7 @@ class Main:
         # If packageName is com.fmwhatsapp
         if packageName == "com.fmwhatsapp":
             try:
-                registerfm.mediaPermission()
+                helper.mediaPermissionFm()
                 os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
             except:
                 print("There is no request for media permission in FMWhatsapp")

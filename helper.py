@@ -1,8 +1,12 @@
 import os
 import random
 import requests
+import uiautomator2 as u2
 
-device_id = 'R9CT4007GBM'
+device_id = "R9CT4007GBM"
+d = u2.connect(device_id)
+packagename = "com.whatsapp"
+
 
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
@@ -81,9 +85,161 @@ def generatePackageName(arr):
         b.append(i[1])
     package = random.choice(b)
     return package
-    
 
+def registerWhatsapp(phone_num, name):
+    try:
+        d(text="English").click()
+    except Exception:
+        print("No need to choose language")
+    finally:
+        d(text="AGREE AND CONTINUE").click()
+        for i in phone_num:
+            pressKey(i)
+        d(text="NEXT").click()
+        d(text="OK").click()
 
+    if d(text="Contacts and media").get_text().split()[0] == "Contacts":
+         d(text="CONTINUE").click()
+    d(text="Allow").click()
+    d(text="Allow").click()
+
+    if d(resourceId="android:id/message").get_text().split()[0] == "If":
+       d(text="SKIP").click()
+
+    d.click(280, 915)
+    nama = name.upper()
+    for i in nama:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+
+    d(text="NEXT").click()
+
+def registerBusiness(phone_num, name):
+    # For Original Whatsapp and Whatsapp Business
+    try:
+        d(text="English").click()
+    except Exception:
+        print("No need to choose language")
+    finally:
+        d(text="AGREE AND CONTINUE").click()
+        d(text="USE A DIFFERENT NUMBER").click()
+        for i in phone_num:
+            pressKey(i)
+        d(text="NEXT").click()
+        d(text="CONTINUE").click()
+
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+        d(text="Allow").click()
+        d(text="SKIP").click()
+        d.click(300, 840)
+
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                pressKey("SPACE")
+            pressKey(i)
+        d.click(990, 988)
+
+        category = "other business"
+        kategori = category.upper()
+        for i in kategori:
+            if i == " ":
+                pressKey("SPACE")
+            pressKey(i)
+
+        d(text="Other Business").click()
+        d(text="NEXT").click()
+        d(text="NOT NOW").click()
+
+def registerFm(phone_num, name):
+    try:
+        # Allow access media
+        d(text="Allow").click()
+    except:
+        print("There is no permission request")
+    finally:
+        # Front page
+        d(text="AGREE AND CONTINUE").click()
+        # Input number
+        d(text="phone number").click()
+        for i in phone_num:
+             pressKey(i)
+        d(text="NEXT").click()
+     
+     # Switching from business
+    try:
+        d(text="SWITCH").click()
+    except:
+        print("No switch requested")
+    finally:
+        d(text="CONTINUE").click()
+        d(text="Allow").click()   
+        # Contacts and media permission
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+
+          # Google permission
+        d(text="SKIP").click()
+          
+        nama = name.upper()
+        for i in nama:
+             if i == " ":
+                  pressKey("SPACE")
+             pressKey(i)
+        d(text="NEXT").click()
+        d(text="CLOSE").click()
+
+def registerYo(phone_num, name):
+    try:
+          # Allow access media
+          d(text="Allow").click()
+    except:
+        print("There is no permission request")
+    finally:
+        # Front page
+        d(text="AGREE AND CONTINUE").click()
+        # Input number
+        d(text="phone number").click()
+        for i in phone_num:
+             pressKey(i)
+        d(text="NEXT").click()
+    try:
+        d(text="SWITCH").click()
+    except:
+        print("There is no switch request")
+    finally:
+        # Confirmation
+        d(text="OK").click()
+        # Verify hanya 7 jam sekali
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+          
+          # Contacts and media permission
+        d(text="CONTINUE").click()
+        d(text="Allow").click()
+        
+        # Google permission request
+        d(text="SKIP").click()
+        nama = name.upper()
+        for i in nama:
+             if i == " ":
+                  pressKey("SPACE")
+             pressKey(i)
+        d(text="NEXT").click()
+        d(text="CLOSE").click()
+        
+def registerAero(phone_num, name):
+    # In development
+    pass 
+
+def mediaPermissionFm():
+     d(text="SETTINGS").click()
+     d(text="Permissions").click()
+     os.system(f'adb -s' + device_id + ' shell input swipe 550 1690 550 970')
+     d(text="Files and media").click()
+     d(resourceId="com.android.permissioncontroller:id/allow_radio_button")
 
 
 
