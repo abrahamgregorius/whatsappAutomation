@@ -5,7 +5,9 @@ import helper
 
 d = u2.connect("R9CT4007GBM")
 
-data = [["895410810664", "com.whatsapp"], ["895410810679", "com.fmwhatsapp"], ["895410810680", "com.yowhatsapp"], ["895410808876", "com.whatsapp.w4b"], ["81527650313", "com.aero"]]
+data = [["85811403649", "com.whatsapp"], ["895410810679", "com.fmwhatsapp"], ["895410810680", "com.yowhatsapp"], ["895410808876", "com.whatsapp.w4b"]]
+numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
+packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b"]
 device_id = "R9CT4007GBM"
 
 class Main:
@@ -15,7 +17,7 @@ class Main:
         self.device_id = device_id
 
     def startApp(self):     
-        d.app_start("" + helper.generatePackageName(data) + "")
+        d.app_start("" + helper.generateData(packdata) + "")
     
     def newNumber(self):
         # Masuk ke menu adding contact
@@ -77,7 +79,5 @@ class Main:
 
 
 while True:
-    first = Main("Nenek", helper.generateNumber(data), "R9CT4007GBM")
-    first.sendMessage("Hello world", helper.generatePackageName(data))
-    first.pushPhoto(helper.generatePackageName(data))
-    first.pushVideo(helper.generatePackageName(data))
+    first = Main("Nenek", helper.generateData(numdata), "R9CT4007GBM")
+    first.sendMessage("Hello world", helper.generateData(packdata))

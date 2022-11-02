@@ -79,6 +79,11 @@ def generateNumber(arr):
     number = random.choice(a)
     return number
 
+def generateData(arr):
+    number = random.choice(arr)
+    return number
+
+
 def generatePackageName(arr):
     b = []
     for i in arr:
