@@ -10,6 +10,9 @@ packagename = "com.whatsapp"
 
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
+numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
+packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b"]
+
 
 def generateAPassword():
     for i in names:
@@ -72,16 +75,13 @@ def randomGender():
     res = random.choice(list(genderCoordinates.values()))
     return res
 
-def generateNumber(arr):
-    a = []
-    for i in arr:
-        a.append(i[0])
-    number = random.choice(a)
+def generateNumber():
+    number = random.choice(numdata)
     return number
 
-def generateData(arr):
-    number = random.choice(arr)
-    return number
+def generatePackage():
+    package = random.choice(packdata)
+    return package
 
 
 def generatePackageName(arr):
