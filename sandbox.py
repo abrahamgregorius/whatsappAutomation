@@ -13,13 +13,18 @@ def generatePackage():
     return package
 
 def cobaPrint(func):
-    print("ini adalah sesuatu mantap: " + func)
-    print(func)
+    return "ini adalah sesuatu mantap: " + func
 
+po = generateNumber()
+while True:
+    b = generateNumber()
+    print(b)
+    print(po)
+    print(cobaPrint(generateNumber))
+    print(generateNumber())
+    print("------------------------------")
 
-
-b = generateNumber()
-
+    
 def printa():
     print("abrama")
 
