@@ -1,5 +1,6 @@
 import os
 import random
+from time import sleep
 import requests
 import uiautomator2 as u2
 
@@ -283,6 +284,58 @@ def registerAero(phone_num, name):
              pressKey(i)
         d(text="NEXT").click()
         d(text="THANKS!").click()
+
+def sendMessageWhatsapp(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageBusiness(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageAero(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageFMWA(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageYoWA(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+        
 
 # ALPHABET FUNCTION
 # def pressA():
