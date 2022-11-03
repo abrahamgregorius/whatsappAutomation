@@ -12,8 +12,7 @@ packagename = "com.whatsapp"
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
 numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b"]
-
+packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 def generateAPassword():
     for i in names:
@@ -41,7 +40,6 @@ def pressKey(keycode):
 def pressSend():
     os.system(f'adb -s ' + device_id + ' shell input tap 985 2230') 
 
-    
 def randomMonth():
     monthCoordinates = {
         "jan":"350 225",
@@ -83,7 +81,6 @@ def generateNumber():
 def generatePackage():
     package = random.choice(packdata)
     return package
-
 
 def generatePackageName(arr):
     b = []
@@ -235,7 +232,6 @@ def registerYo(phone_num, name):
              pressKey(i)
         d(text="NEXT").click()
         d(text="CLOSE").click()
-        
 
 def mediaSettings():
      d(text="SETTINGS").click()
@@ -335,7 +331,7 @@ def sendMessageYoWA(message, number):
         pressKey(i)
     os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
 
-        
+
 
 # ALPHABET FUNCTION
 # def pressA():
