@@ -3,6 +3,7 @@ import random
 from time import sleep
 import requests
 import uiautomator2 as u2
+import subprocess
 
 device_id = "R9CT4007GBM"
 d = u2.connect(device_id)
@@ -13,6 +14,10 @@ response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_
 names = response.json()
 numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
+
+def adbs(command):
+        a = subprocess.run(command, capture_output=True)
+        return a.stdout.decode()
 
 def generateAPassword():
     for i in names:
@@ -333,6 +338,9 @@ def sendMessageYoWA(message, number):
 
 
 
+
+
+    
 # ALPHABET FUNCTION
 # def pressA():
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_A')
