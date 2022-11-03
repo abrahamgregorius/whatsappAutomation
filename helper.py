@@ -1,5 +1,6 @@
 import os
 import random
+from time import sleep
 import requests
 import uiautomator2 as u2
 
@@ -10,6 +11,8 @@ packagename = "com.whatsapp"
 
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
+numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
+packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 def generateAPassword():
     for i in names:
@@ -37,7 +40,6 @@ def pressKey(keycode):
 def pressSend():
     os.system(f'adb -s ' + device_id + ' shell input tap 985 2230') 
 
-    
 def randomMonth():
     monthCoordinates = {
         "jan":"350 225",
@@ -72,12 +74,13 @@ def randomGender():
     res = random.choice(list(genderCoordinates.values()))
     return res
 
-def generateNumber(arr):
-    a = []
-    for i in arr:
-        a.append(i[0])
-    number = random.choice(a)
+def generateNumber():
+    number = random.choice(numdata)
     return number
+
+def generatePackage():
+    package = random.choice(packdata)
+    return package
 
 def generatePackageName(arr):
     b = []
@@ -229,7 +232,6 @@ def registerYo(phone_num, name):
              pressKey(i)
         d(text="NEXT").click()
         d(text="CLOSE").click()
-        
 
 def mediaSettings():
      d(text="SETTINGS").click()
@@ -278,6 +280,58 @@ def registerAero(phone_num, name):
              pressKey(i)
         d(text="NEXT").click()
         d(text="THANKS!").click()
+
+def sendMessageWhatsapp(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageBusiness(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageAero(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageFMWA(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+def sendMessageYoWA(message, number):
+    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
+    sleep(3)
+    pesan = message.upper()
+    for i in pesan:
+        if i == " ":
+            pressKey("SPACE")
+        pressKey(i)
+    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
+
+
 
 # ALPHABET FUNCTION
 # def pressA():
