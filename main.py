@@ -75,10 +75,8 @@ class Main:
         # Click send
         os.system(f'adb -s '+device_id+' shell input tap 975 2183')
         
-# while True:
+while True:
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
-#     break
-
-a = helper.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
-print(a)
+    pass
+    break

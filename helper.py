@@ -336,7 +336,9 @@ def sendMessageYoWA(message, number):
         pressKey(i)
     os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
 
-
+def listAllWhatsapp():
+    a = helper.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
+    return a.stdout.decode()
 
 
 
