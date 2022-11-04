@@ -15,331 +15,336 @@ names = response.json()
 numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
-def adbs(command):
+class Helper:
+
+    def __init__(self, device_id):
+        self.device_id = device_id
+
+    def adbs(self, command):
         a = subprocess.run(command, capture_output=True)
         return a.stdout.decode()
 
-def generateFirstName():
-    for i in names:
-        res = i.split('_')[0]
+    def generateFirstName(self):
+        for i in names:
+            res = i.split('_')[0]
+            return res
+
+    def generateLastName(self):
+        for i in names:
+            res = i.split('_')[1]
+            return res
+
+    def generatePassword(self):
+        for i in names:
+            res = i
+            return res
+
+    def pressKey(self, keycode):
+        os.system(f'adb -s '+ self.device_id +' shell input keyevent KEYCODE_' + keycode)
+
+    def pressSend(self):
+        os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
+
+    def randomMonth(self):
+        monthCoordinates = {
+            "jan":"350 225",
+            "feb":"350 360",
+            "mar":"350 450",
+            "apr":"350 550",
+            "may":"350 650",
+            "jun":"350 750",
+            "jul":"350 850",
+            "aug":"350 950",
+            "sep":"350 1050",
+            "oct":"350 1150",
+            "nov":"350 1250",
+            "dec":"350 1350",
+        }
+        res = random.choice(list(monthCoordinates.values()))
         return res
 
-def generateLastName():
-    for i in names:
-        res = i.split('_')[1]
+    def randomDay(self):
+        day = random.randrange(1, 28, 1)
+        return day
+
+    def randomYear(self):
+        year = random.randrange(1975, 1999, 1)
+        return year
+
+    def randomGender(self):
+        genderCoordinates = {
+            "m":"255 750",
+            "f":"255 650"
+        }
+        res = random.choice(list(genderCoordinates.values()))
         return res
 
-def generatePassword():
-    for i in names:
-        res = i
-        return res
+    def generateNumber(self):
+        number = random.choice(numdata)
+        return number
 
-def pressKey(keycode):
-    os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_' + keycode)
+    def generatePackage(self):
+        package = random.choice(packdata)
+        return package
 
-def pressSend():
-    os.system(f'adb -s ' + device_id + ' shell input tap 985 2230') 
+    def registerWhatsapp(self, phone_num, name):
+        d.app_start('com.whatsapp')
+        try:
+            d(text="English").click()
+        except Exception:
+            print("No need to choose language")
+        finally:
+            d(text="AGREE AND CONTINUE").click()
+            for i in phone_num:
+                self.pressKey(i)
+            d(text="NEXT").click()
+            d(text="OK").click()
 
-def randomMonth():
-    monthCoordinates = {
-        "jan":"350 225",
-        "feb":"350 360",
-        "mar":"350 450",
-        "apr":"350 550",
-        "may":"350 650",
-        "jun":"350 750",
-        "jul":"350 850",
-        "aug":"350 950",
-        "sep":"350 1050",
-        "oct":"350 1150",
-        "nov":"350 1250",
-        "dec":"350 1350",
-    }
-    res = random.choice(list(monthCoordinates.values()))
-    return res
-
-def randomDay():
-    day = random.randrange(1, 28, 1)
-    return day
-
-def randomYear():
-    year = random.randrange(1975, 1999, 1)
-    return year
-
-def randomGender():
-    genderCoordinates = {
-        "m":"255 750",
-        "f":"255 650"
-    }
-    res = random.choice(list(genderCoordinates.values()))
-    return res
-
-def generateNumber():
-    number = random.choice(numdata)
-    return number
-
-def generatePackage():
-    package = random.choice(packdata)
-    return package
-
-def registerWhatsapp(phone_num, name):
-    d.app_start('com.whatsapp')
-    try:
-        d(text="English").click()
-    except Exception:
-        print("No need to choose language")
-    finally:
-        d(text="AGREE AND CONTINUE").click()
-        for i in phone_num:
-            pressKey(i)
-        d(text="NEXT").click()
-        d(text="OK").click()
-
-    if d(text="Contacts and media").get_text().split()[0] == "Contacts":
-         d(text="CONTINUE").click()
-    d(text="Allow").click()
-    d(text="Allow").click()
-
-    if d(resourceId="android:id/message").get_text().split()[0] == "If":
-       d(text="SKIP").click()
-
-    d.click(280, 915)
-    nama = name.upper()
-    for i in nama:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-
-    d(text="NEXT").click()
-
-def registerBusiness(phone_num, name):
-    d.app_start('com.whatsapp.w4b')
-    # For Original Whatsapp and Whatsapp Business
-    try:
-        d(text="English").click()
-    except Exception:
-        print("No need to choose language")
-    finally:
-        d(text="AGREE AND CONTINUE").click()
-        d(text="USE A DIFFERENT NUMBER").click()
-        for i in phone_num:
-            pressKey(i)
-        d(text="NEXT").click()
-        d(text="CONTINUE").click()
-
-        d(text="CONTINUE").click()
+        if d(text="Contacts and media").get_text().split()[0] == "Contacts":
+             d(text="CONTINUE").click()
         d(text="Allow").click()
         d(text="Allow").click()
-        d(text="SKIP").click()
-        d.click(300, 840)
 
+        if d(resourceId="android:id/message").get_text().split()[0] == "If":
+           d(text="SKIP").click()
+
+        d.click(280, 915)
         nama = name.upper()
         for i in nama:
             if i == " ":
                 pressKey("SPACE")
             pressKey(i)
-        d.click(990, 988)
 
-        category = "other business"
-        kategori = category.upper()
-        for i in kategori:
+        d(text="NEXT").click()
+
+    def registerBusiness(self, phone_num, name):
+        d.app_start('com.whatsapp.w4b')
+        # For Original Whatsapp and Whatsapp Business
+        try:
+            d(text="English").click()
+        except Exception:
+            print("No need to choose language")
+        finally:
+            d(text="AGREE AND CONTINUE").click()
+            d(text="USE A DIFFERENT NUMBER").click()
+            for i in phone_num:
+                self.pressKey(i)
+            d(text="NEXT").click()
+            d(text="CONTINUE").click()
+
+            d(text="CONTINUE").click()
+            d(text="Allow").click()
+            d(text="Allow").click()
+            d(text="SKIP").click()
+            d.click(300, 840)
+
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            d.click(990, 988)
+
+            category = "other business"
+            kategori = category.upper()
+            for i in kategori:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+
+            d(text="Other Business").click()
+            d(text="NEXT").click()
+            d(text="NOT NOW").click()
+
+    def registerFm(self, phone_num, name):
+        d.app_start('com.fmwhatsapp')
+        try:
+            # Allow access media
+            d(text="Allow").click()
+        except:
+            print("There is no permission request")
+        finally:
+            # Front page
+            d(text="AGREE AND CONTINUE").click()
+            # Input number
+            d(text="phone number").click()
+            for i in phone_num:
+                 self.pressKey(i)
+            d(text="NEXT").click()
+
+         # Switching from business
+        try:
+            d(text="SWITCH").click()
+        except:
+            print("No switch requested")
+        finally:
+            d(text="CONTINUE").click()
+            d(text="Allow").click()   
+            # Contacts and media permission
+            d(text="CONTINUE").click()
+            d(text="Allow").click()
+
+              # Google permission
+            d(text="SKIP").click()
+
+            nama = name.upper()
+            for i in nama:
+                 if i == " ":
+                      self.pressKey("SPACE")
+                 self.pressKey(i)
+            d(text="NEXT").click()
+            d(text="CLOSE").click()
+
+    def registerYo(self, phone_num, name):
+        d.app_start('com.yowhatsapp')
+        try:
+              # Allow access media
+              d(text="Allow").click()
+        except:
+            print("There is no permission request")
+        finally:
+            # Front page
+            d(text="AGREE AND CONTINUE").click()
+            # Input number
+            d(text="phone number").click()
+            for i in phone_num:
+                 self.pressKey(i)
+            d(text="NEXT").click()
+        try:
+            d(text="SWITCH").click()
+        except:
+            print("There is no switch request")
+        finally:
+            # Confirmation
+            d(text="OK").click()
+            # Verify hanya 7 jam sekali
+            d(text="CONTINUE").click()
+            d(text="Allow").click()
+
+              # Contacts and media permission
+            d(text="CONTINUE").click()
+            d(text="Allow").click()
+
+            # Google permission request
+            d(text="SKIP").click()
+            nama = name.upper()
+            for i in nama:
+                 if i == " ":
+                      self.pressKey("SPACE")
+                 self.pressKey(i)
+            d(text="NEXT").click()
+            d(text="CLOSE").click()
+
+    def mediaSettings(self):
+         d(text="SETTINGS").click()
+         d(text="Permissions").click()
+         os.system(f'adb -s' + device_id + ' shell input swipe 550 1690 550 970')
+         d(text="Files and media").click()
+         d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
+
+    def registerAero(self, phone_num, name):
+        d.app_start('com.aero')
+        try:
+            d(text="Allow").click()
+        except:
+            print("Gaada prompt")
+        finally:
+            pass
+        try:
+            self.mediaSettings()
+            d.app_stop("com.aero")
+            d.app_start("com.aero")
+            pass
+        except Exception:
+            print("There is no permission request")
+        finally:
+            # Front page
+            d(text="AGREE AND CONTINUE").click()
+            # Input number
+            d(text="phone number").click()
+            for i in phone_num:
+                self.pressKey(i)
+            d(text="NEXT").click()
+        try:
+            d(text="SWITCH").click()
+        except:
+            print("No switch requested")
+        finally:
+            # Confirmation
+            d(text="OK").click()
+            # Verify hanya 7 jam sekali
+            d(text="CONTINUE").click()
+            d(text="Allow").click()
+
+            nama = name.upper()
+            for i in nama:
+                 if i == " ":
+                      self.pressKey("SPACE")
+                 self.pressKey(i)
+            d(text="NEXT").click()
+            d(text="THANKS!").click()
+
+    def sendMessageWhatsapp(self, message, number):
+        os.system(f'adb -s ' + device_id + ' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
+        sleep(3)
+        pesan = message.upper()
+        for i in pesan:
             if i == " ":
-                pressKey("SPACE")
-            pressKey(i)
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-        d(text="Other Business").click()
-        d(text="NEXT").click()
-        d(text="NOT NOW").click()
+    def sendMessageBusiness(self, message, number):
+        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
+        sleep(3)
+        pesan = message.upper()
+        for i in pesan:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-def registerFm(phone_num, name):
-    d.app_start('com.fmwhatsapp')
-    try:
-        # Allow access media
-        d(text="Allow").click()
-    except:
-        print("There is no permission request")
-    finally:
-        # Front page
-        d(text="AGREE AND CONTINUE").click()
-        # Input number
-        d(text="phone number").click()
-        for i in phone_num:
-             pressKey(i)
-        d(text="NEXT").click()
-     
-     # Switching from business
-    try:
-        d(text="SWITCH").click()
-    except:
-        print("No switch requested")
-    finally:
-        d(text="CONTINUE").click()
-        d(text="Allow").click()   
-        # Contacts and media permission
-        d(text="CONTINUE").click()
-        d(text="Allow").click()
+    def sendMessageAero(self, message, number):
+        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
+        sleep(3)
+        pesan = message.upper()
+        for i in pesan:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-          # Google permission
-        d(text="SKIP").click()
-          
-        nama = name.upper()
-        for i in nama:
-             if i == " ":
-                  pressKey("SPACE")
-             pressKey(i)
-        d(text="NEXT").click()
-        d(text="CLOSE").click()
+    def sendMessageFMWA(self, message, number):
+        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
+        sleep(3)
+        pesan = message.upper()
+        for i in pesan:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-def registerYo(phone_num, name):
-    d.app_start('com.yowhatsapp')
-    try:
-          # Allow access media
-          d(text="Allow").click()
-    except:
-        print("There is no permission request")
-    finally:
-        # Front page
-        d(text="AGREE AND CONTINUE").click()
-        # Input number
-        d(text="phone number").click()
-        for i in phone_num:
-             pressKey(i)
-        d(text="NEXT").click()
-    try:
-        d(text="SWITCH").click()
-    except:
-        print("There is no switch request")
-    finally:
-        # Confirmation
-        d(text="OK").click()
-        # Verify hanya 7 jam sekali
-        d(text="CONTINUE").click()
-        d(text="Allow").click()
-          
-          # Contacts and media permission
-        d(text="CONTINUE").click()
-        d(text="Allow").click()
-        
-        # Google permission request
-        d(text="SKIP").click()
-        nama = name.upper()
-        for i in nama:
-             if i == " ":
-                  pressKey("SPACE")
-             pressKey(i)
-        d(text="NEXT").click()
-        d(text="CLOSE").click()
+    def sendMessageYoWA(self, message, number):
+        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
+        sleep(3)
+        pesan = message.upper()
+        for i in pesan:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-def mediaSettings():
-     d(text="SETTINGS").click()
-     d(text="Permissions").click()
-     os.system(f'adb -s' + device_id + ' shell input swipe 550 1690 550 970')
-     d(text="Files and media").click()
-     d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
+    def listAllWhatsapp(self):
+        a = self.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
+        b = a.split()
+        for i in b:
+            print(i.split(':')[1])
 
-def registerAero(phone_num, name):
-    d.app_start('com.aero')
-    try:
-        d(text="Allow").click()
-    except:
-        print("Gaada prompt")
-    finally:
-        pass
-    try:
-        mediaSettings()
-        d.app_stop("com.aero")
-        d.app_start("com.aero")
-        pass
-    except Exception:
-        print("There is no permission request")
-    finally:
-        # Front page
-        d(text="AGREE AND CONTINUE").click()
-        # Input number
-        d(text="phone number").click()
-        for i in phone_num:
-            pressKey(i)
-        d(text="NEXT").click()
-    try:
-        d(text="SWITCH").click()
-    except:
-        print("No switch requested")
-    finally:
-        # Confirmation
-        d(text="OK").click()
-        # Verify hanya 7 jam sekali
-        d(text="CONTINUE").click()
-        d(text="Allow").click()
-          
-        nama = name.upper()
-        for i in nama:
-             if i == " ":
-                  pressKey("SPACE")
-             pressKey(i)
-        d(text="NEXT").click()
-        d(text="THANKS!").click()
-
-def sendMessageWhatsapp(message, number):
-    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
-    sleep(3)
-    pesan = message.upper()
-    for i in pesan:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
-
-def sendMessageBusiness(message, number):
-    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
-    sleep(3)
-    pesan = message.upper()
-    for i in pesan:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
-
-def sendMessageAero(message, number):
-    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
-    sleep(3)
-    pesan = message.upper()
-    for i in pesan:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
-
-def sendMessageFMWA(message, number):
-    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
-    sleep(3)
-    pesan = message.upper()
-    for i in pesan:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
-
-def sendMessageYoWA(message, number):
-    os.system(f'adb -s R9CT4007GBM shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
-    sleep(3)
-    pesan = message.upper()
-    for i in pesan:
-        if i == " ":
-            pressKey("SPACE")
-        pressKey(i)
-    os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
-
-def listAllWhatsapp():
-    a = adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
-    b = a.split()
-    for i in b:
-        print(i.split(':')[1])
-
-def checkActivity():
-    a = adbs(f'adb -s '+ device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
-    b = a.split()[2][:-1]
-    c = b.split("/")[1]
-    return c
+    def checkActivity(self):
+        a = self.adbs(f'adb -s '+ device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
+        b = a.split()[2][:-1]
+        c = b.split("/")[1]
+        return c
 
 
 # ALPHABET FUNCTION
