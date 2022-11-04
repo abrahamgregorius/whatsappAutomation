@@ -15,10 +15,10 @@ names = response.json()
 numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
-class Helper:
-
-    def __init__(self, device_id):
+class AutoHelper:
+    def __init__(self, device_id, phone_number):
         self.device_id = device_id
+        self.phone_number = phone_number
 
     def adbs(self, command):
         a = subprocess.run(command, capture_output=True)
@@ -112,8 +112,8 @@ class Helper:
         nama = name.upper()
         for i in nama:
             if i == " ":
-                pressKey("SPACE")
-            pressKey(i)
+                self.pressKey("SPACE")
+            self.pressKey(i)
 
         d(text="NEXT").click()
 
@@ -255,7 +255,7 @@ class Helper:
             d.app_stop("com.aero")
             d.app_start("com.aero")
             pass
-        except Exception:
+        except:
             print("There is no permission request")
         finally:
             # Front page
@@ -284,55 +284,30 @@ class Helper:
             d(text="NEXT").click()
             d(text="THANKS!").click()
 
-    def sendMessageWhatsapp(self, message, number):
-        os.system(f'adb -s ' + device_id + ' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
-        sleep(3)
+    def sendMessage(self, message, packageName):
+        # Buka chatroom whatsapp
+        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ self.phone_number + '" ' + packageName)
+        # Tulis pesan
+        sleep(1)
         pesan = message.upper()
         for i in pesan:
             if i == " ":
                 self.pressKey("SPACE")
             self.pressKey(i)
+        # CLick send
         os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
-    def sendMessageBusiness(self, message, number):
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
-        sleep(3)
-        pesan = message.upper()
-        for i in pesan:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-
-    def sendMessageAero(self, message, number):
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
-        sleep(3)
-        pesan = message.upper()
-        for i in pesan:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-
-    def sendMessageFMWA(self, message, number):
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
-        sleep(3)
-        pesan = message.upper()
-        for i in pesan:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-
-    def sendMessageYoWA(self, message, number):
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
-        sleep(3)
-        pesan = message.upper()
-        for i in pesan:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+    def pushVideo(self, packageName):
+        # Push
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
+        sleep(2)
+        # Send menu
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
+        sleep(2)
+        os.system(f'adb -s '+ device_id +' shell input tap 888 1270')
+        sleep(1)
+        # Pop up 
+        os.system(f'adb -s '+ device_id +' shell input tap 995 2125')
 
     def listAllWhatsapp(self):
         a = self.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
@@ -346,7 +321,8 @@ class Helper:
         c = b.split("/")[1]
         return c
 
-
+    
+# UNUSED FUNCTIONS
 # ALPHABET FUNCTION
 # def pressA():
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_A')
@@ -436,3 +412,48 @@ class Helper:
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_ENDCALL')
 # def pressSOFT_RIGHT():
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_SOFT_RIGHT')
+# def sendMessageWhatsapp(self, message, number):
+#     os.system(f'adb -s ' + device_id + ' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
+#     sleep(3)
+#     pesan = message.upper()
+#     for i in pesan:
+#         if i == " ":
+#             self.pressKey("SPACE")
+#         self.pressKey(i)
+#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+# def sendMessageBusiness(self, message, number):
+#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
+#     sleep(3)
+#     pesan = message.upper()
+#     for i in pesan:
+#         if i == " ":
+#             self.pressKey("SPACE")
+#         self.pressKey(i)
+#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+# def sendMessageAero(self, message, number):
+#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
+#     sleep(3)
+#     pesan = message.upper()
+#     for i in pesan:
+#         if i == " ":
+#             self.pressKey("SPACE")
+#         self.pressKey(i)
+#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+# def sendMessageFMWA(self, message, number):
+#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
+#     sleep(3)
+#     pesan = message.upper()
+#     for i in pesan:
+#         if i == " ":
+#             self.pressKey("SPACE")
+#         self.pressKey(i)
+#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+# def sendMessageYoWA(self, message, number):
+#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
+#     sleep(3)
+#     pesan = message.upper()
+#     for i in pesan:
+#         if i == " ":
+#             self.pressKey("SPACE")
+#         self.pressKey(i)
+#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
