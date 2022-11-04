@@ -19,11 +19,6 @@ def adbs(command):
         a = subprocess.run(command, capture_output=True)
         return a.stdout.decode()
 
-def generateAPassword():
-    for i in names:
-        res = i
-        return res
-
 def generateFirstName():
     for i in names:
         res = i.split('_')[0]
@@ -85,13 +80,6 @@ def generateNumber():
 
 def generatePackage():
     package = random.choice(packdata)
-    return package
-
-def generatePackageName(arr):
-    b = []
-    for i in arr:
-        b.append(i[1])
-    package = random.choice(b)
     return package
 
 def registerWhatsapp(phone_num, name):
@@ -337,12 +325,18 @@ def sendMessageYoWA(message, number):
     os.system(f'adb -s R9CT4007GBM shell input tap 1000 2205')
 
 def listAllWhatsapp():
-    a = helper.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
-    return a.stdout.decode()
+    a = adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
+    b = a.split()
+    for i in b:
+        print(i.split(':')[1])
+
+def checkActivity():
+    a = adbs(f'adb -s '+ device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
+    b = a.split()[2][:-1]
+    c = b.split("/")[1]
+    return c
 
 
-
-    
 # ALPHABET FUNCTION
 # def pressA():
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_A')

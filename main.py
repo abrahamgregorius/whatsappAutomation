@@ -11,17 +11,16 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 device_id = "R9CT4007GBM"
 
 class Main:
-    def __init__(self, name="Bambang", phone_number="", device_id="R9CT4007GBM"):
-        self.name = name
+    def __init__(self, phone_number="", device_id="R9CT4007GBM"):
         self.phone_number = phone_number
         self.device_id = device_id
 
     def startApp(self):     
         d.app_start("" + helper.generatePackage() + "")
     
-    def newNumber(self):
+    def newNumber(self, name):
         # Masuk ke menu adding contact
-        os.system('adb -s '+ self.device_id +' shell am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ self.name +' -e phone 0'+ self.phone_number +' ')
+        os.system('adb -s '+ self.device_id +' shell am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ name +' -e phone 0'+ self.phone_number +' ')
         # Choose save contact to
         sleep(1)
         os.system(f'adb -s ' + device_id + ' shell input tap 300 200')
@@ -35,7 +34,7 @@ class Main:
         # Buka chatroom whatsapp
         os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ self.phone_number + '" ' + packageName)
         # Tulis pesan
-        sleep(3)
+        sleep(1)
         pesan = message.upper()
         for i in pesan:
             if i == " ":
@@ -74,9 +73,30 @@ class Main:
         #         print("There is no request for media permission in FMWhatsapp")
         # Click send
         os.system(f'adb -s '+device_id+' shell input tap 975 2183')
-        
+
+
+def checkStatus():
+    status = helper.checkActivity()
+    try:
+        if status == "com.whatsapp.registration.EULA":
+            helper.registerWhatsapp('85811403649', "Profile")
+        elif status == "com.whatsapp.w4b.registration.EULA":
+            helper.registerBusiness('85811403649', "Profile")
+        elif status == "com.fmwhatsapp.registration.EULA":
+            helper.registerFm('85811403649', "Profile")
+        elif status == "com.yowhatsapp.registration.EULA":
+            helper.registerYo('85811403649', "Profile")
+        elif status == "com.aero.registration.EULA":
+            helper.registerAero('85811403649', "Profile")
+        elif status == ".userban.ui.BanAppealActivity":
+            print("Device is banned")
+    finally:
+        second = Main(helper.generateNumber())
+        second.sendMessage("Halo", helper.generatePackage())
+            
+
+
 while True:
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
-    pass
-    break
+    helper.registerWhatsapp('81239283553', 'Bambang')
