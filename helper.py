@@ -83,6 +83,7 @@ def generatePackage():
     return package
 
 def registerWhatsapp(phone_num, name):
+    d.app_start('com.whatsapp')
     try:
         d(text="English").click()
     except Exception:
@@ -112,6 +113,7 @@ def registerWhatsapp(phone_num, name):
     d(text="NEXT").click()
 
 def registerBusiness(phone_num, name):
+    d.app_start('com.whatsapp.w4b')
     # For Original Whatsapp and Whatsapp Business
     try:
         d(text="English").click()
@@ -150,6 +152,7 @@ def registerBusiness(phone_num, name):
         d(text="NOT NOW").click()
 
 def registerFm(phone_num, name):
+    d.app_start('com.fmwhatsapp')
     try:
         # Allow access media
         d(text="Allow").click()
@@ -188,6 +191,7 @@ def registerFm(phone_num, name):
         d(text="CLOSE").click()
 
 def registerYo(phone_num, name):
+    d.app_start('com.yowhatsapp')
     try:
           # Allow access media
           d(text="Allow").click()
@@ -234,6 +238,7 @@ def mediaSettings():
      d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
 
 def registerAero(phone_num, name):
+    d.app_start('com.aero')
     try:
         d(text="Allow").click()
     except:
