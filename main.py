@@ -10,93 +10,19 @@ numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b"]
 device_id = "R9CT4007GBM"
 
-class Main:
-    def __init__(self, phone_number="", device_id="R9CT4007GBM"):
-        self.phone_number = phone_number
-        self.device_id = device_id
+autoHelper = helper.AutoHelper("R9CT4007GBM")
 
-    def startApp(self):     
-        d.app_start("" + helper.generatePackage() + "")
-    
-    def newNumber(self, name):
-        # Masuk ke menu adding contact
-        os.system('adb -s '+ self.device_id +' shell am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ name +' -e phone 0'+ self.phone_number +' ')
-        # Choose save contact to
-        sleep(1)
-        os.system(f'adb -s ' + device_id + ' shell input tap 300 200')
-        sleep(1)
-        os.system(f'adb -s ' + device_id + ' shell input tap 270 340')
-        # Click save
-        sleep(1)
-        os.system(f'adb -s ' + device_id + ' shell input tap 780 2206')
+def startApp():     
+    d.app_start("" + autoHelper.generatePackage() + "")
 
-    def sendMessage(self, message, packageName):
-        # Buka chatroom whatsapp
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ self.phone_number + '" ' + packageName)
-        # Tulis pesan
-        sleep(1)
-        pesan = message.upper()
-        for i in pesan:
-            if i == " ":
-                helper.pressKey("SPACE")
-            helper.pressKey(i)
-        # CLick send
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-
-    def pushVideo(self, packageName):
-        # Push
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
-        sleep(2)
-        # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
-        sleep(2)
-        os.system(f'adb -s '+device_id+' shell input tap 888 1270')
-        sleep(1)
-        # Pop up 
-        os.system(f'adb -s '+device_id+' shell input tap 995 2125')
-        # Click send
-        # d(resourceId="" + packageName+ ":id/send").click()
-
-    def pushPhoto(self, packageName):
-        # Push
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
-        sleep(2)
-        # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
-        sleep(1)
-        # If packageName is com.fmwhatsapp
-        # if packageName == "com.fmwhatsapp":
-        #     try:
-        #         helper.mediaPermissionFm()
-        #         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName + '')
-        #     except:
-        #         print("There is no request for media permission in FMWhatsapp")
-        # Click send
-        os.system(f'adb -s '+device_id+' shell input tap 975 2183')
-
-
-def checkStatus():
-    status = helper.checkActivity()
-    try:
-        if status == "com.whatsapp.registration.EULA":
-            helper.registerWhatsapp('85811403649', "Profile")
-        elif status == "com.whatsapp.w4b.registration.EULA":
-            helper.registerBusiness('85811403649', "Profile")
-        elif status == "com.fmwhatsapp.registration.EULA":
-            helper.registerFm('85811403649', "Profile")
-        elif status == "com.yowhatsapp.registration.EULA":
-            helper.registerYo('85811403649', "Profile")
-        elif status == "com.aero.registration.EULA":
-            helper.registerAero('85811403649', "Profile")
-        elif status == ".userban.ui.BanAppealActivity":
-            print("Device is banned")
-    finally:
-        second = Main(helper.generateNumber())
-        second.sendMessage("Halo", helper.generatePackage())
-            
-
+def pushPhoto(packageName):
+    os.system(f'adb -s '+ device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
+    sleep(2)
+    os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ autoHelper.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
+    sleep(1)
+    os.system(f'adb -s '+device_id+' shell input tap 975 2183')
 
 while True:
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
-    helper.registerWhatsapp('81239283553', 'Bambang')
+    autoHelper.registerWhatsapp('81239283553', 'Bambang')

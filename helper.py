@@ -297,6 +297,13 @@ class AutoHelper:
         # CLick send
         os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
 
+    def pushPhoto(self, packageName):
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
+        sleep(2)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ autoHelper.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
+        sleep(1)
+        os.system(f'adb -s '+ self.device_id +' shell input tap 975 2183')
+        
     def pushVideo(self, packageName):
         # Push
         os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
@@ -304,10 +311,10 @@ class AutoHelper:
         # Send menu
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
         sleep(2)
-        os.system(f'adb -s '+ device_id +' shell input tap 888 1270')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
         sleep(1)
         # Pop up 
-        os.system(f'adb -s '+ device_id +' shell input tap 995 2125')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 995 2125')
 
     def listAllWhatsapp(self):
         a = self.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
@@ -321,7 +328,26 @@ class AutoHelper:
         c = b.split("/")[1]
         return c
 
+    def checkStatus(self):
+        status = self.checkActivity()
+        try:
+            if status == "com.whatsapp.registration.EULA":
+                self.registerWhatsapp('85811403649', "Profile")
+            elif status == "com.whatsapp.w4b.registration.EULA":
+                self.registerBusiness('85811403649', "Profile")
+            elif status == "com.fmwhatsapp.registration.EULA":
+                self.registerFm('85811403649', "Profile")
+            elif status == "com.yowhatsapp.registration.EULA":
+                self.registerYo('85811403649', "Profile")
+            elif status == "com.aero.registration.EULA":
+                self.registerAero('85811403649', "Profile")
+            elif status == ".userban.ui.BanAppealActivity":
+                print("Device is banned")
+        finally:
+            self.sendMessage("Halo", self.generatePackage())
     
+    
+
 # UNUSED FUNCTIONS
 # ALPHABET FUNCTION
 # def pressA():
@@ -457,3 +483,14 @@ class AutoHelper:
 #             self.pressKey("SPACE")
 #         self.pressKey(i)
 #     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+# def newNumber(name, phone_number):
+#     # Masuk ke menu adding contact
+#     os.system('adb -s '+ device_id +' shell am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ name +' -e phone 0'+ phone_number +' ')
+#     # Choose save contact to
+#     sleep(1)
+#     os.system(f'adb -s ' + device_id + ' shell input tap 300 200')
+#     sleep(1)
+#     os.system(f'adb -s ' + device_id + ' shell input tap 270 340')
+#     # Click save
+#     sleep(1)
+#     os.system(f'adb -s ' + device_id + ' shell input tap 780 2206')
