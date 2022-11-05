@@ -24,6 +24,9 @@ class AutoHelper:
         a = subprocess.run(command, capture_output=True)
         return a.stdout.decode()
 
+    def startApp(self):     
+        d.app_start("" + self.generatePackage() + "")
+
     def generateFirstName(self):
         for i in names:
             res = i.split('_')[0]
@@ -345,7 +348,6 @@ class AutoHelper:
                 print("Device is banned")
         finally:
             self.sendMessage("Halo", self.generatePackage())
-    
     
 
 # UNUSED FUNCTIONS
