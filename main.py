@@ -12,16 +12,6 @@ device_id = "R9CT4007GBM"
 
 autoHelper = helper.AutoHelper("R9CT4007GBM")
 
-def startApp():     
-    d.app_start("" + autoHelper.generatePackage() + "")
-
-def pushPhoto(packageName):
-    os.system(f'adb -s '+ device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
-    sleep(2)
-    os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ autoHelper.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
-    sleep(1)
-    os.system(f'adb -s '+device_id+' shell input tap 975 2183')
-
 while True:
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
