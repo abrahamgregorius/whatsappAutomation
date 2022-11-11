@@ -93,40 +93,30 @@ class AutoHelper:
         return package
 
     def registerWhatsapp(self, phone_num, name):
-        d.app_start('com.whatsapp')
+        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
+        os.system(f'adb -s '+ self.device_id +'shell am start -n com.whatsapp/com.whatsapp.Main')
         try:
             d(text="English").click()
         except:
             print("No need to choose language")
         finally:
             d(text="AGREE AND CONTINUE").click()
+
+        for i in phone_num:
+            self.pressKey(i)
             
-        try:
-            if d(resourceId="com.whatsapp:id/registration_cc") == "":
-                self.pressKey('6')
-                self.pressKey('2')
-                for i in phone_num:
-                    self.pressKey(i)
-        except Exception:
-            print("Country code already filled")
-            os.system(f'adb -s '+ self.device_id +' shell input tap 500 600')
-            for i in phone_num:
-                self.pressKey(i)
-        finally:
-            d(text="CONTINUE")
+        d(text="NEXT").click()
+        d(text="OK").click()
+        d(text="CONTINUE").click()
         d(text="Allow").click()
         d(text="Allow").click()
-
-        if d(resourceId="android:id/message").get_text().split()[0] == "If":
-           d(text="SKIP").click()
-
-        d.click(280, 915)
+        d(text="SKIP").click()
+        d.click(280, 900)
         nama = name.upper()
         for i in nama:
             if i == " ":
                 self.pressKey("SPACE")
             self.pressKey(i)
-
         d(text="NEXT").click()
 
     def registerBusiness(self, phone_num, name):
@@ -358,6 +348,21 @@ class AutoHelper:
         finally:
             self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
     
+    def makeCall(self, packageName, phone_number):
+        # Buka chatroom whatsapp
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_number + '" ' + packageName)
+        sleep(3)
+        os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
+        d(text="CALL").click()
+        # try:
+        #     d(text="CONTINUE").click()
+        #     d(text="While using the app").click()
+        #     d(text="CONTINUE").click()
+        #     d(text="Allow").click()
+        # finally:
+        os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
+        
+        
 
 # UNUSED FUNCTIONS
 # ALPHABET FUNCTION

@@ -14,5 +14,7 @@ autoHelper = helper.AutoHelper("R9CT4000AAM")
 
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
+
+# autoHelper.registerWhatsapp('85892284244', "Abang Ganteng")
 while True:
-    autoHelper.registerWhatsapp(autoHelper.generateNumber(), "Abang Ganteng")
+    autoHelper.makeCall('com.whatsapp', '81527650313')
