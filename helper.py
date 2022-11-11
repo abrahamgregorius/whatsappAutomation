@@ -4,8 +4,9 @@ from time import sleep
 import requests
 import uiautomator2 as u2
 import subprocess
+import sqlite3
 
-device_id = "R9CT4007GBM"
+device_id = "R9CT4000AAM"
 d = u2.connect(device_id)
 packagename = "com.whatsapp"
 
@@ -16,10 +17,11 @@ numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 class AutoHelper:
-    def __init__(self, device_id, phone_number):
+    def __init__(self, device_id):
         self.device_id = device_id
-        self.phone_number = phone_number
 
+    d = u2.connect(device_id)
+        
     def adbs(self, command):
         a = subprocess.run(command, capture_output=True)
         return a.stdout.decode()
@@ -94,17 +96,24 @@ class AutoHelper:
         d.app_start('com.whatsapp')
         try:
             d(text="English").click()
-        except Exception:
+        except:
             print("No need to choose language")
         finally:
             d(text="AGREE AND CONTINUE").click()
+            
+        try:
+            if d(resourceId="com.whatsapp:id/registration_cc") == "":
+                self.pressKey('6')
+                self.pressKey('2')
+                for i in phone_num:
+                    self.pressKey(i)
+        except Exception:
+            print("Country code already filled")
+            os.system(f'adb -s '+ self.device_id +' shell input tap 500 600')
             for i in phone_num:
                 self.pressKey(i)
-            d(text="NEXT").click()
-            d(text="OK").click()
-
-        if d(text="Contacts and media").get_text().split()[0] == "Contacts":
-             d(text="CONTINUE").click()
+        finally:
+            d(text="CONTINUE")
         d(text="Allow").click()
         d(text="Allow").click()
 
@@ -241,7 +250,7 @@ class AutoHelper:
     def mediaSettings(self):
          d(text="SETTINGS").click()
          d(text="Permissions").click()
-         os.system(f'adb -s' + device_id + ' shell input swipe 550 1690 550 970')
+         os.system(f'adb -s' + self.device_id + ' shell input swipe 550 1690 550 970')
          d(text="Files and media").click()
          d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
 
@@ -287,9 +296,9 @@ class AutoHelper:
             d(text="NEXT").click()
             d(text="THANKS!").click()
 
-    def sendMessage(self, message, packageName):
+    def sendMessage(self, message, packageName, phone_number):
         # Buka chatroom whatsapp
-        os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ self.phone_number + '" ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_number + '" ' + packageName)
         # Tulis pesan
         sleep(1)
         pesan = message.upper()
@@ -298,21 +307,21 @@ class AutoHelper:
                 self.pressKey("SPACE")
             self.pressKey(i)
         # CLick send
-        os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
 
-    def pushPhoto(self, packageName):
+    def pushPhoto(self, packageName, phone_number):
         os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ autoHelper.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
         sleep(1)
         os.system(f'adb -s '+ self.device_id +' shell input tap 975 2183')
         
-    def pushVideo(self, packageName):
+    def pushVideo(self, packageName, phone_number):
         # Push
         os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
         sleep(2)
         # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ self.phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
         sleep(2)
         os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
         sleep(1)
@@ -320,13 +329,13 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell input tap 995 2125')
 
     def listAllWhatsapp(self):
-        a = self.adbs(f'adb -s '+ device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
+        a = self.adbs(f'adb -s '+ self.device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
         b = a.split()
         for i in b:
             print(i.split(':')[1])
 
     def checkActivity(self):
-        a = self.adbs(f'adb -s '+ device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
+        a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
         b = a.split()[2][:-1]
         c = b.split("/")[1]
         return c
@@ -347,7 +356,7 @@ class AutoHelper:
             elif status == ".userban.ui.BanAppealActivity":
                 print("Device is banned")
         finally:
-            self.sendMessage("Halo", self.generatePackage())
+            self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
     
 
 # UNUSED FUNCTIONS
