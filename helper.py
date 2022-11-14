@@ -7,7 +7,6 @@ import subprocess
 import sqlite3
 
 device_id = "R9CT4000AAM"
-d = u2.connect(device_id)
 packagename = "com.whatsapp"
 
 
@@ -115,35 +114,35 @@ class AutoHelper:
         self.grantPermissionWhatsapp()
         self.d.app_start("com.whatsapp")
         try:
-            d(text="English").click()
+            self.d(text="English").click()
         except:
             print("No need to choose language")
         finally:
-            d(text="AGREE AND CONTINUE").click()
+            self.d(text="AGREE AND CONTINUE").click()
 
-        d(resourceId="com.whatsapp:id/registration_country").click()
-        d(resourceId="com.whatsapp:id/menuitem_search").click()
+        self.d(resourceId="com.whatsapp:id/registration_country").click()
+        self.d(resourceId="com.whatsapp:id/menuitem_search").click()
         country = "INDONESIA"
         sleep(1)
         for i in country:
             self.pressKey(i)
 
-        d(text="Indonesia").click()
+        self.d(text="Indonesia").click()
 
         for i in phone_num:
             self.pressKey(i)
             
-        d(text="NEXT").click()
+        self.d(text="NEXT").click()
         
-        d(text="OK").click()
-        d(text="SKIP").click()
-        d.click(280, 900)
+        self.d(text="OK").click()
+        self.d(text="SKIP").click()
+        self.d.click(280, 900)
         nama = name.upper()
         for i in nama:
             if i == " ":
                 self.pressKey("SPACE")
             self.pressKey(i)
-        d(text="NEXT").click()
+        self.d(text="NEXT").click()
 
     def registerBusiness(self, phone_num, name):
         d.app_start('com.whatsapp.w4b')
