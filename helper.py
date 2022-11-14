@@ -13,15 +13,16 @@ packagename = "com.whatsapp"
 
 response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
 names = response.json()
-numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 class AutoHelper:
-    def __init__(self, device_id):
-        self.device_id = device_id
-
+    numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
+    device_id = "R9CT4000AAM"
     d = u2.connect(device_id)
-        
+
+    def __init__(self):
+        pass
+
     def adbs(self, command):
         a = subprocess.run(command, capture_output=True)
         return a.stdout.decode()
@@ -92,9 +93,28 @@ class AutoHelper:
         package = random.choice(packdata)
         return package
 
+    def grantPermissionWhatsapp(self):
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_CALL_LOG')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ACCESS_FINE_LOCATION')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ANSWER_PHONE_CALLS')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.RECEIVE_SMS')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ACCESS_COARSE_LOCATION')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_PHONE_STATE')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.SEND_SMS')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.CALL_PHONE')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.WRITE_CONTACTS')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.CAMERA')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.GET_ACCOUNTS')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.WRITE_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.RECORD_AUDIO')
+        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_CONTACTS')
+
+
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
-        os.system(f'adb -s '+ self.device_id +'shell am start -n com.whatsapp/com.whatsapp.Main')
+        self.grantPermissionWhatsapp()
+        self.d.app_start("com.whatsapp")
         try:
             d(text="English").click()
         except:
@@ -107,9 +127,6 @@ class AutoHelper:
             
         d(text="NEXT").click()
         d(text="OK").click()
-        d(text="CONTINUE").click()
-        d(text="Allow").click()
-        d(text="Allow").click()
         d(text="SKIP").click()
         d.click(280, 900)
         nama = name.upper()
@@ -286,9 +303,9 @@ class AutoHelper:
             d(text="NEXT").click()
             d(text="THANKS!").click()
 
-    def sendMessage(self, message, packageName, phone_number):
+    def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_number + '" ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
         # Tulis pesan
         sleep(1)
         pesan = message.upper()
@@ -299,19 +316,19 @@ class AutoHelper:
         # CLick send
         os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
 
-    def pushPhoto(self, packageName, phone_number):
+    def pushPhoto(self, phone_num, packageName):
         os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
         sleep(1)
         os.system(f'adb -s '+ self.device_id +' shell input tap 975 2183')
         
-    def pushVideo(self, packageName, phone_number):
+    def pushVideo(self, phone_num, packageName):
         # Push
         os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
         sleep(2)
         # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_number +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
         sleep(2)
         os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
         sleep(1)
@@ -348,9 +365,9 @@ class AutoHelper:
         finally:
             self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
     
-    def makeCall(self, packageName, phone_number):
+    def makeCall(self, phone_num, packageName):
         # Buka chatroom whatsapp
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_number + '" ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
         sleep(3)
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
         d(text="CALL").click()
