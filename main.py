@@ -17,4 +17,4 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerWhatsapp('85892284244', "Abang Ganteng")
 
-autoHelper.registerWhatsapp("85811403649", "Nenek")
+autoHelper.registerWhatsapp("85811403649", "sapi wangi")

@@ -110,7 +110,6 @@ class AutoHelper:
         os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.RECORD_AUDIO')
         os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_CONTACTS')
 
-
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermissionWhatsapp()
@@ -122,10 +121,20 @@ class AutoHelper:
         finally:
             d(text="AGREE AND CONTINUE").click()
 
+        d(resourceId="com.whatsapp:id/registration_country").click()
+        d(resourceId="com.whatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+
+        d(text="Indonesia").click()
+
         for i in phone_num:
             self.pressKey(i)
             
         d(text="NEXT").click()
+        
         d(text="OK").click()
         d(text="SKIP").click()
         d.click(280, 900)
