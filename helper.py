@@ -91,26 +91,26 @@ class AutoHelper:
         package = random.choice(packdata)
         return package
 
-    def grantPermissionWhatsapp(self):
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_CALL_LOG')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ACCESS_FINE_LOCATION')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ANSWER_PHONE_CALLS')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.RECEIVE_SMS')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_EXTERNAL_STORAGE')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ACCESS_COARSE_LOCATION')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_PHONE_STATE')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.SEND_SMS')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.CALL_PHONE')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.WRITE_CONTACTS')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.CAMERA')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.GET_ACCOUNTS')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.WRITE_EXTERNAL_STORAGE')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.RECORD_AUDIO')
-        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_CONTACTS')
+    def grantPermission(self, packageName):
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CALL_LOG')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.ACCESS_FINE_LOCATION')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.ANSWER_PHONE_CALLS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.RECEIVE_SMS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.ACCESS_COARSE_LOCATION')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_PHONE_STATE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.SEND_SMS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.CALL_PHONE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.WRITE_CONTACTS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.CAMERA')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.GET_ACCOUNTS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.WRITE_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.RECORD_AUDIO')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CONTACTS')
 
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
-        self.grantPermissionWhatsapp()
+        self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
         try:
             self.d(text="English").click()
@@ -128,6 +128,7 @@ class AutoHelper:
 
         self.d(text="Indonesia").click()
 
+
         for i in phone_num:
             self.pressKey(i)
             
@@ -144,46 +145,64 @@ class AutoHelper:
         self.d(text="NEXT").click()
 
     def registerBusiness(self, phone_num, name):
+        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
+        self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
         # For Original Whatsapp and Whatsapp Business
         try:
             self.d(text="English").click()
         except Exception:
             print("No need to choose language")
-        finally:
-            self.d(text="AGREE AND CONTINUE").click()
+        
+        self.d(text="AGREE AND CONTINUE").click()
+
+        self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+        self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+
+        try:
             self.d(text="USE A DIFFERENT NUMBER").click()
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
+        except Exception: 
+            print("No different number selected")
+        
+        for i in phone_num:
+            self.pressKey(i)
+        self.d(text="NEXT").click()
+
+        try:
             self.d(text="CONTINUE").click()
+        except Exception:
+            print("There is no continue button")
+            self.d(text="OK").click()
+        
+        self.d(text="SKIP").click()
+        self.d.click(300, 840)
 
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
-            self.d(text="Allow").click()
-            self.d(text="SKIP").click()
-            self.d.click(300, 840)
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        self.d.click(990, 988)
 
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d.click(990, 988)
+        category = "other business"
+        kategori = category.upper()
+        for i in kategori:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
 
-            category = "other business"
-            kategori = category.upper()
-            for i in kategori:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-
-            self.d(text="Other Business").click()
-            self.d(text="NEXT").click()
-            self.d(text="NOT NOW").click()
+        self.d(text="Other Business").click()
+        self.d(text="NEXT").click()
+        self.d(text="NOT NOW").click()
 
     def registerFm(self, phone_num, name):
         self.d.app_start('com.fmwhatsapp')
+        self.grantPermission("com.fmwhatsapp")
         try:
             # Allow access media
             self.d(text="Allow").click()
@@ -324,9 +343,9 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
 
     def pushPhoto(self, phone_num, packageName, message=None):
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/Camera')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/peekingsponge.jpg -p ' + packageName)
         sleep(1)
         self.d(resourceId="com.whatsapp:id/caption").set_text(message)
         sleep(1)
@@ -334,10 +353,10 @@ class AutoHelper:
 
     def pushVideo(self, phone_num, packageName, message=None):
         # Push
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/Camera')
         sleep(2)
         # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/video.mp4 -p ' + packageName + '')
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/video.mp4 -p ' + packageName + '')
         sleep(2)
         os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
         sleep(1)
