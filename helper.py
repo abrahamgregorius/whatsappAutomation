@@ -49,6 +49,20 @@ class AutoHelper:
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
 
+    def installPackages(self):
+        os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')
+        os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.w4b.apk')
+        os.system(f'adb -s ' + self.device_id + ' install apk/com.aero.apk')
+        os.system(f'adb -s ' + self.device_id + ' install apk/com.yowhatsapp.apk')
+        os.system(f'adb -s ' + self.device_id + ' install apk/com.fmwhatsapp.apk')
+
+    def uninstallPackages(self):
+        os.system(f'adb -s ' + self.device_id + ' uninstall com.whatsapp')
+        os.system(f'adb -s ' + self.device_id + ' uninstall com.whatsapp.w4b')
+        os.system(f'adb -s ' + self.device_id + ' uninstall com.aero')
+        os.system(f'adb -s ' + self.device_id + ' uninstall com.yowhatsapp')
+        os.system(f'adb -s ' + self.device_id + ' uninstall com.fmwhatsapp')
+
     def randomMonth(self):
         monthCoordinates = {
             "jan":"350 225",
@@ -114,10 +128,10 @@ class AutoHelper:
         self.d.app_start("com.whatsapp")
         try:
             self.d(text="English").click()
-        except:
+        except Exception:
             print("No need to choose language")
-        finally:
-            self.d(text="AGREE AND CONTINUE").click()
+        
+        self.d(text="AGREE AND CONTINUE").click()
 
         self.d(resourceId="com.whatsapp:id/registration_country").click()
         self.d(resourceId="com.whatsapp:id/menuitem_search").click()
@@ -203,24 +217,19 @@ class AutoHelper:
     def registerFm(self, phone_num, name):
         self.d.app_start('com.fmwhatsapp')
         self.grantPermission("com.fmwhatsapp")
-        try:
-            # Allow access media
-            self.d(text="Allow").click()
-        except:
-            print("There is no permission request")
-        finally:
-            # Front page
-            self.d(text="AGREE AND CONTINUE").click()
-            # Input number
-            self.d(text="phone number").click()
-            for i in phone_num:
-                 self.pressKey(i)
-            self.d(text="NEXT").click()
 
-         # Switching from business
+        # Front page
+        self.d(text="AGREE AND CONTINUE").click()
+        # Input number
+        self.d(text="phone number").click()
+        for i in phone_num:
+             self.pressKey(i)
+        self.d(text="NEXT").click()
+
+        # Switching from business
         try:
             self.d(text="SWITCH").click()
-        except:
+        except Exception:
             print("No switch requested")
         finally:
             self.d(text="CONTINUE").click()
@@ -245,7 +254,7 @@ class AutoHelper:
         try:
               # Allow access media
               self.d(text="Allow").click()
-        except:
+        except Exception:
             print("There is no permission request")
         finally:
             # Front page
@@ -257,7 +266,7 @@ class AutoHelper:
             self.d(text="NEXT").click()
         try:
             self.d(text="SWITCH").click()
-        except:
+        except Exception:
             print("There is no switch request")
         finally:
             # Confirmation
@@ -279,13 +288,6 @@ class AutoHelper:
                  self.pressKey(i)
             self.d(text="NEXT").click()
             self.d(text="CLOSE").click()
-
-    def mediaSettings(self):
-         self.d(text="SETTINGS").click()
-         self.d(text="Permissions").click()
-         os.system(f'adb -s' + self.device_id + ' shell input swipe 550 1690 550 970')
-         self.d(text="Files and media").click()
-         self.d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
 
     def registerAero(self, phone_num, name):
         self.d.app_start('com.aero')
