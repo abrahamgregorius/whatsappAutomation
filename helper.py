@@ -6,7 +6,6 @@ import uiautomator2 as u2
 import subprocess
 import sqlite3
 
-device_id = "R9CT4007GBM"
 packagename = "com.whatsapp"
 
 
@@ -16,7 +15,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4007GBM"
+    device_id = "R9CT4000AAM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -93,21 +92,21 @@ class AutoHelper:
         return package
 
     def grantPermissionWhatsapp(self):
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_CALL_LOG')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ACCESS_FINE_LOCATION')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ANSWER_PHONE_CALLS')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.RECEIVE_SMS')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_EXTERNAL_STORAGE')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.ACCESS_COARSE_LOCATION')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_PHONE_STATE')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.SEND_SMS')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.CALL_PHONE')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.WRITE_CONTACTS')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.CAMERA')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.GET_ACCOUNTS')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.WRITE_EXTERNAL_STORAGE')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.RECORD_AUDIO')
-        os.system(f'adb -s '+ device_id +' shell pm grant com.whatsapp android.permission.READ_CONTACTS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_CALL_LOG')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ACCESS_FINE_LOCATION')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ANSWER_PHONE_CALLS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.RECEIVE_SMS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.ACCESS_COARSE_LOCATION')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_PHONE_STATE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.SEND_SMS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.CALL_PHONE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.WRITE_CONTACTS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.CAMERA')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.GET_ACCOUNTS')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.WRITE_EXTERNAL_STORAGE')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.RECORD_AUDIO')
+        os.system(f'adb -s '+ self.device_id +' shell pm grant com.whatsapp android.permission.READ_CONTACTS')
 
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
@@ -324,14 +323,16 @@ class AutoHelper:
         # CLick send
         os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
 
-    def pushPhoto(self, phone_num, packageName):
+    def pushPhoto(self, phone_num, packageName, message=None):
         os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/')
         sleep(2)
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/peekingsponge.jpg -p ' + packageName)
         sleep(1)
-        os.system(f'adb -s '+ self.device_id +' shell input tap 975 2183')
-        
-    def pushVideo(self, phone_num, packageName):
+        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
+        sleep(1)
+        self.d(resourceId="com.whatsapp:id/send").click()
+
+    def pushVideo(self, phone_num, packageName, message=None):
         # Push
         os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/')
         sleep(2)
@@ -340,9 +341,10 @@ class AutoHelper:
         sleep(2)
         os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
         sleep(1)
-        # Pop up 
-        os.system(f'adb -s '+ self.device_id +' shell input tap 995 2125')
-
+        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
+        sleep(1)
+        self.d(resourceId="com.whatsapp:id/send").click()
+        
     def listAllWhatsapp(self):
         a = self.adbs(f'adb -s '+ self.device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
         b = a.split()
