@@ -126,30 +126,88 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
+
+        status = self.checkActivity()
+
+        if status == "com.whatsapp.registration.EULA":
+            try:
+                self.d(text="English").click()
+            except Exception:
+                print("No need to choose language")
         try:
-            self.d(text="English").click()
+            self.d(text="AGREE AND CONTINUE").click()
+            self.d(resourceId="com.whatsapp:id/registration_country").click()
+            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            self.d(text="Indonesia").click()
+            for i in phone_num:
+                self.pressKey(i)
+            self.d(text="NEXT").click()
+            self.d(text="OK").click()
         except Exception:
-            print("No need to choose language")
-        self.d(text="AGREE AND CONTINUE").click()
-        self.d(resourceId="com.whatsapp:id/registration_country").click()
-        self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
-        self.d(text="OK").click()
-        self.d(text="SKIP").click()
-        self.d.click(280, 900)
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        self.d(text="NEXT").click()
+            return False
+        
+        try:
+            self.d(text="SKIP").click()
+            print("Success skip")
+        except:
+            print("Failed skip")
+        
+        i = 0
+            
+        while True:
+            data_acc = self.heperny.getAccounts()
+            
+            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+            if checkbydb_columotp[4] != None:
+                numberotp = checkbydb_columotp[4]
+                print(numberotp)
+                break
+            else:
+                print("Waiting SMS Recive OTP")
+            i+=1
+            if i > 60:
+                return False
+                break
+            sleep(1)
+        try:
+            print("OTP FOUND "+str(numberotp))
+            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+            sleep(1)
+            
+            
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Success input otp")
+        except Exception:
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Failed input otp")
+
+        try:
+            self.d(text="OK").click()
+            sleep(1)
+            self.d(text="SKIP").click()
+            
+            
+            print("Success klik ok and skip")
+        except Exception:
+            print("Failed Skip backup")
+        
+        try:
+            self.d.click(280, 900)
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            self.d(text="NEXT").click()
+        except Exception:
+            return False
+
 
     def registerBusiness(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
@@ -169,7 +227,7 @@ class AutoHelper:
         for i in country:
             self.pressKey(i)
         self.d(text="Indonesia").click()
-
+        
         try:
             self.d(text="USE A DIFFERENT NUMBER").click()
         except Exception: 
@@ -184,6 +242,36 @@ class AutoHelper:
         except Exception:
             print("There is no continue button")
             self.d(text="OK").click()
+
+        i = 0
+            
+        while True:
+            data_acc = self.heperny.getAccounts()
+            
+            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+            if checkbydb_columotp[4] != None:
+                numberotp = checkbydb_columotp[4]
+                print(numberotp)
+                break
+            else:
+                print("Waiting SMS Recive OTP")
+            i+=1
+            if i > 60:
+                return False
+                break
+            sleep(1)
+        try:
+            print("OTP FOUND "+str(numberotp))
+            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+            sleep(1)
+            
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Success input otp")
+        except Exception:
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Failed input otp")
         
         self.d(text="SKIP").click()
         self.d.click(300, 840)
@@ -271,13 +359,37 @@ class AutoHelper:
         
         # Confirmation
         self.d(text="OK").click()
-        # Verify hanya 7 jam sekali
-        self.d(text="CONTINUE").click()
-        self.d(text="Allow").click()
 
-        # Contacts and media permission
-        self.d(text="CONTINUE").click()
-        self.d(text="Allow").click()
+        i = 0
+            
+        while True:
+            data_acc = self.heperny.getAccounts()
+            
+            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+            if checkbydb_columotp[4] != None:
+                numberotp = checkbydb_columotp[4]
+                print(numberotp)
+                break
+            else:
+                print("Waiting SMS Recive OTP")
+            i+=1
+            if i > 60:
+                return False
+                break
+            sleep(1)
+        try:
+            print("OTP FOUND "+str(numberotp))
+            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+            sleep(1)
+            
+            
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Success input otp")
+        except Exception:
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Failed input otp")
 
         # Google permission request
         self.d(text="SKIP").click()
@@ -407,152 +519,3 @@ class AutoHelper:
         #     d(text="Allow").click()
         # finally:
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
-        
-        
-
-# UNUSED FUNCTIONS
-# ALPHABET FUNCTION
-# def pressA():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_A')
-# def pressB():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_B')
-# def pressC():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_C')
-# def pressD():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_D')
-# def pressE():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_E')
-# def pressF():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_F')
-# def pressG():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_G')
-# def pressH():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_H')
-# def pressI():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_I')
-# def pressJ():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_J')
-# def pressK():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_K')
-# def pressL():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_L')
-# def pressM():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_M')
-# def pressN():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_N')
-# def pressO():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_O')
-# def pressP():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_P')
-# def pressQ():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_Q')
-# def pressR():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_R')
-# def pressS():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_S')
-# def pressT():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_T')
-# def pressU():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_U')
-# def pressV():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_V')
-# def pressX():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_X')
-# def pressY():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_Y')
-# def pressZ():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_Z')
-# 
-# # NUMBER FUNCTIONS
-# def press0():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_0')
-# def press1():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_1')
-# def press2():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_2')
-# def press3():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_3')
-# def press4():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_4')
-# def press5():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_5')
-# def press6():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_6')
-# def press7():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_7')
-# def press8():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_8')
-# def press9():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_9')
-# 
-# # BUTTONS FUNCTIONS
-# def pressPOWER():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_POWER')
-# def pressMENU():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_MENU')
-# def pressHOME():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_HOME')
-# def pressCALL():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_CALL')
-# def pressBACK():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_BACK')
-# def pressENDCALL():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_ENDCALL')
-# def pressSOFT_RIGHT():
-#     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_SOFT_RIGHT')
-# def sendMessageWhatsapp(self, message, number):
-#     os.system(f'adb -s ' + device_id + ' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp')
-#     sleep(3)
-#     pesan = message.upper()
-#     for i in pesan:
-#         if i == " ":
-#             self.pressKey("SPACE")
-#         self.pressKey(i)
-#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-# def sendMessageBusiness(self, message, number):
-#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.whatsapp.w4b')
-#     sleep(3)
-#     pesan = message.upper()
-#     for i in pesan:
-#         if i == " ":
-#             self.pressKey("SPACE")
-#         self.pressKey(i)
-#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-# def sendMessageAero(self, message, number):
-#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.aero')
-#     sleep(3)
-#     pesan = message.upper()
-#     for i in pesan:
-#         if i == " ":
-#             self.pressKey("SPACE")
-#         self.pressKey(i)
-#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-# def sendMessageFMWA(self, message, number):
-#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.fmwhatsapp')
-#     sleep(3)
-#     pesan = message.upper()
-#     for i in pesan:
-#         if i == " ":
-#             self.pressKey("SPACE")
-#         self.pressKey(i)
-#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-# def sendMessageYoWA(self, message, number):
-#     os.system(f'adb -s '+ device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ number +'" com.yowhatsapp')
-#     sleep(3)
-#     pesan = message.upper()
-#     for i in pesan:
-#         if i == " ":
-#             self.pressKey("SPACE")
-#         self.pressKey(i)
-#     os.system(f'adb -s '+ device_id +' shell input tap 1000 2205')
-# def newNumber(name, phone_number):
-#     # Masuk ke menu adding contact
-#     os.system('adb -s '+ device_id +' shell am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact -e name '+ name +' -e phone 0'+ phone_number +' ')
-#     # Choose save contact to
-#     sleep(1)
-#     os.system(f'adb -s ' + device_id + ' shell input tap 300 200')
-#     sleep(1)
-#     os.system(f'adb -s ' + device_id + ' shell input tap 270 340')
-#     # Click save
-#     sleep(1)
-#     os.system(f'adb -s ' + device_id + ' shell input tap 780 2206')

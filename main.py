@@ -15,4 +15,4 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerWhatsapp('85892284244', "Abang Ganteng")
 
-autoHelper.registerBusiness('85892284244', "Anjayani")
+autoHelper.registerAero('85892284244', "Anjayani")
