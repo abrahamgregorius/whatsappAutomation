@@ -422,6 +422,37 @@ class AutoHelper:
         for i in phone_num:
             self.pressKey(i)
         self.d(text="NEXT").click()
+
+        i = 0
+            
+        while True:
+            data_acc = self.heperny.getAccounts()
+            
+            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+            if checkbydb_columotp[4] != None:
+                numberotp = checkbydb_columotp[4]
+                print(numberotp)
+                break
+            else:
+                print("Waiting SMS Recive OTP")
+            i+=1
+            if i > 60:
+                return False
+                break
+            sleep(1)
+        try:
+            print("OTP FOUND "+str(numberotp))
+            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+            sleep(1)
+            
+            
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Success input otp")
+        except Exception:
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Failed input otp")
         
         try:
             self.d(text="SWITCH").click()
