@@ -6,7 +6,7 @@ import uiautomator2 as u2
 import subprocess
 import sqlite3
 
-device_id = "R9CT4000AAM"
+device_id = "R9CT4007GBM"
 packagename = "com.whatsapp"
 
 
@@ -16,7 +16,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4000AAM"
+    device_id = "R9CT4007GBM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -27,7 +27,7 @@ class AutoHelper:
         return a.stdout.decode()
 
     def startApp(self):     
-        d.app_start("" + self.generatePackage() + "")
+        self.d.app_start("" + self.generatePackage() + "")
 
     def generateFirstName(self):
         for i in names:
@@ -85,7 +85,7 @@ class AutoHelper:
         return res
 
     def generateNumber(self):
-        number = random.choice(numdata)
+        number = random.choice(self.numdata)
         return number
 
     def generatePackage(self):
@@ -145,32 +145,32 @@ class AutoHelper:
         self.d(text="NEXT").click()
 
     def registerBusiness(self, phone_num, name):
-        d.app_start('com.whatsapp.w4b')
+        self.d.app_start('com.whatsapp.w4b')
         # For Original Whatsapp and Whatsapp Business
         try:
-            d(text="English").click()
+            self.d(text="English").click()
         except Exception:
             print("No need to choose language")
         finally:
-            d(text="AGREE AND CONTINUE").click()
-            d(text="USE A DIFFERENT NUMBER").click()
+            self.d(text="AGREE AND CONTINUE").click()
+            self.d(text="USE A DIFFERENT NUMBER").click()
             for i in phone_num:
                 self.pressKey(i)
-            d(text="NEXT").click()
-            d(text="CONTINUE").click()
+            self.d(text="NEXT").click()
+            self.d(text="CONTINUE").click()
 
-            d(text="CONTINUE").click()
-            d(text="Allow").click()
-            d(text="Allow").click()
-            d(text="SKIP").click()
-            d.click(300, 840)
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
+            self.d(text="Allow").click()
+            self.d(text="SKIP").click()
+            self.d.click(300, 840)
 
             nama = name.upper()
             for i in nama:
                 if i == " ":
                     self.pressKey("SPACE")
                 self.pressKey(i)
-            d.click(990, 988)
+            self.d.click(990, 988)
 
             category = "other business"
             kategori = category.upper()
@@ -179,137 +179,137 @@ class AutoHelper:
                     self.pressKey("SPACE")
                 self.pressKey(i)
 
-            d(text="Other Business").click()
-            d(text="NEXT").click()
-            d(text="NOT NOW").click()
+            self.d(text="Other Business").click()
+            self.d(text="NEXT").click()
+            self.d(text="NOT NOW").click()
 
     def registerFm(self, phone_num, name):
-        d.app_start('com.fmwhatsapp')
+        self.d.app_start('com.fmwhatsapp')
         try:
             # Allow access media
-            d(text="Allow").click()
+            self.d(text="Allow").click()
         except:
             print("There is no permission request")
         finally:
             # Front page
-            d(text="AGREE AND CONTINUE").click()
+            self.d(text="AGREE AND CONTINUE").click()
             # Input number
-            d(text="phone number").click()
+            self.d(text="phone number").click()
             for i in phone_num:
                  self.pressKey(i)
-            d(text="NEXT").click()
+            self.d(text="NEXT").click()
 
          # Switching from business
         try:
-            d(text="SWITCH").click()
+            self.d(text="SWITCH").click()
         except:
             print("No switch requested")
         finally:
-            d(text="CONTINUE").click()
-            d(text="Allow").click()   
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()   
             # Contacts and media permission
-            d(text="CONTINUE").click()
-            d(text="Allow").click()
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
 
               # Google permission
-            d(text="SKIP").click()
+            self.d(text="SKIP").click()
 
             nama = name.upper()
             for i in nama:
                  if i == " ":
                       self.pressKey("SPACE")
                  self.pressKey(i)
-            d(text="NEXT").click()
-            d(text="CLOSE").click()
+            self.d(text="NEXT").click()
+            self.d(text="CLOSE").click()
 
     def registerYo(self, phone_num, name):
-        d.app_start('com.yowhatsapp')
+        self.d.app_start('com.yowhatsapp')
         try:
               # Allow access media
-              d(text="Allow").click()
+              self.d(text="Allow").click()
         except:
             print("There is no permission request")
         finally:
             # Front page
-            d(text="AGREE AND CONTINUE").click()
+            self.d(text="AGREE AND CONTINUE").click()
             # Input number
-            d(text="phone number").click()
+            self.d(text="phone number").click()
             for i in phone_num:
                  self.pressKey(i)
-            d(text="NEXT").click()
+            self.d(text="NEXT").click()
         try:
-            d(text="SWITCH").click()
+            self.d(text="SWITCH").click()
         except:
             print("There is no switch request")
         finally:
             # Confirmation
-            d(text="OK").click()
+            self.d(text="OK").click()
             # Verify hanya 7 jam sekali
-            d(text="CONTINUE").click()
-            d(text="Allow").click()
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
 
               # Contacts and media permission
-            d(text="CONTINUE").click()
-            d(text="Allow").click()
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
 
             # Google permission request
-            d(text="SKIP").click()
+            self.d(text="SKIP").click()
             nama = name.upper()
             for i in nama:
                  if i == " ":
                       self.pressKey("SPACE")
                  self.pressKey(i)
-            d(text="NEXT").click()
-            d(text="CLOSE").click()
+            self.d(text="NEXT").click()
+            self.d(text="CLOSE").click()
 
     def mediaSettings(self):
-         d(text="SETTINGS").click()
-         d(text="Permissions").click()
+         self.d(text="SETTINGS").click()
+         self.d(text="Permissions").click()
          os.system(f'adb -s' + self.device_id + ' shell input swipe 550 1690 550 970')
-         d(text="Files and media").click()
-         d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
+         self.d(text="Files and media").click()
+         self.d(resourceId="com.android.permissioncontroller:id/allow_radio_button").click()
 
     def registerAero(self, phone_num, name):
-        d.app_start('com.aero')
+        self.d.app_start('com.aero')
         try:
-            d(text="Allow").click()
+            self.d(text="Allow").click()
         except:
             print("Gaada prompt")
         finally:
             pass
         try:
             self.mediaSettings()
-            d.app_stop("com.aero")
-            d.app_start("com.aero")
+            self.d.app_stop("com.aero")
+            self.d.app_start("com.aero")
             pass
         except:
             print("There is no permission request")
         finally:
             # Front page
-            d(text="AGREE AND CONTINUE").click()
+            self.d(text="AGREE AND CONTINUE").click()
             # Input number
-            d(text="phone number").click()
+            self.d(text="phone number").click()
             for i in phone_num:
                 self.pressKey(i)
-            d(text="NEXT").click()
+            self.d(text="NEXT").click()
         try:
-            d(text="SWITCH").click()
+            self.d(text="SWITCH").click()
         except:
             print("No switch requested")
         finally:
             # Confirmation
-            d(text="OK").click()
+            self.d(text="OK").click()
             # Verify hanya 7 jam sekali
-            d(text="CONTINUE").click()
-            d(text="Allow").click()
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
 
             nama = name.upper()
             for i in nama:
                  if i == " ":
                       self.pressKey("SPACE")
                  self.pressKey(i)
-            d(text="NEXT").click()
-            d(text="THANKS!").click()
+            self.d(text="NEXT").click()
+            self.d(text="THANKS!").click()
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
@@ -378,7 +378,7 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
         sleep(3)
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
-        d(text="CALL").click()
+        self.d(text="CALL").click()
         # try:
         #     d(text="CONTINUE").click()
         #     d(text="While using the app").click()
