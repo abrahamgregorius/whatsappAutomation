@@ -211,10 +211,16 @@ class AutoHelper:
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
 
-        # Front page
-        self.d(text="CONTINUE").click()
-        # Input number
-        self.d(text="Maybe later").click()
+        self.d(text="AGREE AND CONTINUE").click()
+        
+        self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
+        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+
         for i in phone_num:
              self.pressKey(i)
         self.d(text="NEXT").click()
@@ -224,23 +230,17 @@ class AutoHelper:
             self.d(text="SWITCH").click()
         except Exception:
             print("No switch requested")
-        finally:
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()   
-            # Contacts and media permission
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
+        self.d(text="OK").click()
+            # Google permission
+        self.d(text="SKIP").click()
 
-              # Google permission
-            self.d(text="SKIP").click()
-
-            nama = name.upper()
-            for i in nama:
-                 if i == " ":
-                      self.pressKey("SPACE")
-                 self.pressKey(i)
-            self.d(text="NEXT").click()
-            self.d(text="CLOSE").click()
+        nama = name.upper()
+        for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+        self.d(text="NEXT").click()
+        self.d(text="CLOSE").click()
 
     def registerYo(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')

@@ -208,7 +208,6 @@ class AutoHelper:
         except Exception:
             return False
 
-
     def registerBusiness(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
         self.grantPermission("com.whatsapp.w4b")
@@ -299,10 +298,16 @@ class AutoHelper:
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
 
-        # Front page
-        self.d(text="CONTINUE").click()
-        # Input number
-        self.d(text="Maybe later").click()
+        self.d(text="AGREE AND CONTINUE").click()
+        
+        self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
+        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+
         for i in phone_num:
              self.pressKey(i)
         self.d(text="NEXT").click()
@@ -312,23 +317,47 @@ class AutoHelper:
             self.d(text="SWITCH").click()
         except Exception:
             print("No switch requested")
-        finally:
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()   
-            # Contacts and media permission
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
+        
+        i = 0
+            
+        while True:
+            data_acc = self.heperny.getAccounts()
+            
+            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+            if checkbydb_columotp[4] != None:
+                numberotp = checkbydb_columotp[4]
+                print(numberotp)
+                break
+            else:
+                print("Waiting SMS Recive OTP")
+            i+=1
+            if i > 60:
+                return False
+                break
+            sleep(1)
+        try:
+            print("OTP FOUND "+str(numberotp))
+            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+            sleep(1)
+            
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Success input otp")
+        except Exception:
+            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+            print("Set pullid otp to null")
+            print("Failed input otp")
 
-              # Google permission
-            self.d(text="SKIP").click()
+            # Google permission
+        self.d(text="SKIP").click()
 
-            nama = name.upper()
-            for i in nama:
-                 if i == " ":
-                      self.pressKey("SPACE")
-                 self.pressKey(i)
-            self.d(text="NEXT").click()
-            self.d(text="CLOSE").click()
+        nama = name.upper()
+        for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+        self.d(text="NEXT").click()
+        self.d(text="CLOSE").click()
 
     def registerYo(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')
