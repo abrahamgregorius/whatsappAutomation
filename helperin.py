@@ -593,7 +593,7 @@ class AutoHelper:
         a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
         b = a.split()[2][:-1]
         c = b.split("/")[1]
-        return c
+        return b
 
     def checkStatus(self):
         status = self.checkActivity()
