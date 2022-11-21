@@ -14,5 +14,4 @@ autoHelper = helper.AutoHelper()
 #     first.pushVideo(helper.generatePackage())
 
 # autoHelper.registerWhatsapp('85892284244', "Abang Ganteng")
-
-autoHelper.registerFm('85892284244', "Anjayani")
+print(autoHelper.checkActivity())

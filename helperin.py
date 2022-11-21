@@ -129,377 +129,424 @@ class AutoHelper:
 
         status = self.checkActivity()
 
-        if status == "com.whatsapp.registration.EULA":
+        if status == "com.whatsapp/com.whatsapp.registration.EULA":
             try:
                 self.d(text="English").click()
             except Exception:
                 print("No need to choose language")
-        try:
-            self.d(text="AGREE AND CONTINUE").click()
-            self.d(resourceId="com.whatsapp:id/registration_country").click()
-            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
-                self.pressKey(i)
-            self.d(text="Indonesia").click()
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-            self.d(text="OK").click()
-        except Exception:
-            return False
-        
-        try:
-            self.d(text="SKIP").click()
-            print("Success skip")
-        except:
-            print("Failed skip")
-        
-        i = 0
-            
-        while True:
-            data_acc = self.heperny.getAccounts()
-            
-            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-            if checkbydb_columotp[4] != None:
-                numberotp = checkbydb_columotp[4]
-                print(numberotp)
-                break
-            else:
-                print("Waiting SMS Recive OTP")
-            i+=1
-            if i > 60:
+            try:
+                self.d(text="AGREE AND CONTINUE").click()
+                self.d(resourceId="com.whatsapp:id/registration_country").click()
+                self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click()
+                for i in phone_num:
+                    self.pressKey(i)
+                self.d(text="NEXT").click()
+                self.d(text="OK").click()
+            except Exception:
                 return False
-                break
-            sleep(1)
-        try:
-            print("OTP FOUND "+str(numberotp))
-            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-            sleep(1)
-            
-            
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Success input otp")
-        except Exception:
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Failed input otp")
-
-        try:
-            self.d(text="OK").click()
-            sleep(1)
-            self.d(text="SKIP").click()
-            
-            
-            print("Success klik ok and skip")
-        except Exception:
-            print("Failed Skip backup")
         
-        try:
-            self.d.click(280, 900)
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-        except Exception:
-            return False
+            try:
+                self.d(text="SKIP").click()
+                print("Success skip")
+            except:
+                print("Failed skip")
+        
+            i = 0
+
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+
+            try:
+                self.d(text="OK").click()
+                sleep(1)
+                self.d(text="SKIP").click()
+
+
+                print("Success klik ok and skip")
+            except Exception:
+                print("Failed Skip backup")
+        
+            try:
+                self.d.click(280, 900)
+                nama = name.upper()
+                for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+                self.d(text="NEXT").click()
+            except Exception:
+                return False
+            
+        else:
+            self.heperny.updateAccApps(1, "com.whatsapp", self.data_account[0])
+            return True
 
     def registerBusiness(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
         self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
-        try:
-            self.d(text="English").click()
-        except Exception:
-            print("No need to choose language")
-        
-        self.d(text="AGREE AND CONTINUE").click()
 
-        self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
-        self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
-        
-        try:
-            self.d(text="USE A DIFFERENT NUMBER").click()
-        except Exception: 
-            print("No different number selected")
-        
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
+        status = self.checkActivity()
 
-        try:
-            self.d(text="CONTINUE").click()
-        except Exception:
-            print("There is no continue button")
-            self.d(text="OK").click()
+        if status == "com.whatsapp.w4b/com.whatsapp.w4b.registration.EULA":
 
-        i = 0
-            
-        while True:
-            data_acc = self.heperny.getAccounts()
-            
-            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-            if checkbydb_columotp[4] != None:
-                numberotp = checkbydb_columotp[4]
-                print(numberotp)
-                break
-            else:
-                print("Waiting SMS Recive OTP")
-            i+=1
-            if i > 60:
+            try:
+                self.d(text="English").click()
+            except Exception:
+                print("No need to choose language")
+        
+            try:
+                self.d(text="AGREE AND CONTINUE").click()
+                self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+                self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click()
+            except Exception:
                 return False
-                break
-            sleep(1)
-        try:
-            print("OTP FOUND "+str(numberotp))
-            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-            sleep(1)
-            
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Success input otp")
-        except Exception:
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Failed input otp")
-        
-        self.d(text="SKIP").click()
-        self.d.click(300, 840)
 
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        self.d.click(990, 988)
+            try:
+                self.d(text="USE A DIFFERENT NUMBER").click()
+            except Exception: 
+                print("No different number selected")
 
-        category = "other business"
-        kategori = category.upper()
-        for i in kategori:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
+            try:
+                for i in phone_num:
+                    self.pressKey(i)
+                self.d(text="NEXT").click()
+            except Exception:
+                return False
 
-        self.d(text="Other Business").click()
-        self.d(text="NEXT").click()
-        self.d(text="NOT NOW").click()
+            try:
+                self.d(text="CONTINUE").click()
+            except Exception:
+                print("There is no continue button")
+                self.d(text="OK").click()
+
+            i = 0
+
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+
+            self.d(text="SKIP").click()
+            self.d.click(300, 840)
+
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            self.d.click(990, 988)
+
+            category = "other business"
+            kategori = category.upper()
+            for i in kategori:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+
+            self.d(text="Other Business").click()
+            self.d(text="NEXT").click()
+            self.d(text="NOT NOW").click()
+
+        else:
+            self.heperny.updateAccApps(1, "com.whatsapp.w4b", self.data_account[0])
+            return True
 
     def registerFm(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
 
-        self.d(text="AGREE AND CONTINUE").click()
-        
-        self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
-        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
+        status = self.checkActivity()
 
-        for i in phone_num:
-             self.pressKey(i)
-        self.d(text="NEXT").click()
+        if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
 
-        # Switching from business
-        try:
-            self.d(text="SWITCH").click()
-        except Exception:
-            print("No switch requested")
-        
-        i = 0
-            
-        while True:
-            data_acc = self.heperny.getAccounts()
-            
-            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-            if checkbydb_columotp[4] != None:
-                numberotp = checkbydb_columotp[4]
-                print(numberotp)
-                break
-            else:
-                print("Waiting SMS Recive OTP")
-            i+=1
-            if i > 60:
+            try:
+                self.d(text="AGREE AND CONTINUE").click()
+                self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
+                self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click()
+
+                for i in phone_num:
+                     self.pressKey(i)
+                self.d(text="NEXT").click()
+            except Exception:
                 return False
-                break
-            sleep(1)
-        try:
-            print("OTP FOUND "+str(numberotp))
-            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-            sleep(1)
-            
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Success input otp")
-        except Exception:
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Failed input otp")
 
-            # Google permission
-        self.d(text="SKIP").click()
+            # Switching from business
+            try:
+                self.d(text="SWITCH").click()
+            except Exception:
+                print("No switch requested")
 
-        nama = name.upper()
-        for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-        self.d(text="NEXT").click()
-        self.d(text="CLOSE").click()
+            i = 0
+
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+
+                # Google permission
+            self.d(text="SKIP").click()
+
+            nama = name.upper()
+            for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+            self.d(text="NEXT").click()
+            self.d(text="CLOSE").click()
+        else:
+            self.heperny.updateAccApps(1, "com.fmwhatsapp", self.data_account[0])
+            return True
 
     def registerYo(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')
         self.grantPermission("com.yowhatsapp")
         self.d.app_start('com.yowhatsapp')
             
-        # Front page
-        self.d(text="AGREE AND CONTINUE").click()
+        status = self.checkActivity()
 
-        self.d(resourceId="com.yowhatsapp:id/registration_country").click()
-        self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
+        if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
+                try:
+            # Front page
+                    self.d(text="AGREE AND CONTINUE").click()
 
-        # Input number
-        self.d(text="phone number").click()
-        for i in phone_num:
-                self.pressKey(i)
-        self.d(text="NEXT").click()
-        
-        try:
-            self.d(text="SWITCH").click()
-        except Exception:
-            print("There is no switch request")
-        
-        # Confirmation
-        self.d(text="OK").click()
+                    self.d(resourceId="com.yowhatsapp:id/registration_country").click()
+                    self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
+                    country = "INDONESIA"
+                    sleep(1)
+                    for i in country:
+                        self.pressKey(i)
+                    self.d(text="Indonesia").click()
 
-        i = 0
+                    # Input number
+                    self.d(text="phone number").click()
+                    for i in phone_num:
+                            self.pressKey(i)
+                    self.d(text="NEXT").click()
+                except Exception:
+                    return False
+                    
+                try:
+                    self.d(text="SWITCH").click()
+                except Exception:
+                    print("There is no switch request")
+
+                # Confirmation
+                self.d(text="OK").click()
+
+                i = 0
+
+                while True:
+                    data_acc = self.heperny.getAccounts()
+
+                    checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                    if checkbydb_columotp[4] != None:
+                        numberotp = checkbydb_columotp[4]
+                        print(numberotp)
+                        break
+                    else:
+                        print("Waiting SMS Recive OTP")
+                    i+=1
+                    if i > 60:
+                        return False
+                        break
+                    sleep(1)
+                try:
+                    print("OTP FOUND "+str(numberotp))
+                    os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                    sleep(1)
+
+
+                    updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                    print("Set pullid otp to null")
+                    print("Success input otp")
+                except Exception:
+                    updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                    print("Set pullid otp to null")
+                    print("Failed input otp")
+
+                # Google permission request
+                self.d(text="SKIP").click()
+                nama = name.upper()
+                for i in nama:
+                     if i == " ":
+                          self.pressKey("SPACE")
+                     self.pressKey(i)
+                self.d(text="NEXT").click()
+                self.d(text="CLOSE").click()
+
+        else:
+            self.heperny.updateAccApps(1, "com.yowhatsapp", self.data_account[0])
+            return True
             
-        while True:
-            data_acc = self.heperny.getAccounts()
-            
-            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-            if checkbydb_columotp[4] != None:
-                numberotp = checkbydb_columotp[4]
-                print(numberotp)
-                break
-            else:
-                print("Waiting SMS Recive OTP")
-            i+=1
-            if i > 60:
-                return False
-                break
-            sleep(1)
-        try:
-            print("OTP FOUND "+str(numberotp))
-            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-            sleep(1)
-            
-            
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Success input otp")
-        except Exception:
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Failed input otp")
-
-        # Google permission request
-        self.d(text="SKIP").click()
-        nama = name.upper()
-        for i in nama:
-             if i == " ":
-                  self.pressKey("SPACE")
-             self.pressKey(i)
-        self.d(text="NEXT").click()
-        self.d(text="CLOSE").click()
-
     def registerAero(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.aero')
         self.grantPermission("com.aero")
         self.d.app_start('com.aero')
-        
-        # Front page
-        self.d(text="AGREE AND CONTINUE").click()
 
-        self.d(resourceId="com.aero:id/registration_country").click()
-        self.d(resourceId="com.aero:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
+        status = self.checkActivity()
 
-        # Input number
-        self.d(text="phone number").click()
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
+        if status == "com.aero/com.aero.registration.EULA":
+            try:
+                # Front page
+                self.d(text="AGREE AND CONTINUE").click()
 
-        i = 0
-            
-        while True:
-            data_acc = self.heperny.getAccounts()
-            
-            checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-            if checkbydb_columotp[4] != None:
-                numberotp = checkbydb_columotp[4]
-                print(numberotp)
-                break
-            else:
-                print("Waiting SMS Recive OTP")
-            i+=1
-            if i > 60:
+                self.d(resourceId="com.aero:id/registration_country").click()
+                self.d(resourceId="com.aero:id/menuitem_search").click()
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click()
+
+                # Input number
+                self.d(text="phone number").click()
+                for i in phone_num:
+                    self.pressKey(i)
+                self.d(text="NEXT").click()
+            except Exception:
                 return False
-                break
-            sleep(1)
-        try:
-            print("OTP FOUND "+str(numberotp))
-            os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-            sleep(1)
-            
-            
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Success input otp")
-        except Exception:
-            updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-            print("Set pullid otp to null")
-            print("Failed input otp")
-        
-        try:
-            self.d(text="SWITCH").click()
-        except:
-            print("No switch requested")
-        # Confirmation
-        self.d(text="OK").click()
-        # Verify hanya 7 jam sekali
-        self.d(text="CONTINUE").click()
-        self.d(text="Allow").click()
 
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        self.d(text="NEXT").click()
-        self.d(text="THANKS!").click()
+            i = 0
+
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+
+            try:
+                self.d(text="SWITCH").click()
+            except:
+                print("No switch requested")
+            # Confirmation
+            self.d(text="OK").click()
+            # Verify hanya 7 jam sekali
+            self.d(text="CONTINUE").click()
+            self.d(text="Allow").click()
+
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            self.d(text="NEXT").click()
+            self.d(text="THANKS!").click()
+
+        else:
+            self.heperny.updateAccApps(1, "com.aero", self.data_account[0])
+            return True
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp

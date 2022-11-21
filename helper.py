@@ -15,7 +15,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4000AAM"
+    device_id = "R9CT300GE1D"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -27,17 +27,7 @@ class AutoHelper:
 
     def startApp(self):     
         self.d.app_start("" + self.generatePackage() + "")
-
-    def generateFirstName(self):
-        for i in names:
-            res = i.split('_')[0]
-            return res
-
-    def generateLastName(self):
-        for i in names:
-            res = i.split('_')[1]
-            return res
-
+        
     def generatePassword(self):
         for i in names:
             res = i
@@ -126,6 +116,9 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
+
+        status = self.checkActivity()
+
         try:
             self.d(text="English").click()
         except Exception:
@@ -141,7 +134,14 @@ class AutoHelper:
         for i in phone_num:
             self.pressKey(i)
         self.d(text="NEXT").click()
-        self.d(text="OK").click()
+        try:
+            self.d(text="SWITCH").click()
+        except Exception:
+            print("No switch requested")
+        try:
+            self.d(text="OK").click()
+        except:
+            print("No OK button")
         self.d(text="SKIP").click()
         self.d.click(280, 900)
         nama = name.upper()
@@ -373,8 +373,7 @@ class AutoHelper:
     def checkActivity(self):
         a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
         b = a.split()[2][:-1]
-        c = b.split("/")[1]
-        return c
+        return b
 
     def checkStatus(self):
         status = self.checkActivity()
