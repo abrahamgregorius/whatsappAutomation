@@ -112,6 +112,20 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.RECORD_AUDIO')
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CONTACTS')
 
+    def setLanguage(self):
+        os.system("adb -s " + self.device_id + " shell am start -a android.settings.LOCALE_SETTINGS")
+        print("In the menu")
+        try:
+            self.d(text="English (United States)").click()
+        except Exception:
+            print("No English option")
+
+        self.d(text="Tambah bahasa").click()
+        self.d(text="English").click()
+        self.d(text="United States").click()
+        self.d(text="Atr sbg default").click()
+
+
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
@@ -432,6 +446,8 @@ class AutoHelper:
 
     def receiveCall(self):
         pass
+
+    
 
 # UNUSED FUNCTIONS
 # ALPHABET FUNCTION

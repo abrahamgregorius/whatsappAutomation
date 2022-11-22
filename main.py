@@ -14,4 +14,4 @@ autoHelper = helper.AutoHelper()
 #     first.pushVideo(helper.generatePackage())
 
 # autoHelper.registerWhatsapp('85892284244', "Abang Ganteng")
-print(autoHelper.checkActivity())
+autoHelper.setLanguage()
