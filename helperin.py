@@ -28,16 +28,6 @@ class AutoHelper:
     def startApp(self):     
         self.d.app_start("" + self.generatePackage() + "")
 
-    def generateFirstName(self):
-        for i in names:
-            res = i.split('_')[0]
-            return res
-
-    def generateLastName(self):
-        for i in names:
-            res = i.split('_')[1]
-            return res
-
     def generatePassword(self):
         for i in names:
             res = i

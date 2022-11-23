@@ -9,8 +9,6 @@ import sqlite3
 packagename = "com.whatsapp"
 
 
-response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
-names = response.json()
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 class AutoHelper:
@@ -27,11 +25,6 @@ class AutoHelper:
 
     def startApp(self):     
         self.d.app_start("" + self.generatePackage() + "")
-        
-    def generatePassword(self):
-        for i in names:
-            res = i
-            return res
 
     def pressKey(self, keycode):
         os.system(f'adb -s '+ self.device_id +' shell input keyevent KEYCODE_' + keycode)
@@ -125,254 +118,280 @@ class AutoHelper:
         self.d(text="United States").click()
         self.d(text="Atr sbg default").click()
 
-
     def registerWhatsapp(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
 
-        status = self.checkActivity()
+        # status = self.checkActivity()
 
-        if status == "com.whatsapp/com.whatsapp.registration.EULA":
-            try:
-                self.d(text="English").click()
-            except Exception:
-                print("No need to choose language")
-            self.d(text="AGREE AND CONTINUE").click()
-            self.d(resourceId="com.whatsapp:id/registration_country").click()
-            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
-                self.pressKey(i)
-            self.d(text="Indonesia").click()
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-            try:
-                self.d(text="SWITCH").click()
-            except Exception:
-                print("No switch requested")
-            try:
-                self.d(text="OK").click()
-            except Exception:
-                print("No OK button")
+        # if status == "com.whatsapp/com.whatsapp.registration.EULA":
+        try:
+            self.d(text="English").click()
+        except Exception:
+            print("No need to choose language")
+        self.d(text="AGREE AND CONTINUE").click()
+        self.d(resourceId="com.whatsapp:id/registration_country").click()
+        self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+        for i in phone_num:
+            self.pressKey(i)
+        self.d(text="NEXT").click()
+        try:
+            self.d(text="SWITCH").click()
+        except Exception:
+            print("No switch requested")
+        try:
+            self.d(text="OK").click()
+        except Exception:
+            print("No OK button")
+        sleep(10)
+        try:
             self.d(text="SKIP").click()
-            self.d.click(280, 900)
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-        else:
-            print("Already registered")
-            return False
+        except Exception:
+            print("No skip button")
+        self.d.click(280, 900)
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        self.d(text="NEXT").click()
+        # else:
+        #     print("Already registered")
+        #     return False
 
     def registerBusiness(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
         self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
 
-        status = self.checkActivity()
+        # status = self.checkActivity()
 
-        if status == "com.whatsapp.w4b/com.whatsapp.w4b.registration.EULA":
-            try:
-                self.d(text="English").click()
-            except Exception:
-                print("No need to choose language")
+        # if status == "com.whatsapp.w4b/com.whatsapp.w4b.registration.EULA":
+        try:
+            self.d(text="English").click()
+        except Exception:
+            print("No need to choose language")
+        
+        self.d(text="AGREE AND CONTINUE").click()
 
-            self.d(text="AGREE AND CONTINUE").click()
+        try:
+            self.d(text="USE A DIFFERENT NUMBER").click()
+        except Exception:
+            print("No need to use a different number")
+            
+        self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+        self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
 
-            self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
-            self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
-                self.pressKey(i)
-            self.d(text="Indonesia").click()
+        for i in phone_num:
+            self.pressKey(i)
+        self.d(text="NEXT").click()
 
-            try:
-                self.d(text="USE A DIFFERENT NUMBER").click()
-            except Exception: 
-                print("No different number selected")
-
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-
-            try:
-                self.d(text="CONTINUE").click()
-            except Exception:
-                print("There is no continue button")
-                self.d(text="OK").click()
-
+        try:
+            self.d(text="CONTINUE").click()
+        except Exception:
+            print("There is no continue button")
+            self.d(text="OK").click()
+        try:
             self.d(text="SKIP").click()
-            self.d.click(300, 840)
+        except Exception:
+            print("No skip button")
+            
+        self.d.click(300, 840)
 
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d.click(990, 988)
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        self.d.click(990, 988)
 
-            category = "other business"
-            kategori = category.upper()
-            for i in kategori:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
+        category = "other"
+        kategori = category.upper()
+        for i in kategori:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
 
-            self.d(text="Other Business").click()
-            self.d(text="NEXT").click()
-            self.d(text="NOT NOW").click()
-        else:
-            print("Already registered")
-            return False
+        self.d(text="Other Business").click()
+        self.d(text="NEXT").click()
+        sleep(6)
+        self.d(text="NOT NOW").click()
 
     def registerFm(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
 
-        status = self.checkActivity()
+        # status = self.checkActivity()
 
-        if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
+        # if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
 
-            self.d(text="AGREE AND CONTINUE").click()
+        self.d(text="AGREE AND CONTINUE").click()
 
-            self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
-            self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
+        self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
+        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+
+        for i in phone_num:
                 self.pressKey(i)
-            self.d(text="Indonesia").click()
+        self.d(text="NEXT").click()
 
-            for i in phone_num:
-                 self.pressKey(i)
-            self.d(text="NEXT").click()
-
-            # Switching from business
-            try:
-                self.d(text="SWITCH").click()
-            except Exception:
-                print("No switch requested")
-            self.d(text="OK").click()
-                # Google permission
+        # Switching from business
+        try:
+            self.d(text="SWITCH").click()
+        except Exception:
+            print("No switch requested")
+        self.d(text="OK").click()
+            # Google permission
+        try:
             self.d(text="SKIP").click()
+        except Exception:
+            print("No skip button")
 
-            nama = name.upper()
-            for i in nama:
-                    if i == " ":
-                        self.pressKey("SPACE")
-                    self.pressKey(i)
-            self.d(text="NEXT").click()
-            self.d(text="CLOSE").click()
-        else:
-            print("Already registered")
-            return False
+        nama = name.upper()
+        for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+        self.d(text="NEXT").click()
+        self.d(text="CLOSE").click()
+        # else:
+        #     print("Already registered")
+        #     return False
 
     def registerYo(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')
         self.grantPermission("com.yowhatsapp")
         self.d.app_start('com.yowhatsapp')
 
-        status = self.checkActivity()
+        # status = self.checkActivity()
 
-        if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
+        # if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
 
-            # Front page
-            self.d(text="AGREE AND CONTINUE").click()
+        # Front page
+        self.d(text="AGREE AND CONTINUE").click()
 
-            self.d(resourceId="com.yowhatsapp:id/registration_country").click()
-            self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
+        self.d(resourceId="com.yowhatsapp:id/registration_country").click()
+        self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
+
+        # Input number
+        self.d(text="phone number").click()
+        for i in phone_num:
                 self.pressKey(i)
-            self.d(text="Indonesia").click()
+        self.d(text="NEXT").click()
 
-            # Input number
-            self.d(text="phone number").click()
-            for i in phone_num:
-                    self.pressKey(i)
-            self.d(text="NEXT").click()
+        try:
+            self.d(text="SWITCH").click()
+        except Exception:
+            print("There is no switch request")
 
-            try:
-                self.d(text="SWITCH").click()
-            except Exception:
-                print("There is no switch request")
-
-            # Confirmation
+        # Confirmation
+        try:
             self.d(text="OK").click()
-            # Verify hanya 7 jam sekali
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
+        except Exception:
+            print("No OK button")
+            
+        sleep(6)
 
-            # Contacts and media permission
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
-
-            # Google permission request
+        try:
             self.d(text="SKIP").click()
-            nama = name.upper()
-            for i in nama:
-                 if i == " ":
-                      self.pressKey("SPACE")
-                 self.pressKey(i)
+        except Exception:
+            print("No skip button")
+
+        nama = name.upper()
+        for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+        try:
             self.d(text="NEXT").click()
+        except Exception:
+            print("No NEXT button")
+        try:
             self.d(text="CLOSE").click()
-        else:
-            print("Already registered")
-            return False
+        except Exception:
+            print("No CLOSE button")
+        # else:
+        #     print("Already registered")
+        #     return False
 
     def registerAero(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.aero')
         self.grantPermission("com.aero")
         self.d.app_start('com.aero')
 
-        status = self.checkActivity()
+        # status = self.checkActivity()
 
-        if status == "com.aero/com.aero.registration.EULA":
-            # Front page
-            self.d(text="AGREE AND CONTINUE").click()
+        # if status == "com.aero/com.aero.registration.EULA":
+        # Front page
+        self.d(text="AGREE AND CONTINUE").click()
 
-            self.d(resourceId="com.aero:id/registration_country").click()
-            self.d(resourceId="com.aero:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
-                self.pressKey(i)
-            self.d(text="Indonesia").click()
+        self.d(resourceId="com.aero:id/registration_country").click()
+        self.d(resourceId="com.aero:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
 
-            # Input number
-            self.d(text="phone number").click()
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-
-            try:
-                self.d(text="SWITCH").click()
-            except:
-                print("No switch requested")
-            # Confirmation
+        # Input number
+        self.d(text="phone number").click()
+        for i in phone_num:
+            self.pressKey(i)
+        self.d(text="NEXT").click()
+        
+        try:
+            self.d(text="SWITCH").click()
+        except Exception:
+            print("No switch requested")
+        
+        sleep(5)
+            
+        try:
             self.d(text="OK").click()
-            # Verify hanya 7 jam sekali
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
+        except Exception:
+            print("No OK button")
 
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        try:
             self.d(text="NEXT").click()
+        except Exception:
+            print("No NEXT button")
+        try:
+            self.d(text="LATER").click()
+        except Exception:
+            print("No LATER button")
+        try:
             self.d(text="THANKS!").click()
-        else: 
-            print("Already registered")
-            return False
+        except Exception:
+            print("No THANKS button")
+        # else: 
+        #     print("Already registered")
+        #     return False
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
@@ -418,7 +437,7 @@ class AutoHelper:
     def checkActivity(self):
         a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
         b = a.split()[2][:-1]
-        return b
+        print(b)
 
     def checkStatus(self):
         status = self.checkActivity()
