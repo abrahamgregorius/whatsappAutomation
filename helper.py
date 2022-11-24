@@ -209,6 +209,7 @@ class AutoHelper:
             
         self.d.click(300, 840)
 
+        self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
         nama = name.upper()
         for i in nama:
             if i == " ":

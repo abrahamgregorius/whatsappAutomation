@@ -22,4 +22,4 @@ autoHelper = helper.AutoHelper()
 # autoHelper.registerFm('821663438032', 'Jojon')
 
 
-autoHelper.registerAero("82163438025", "Jojon")
+autoHelper.registerBusiness("82163438039", "Jojon")
