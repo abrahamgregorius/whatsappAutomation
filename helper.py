@@ -13,7 +13,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT300GE1D"
+    device_id = "R9CT300GELD"
     d = u2.connect(device_id)
 
     def __init__(self):
