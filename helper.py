@@ -196,16 +196,21 @@ class AutoHelper:
         for i in phone_num:
             self.pressKey(i)
         self.d(text="NEXT").click()
+        
 
         try:
             self.d(text="CONTINUE").click()
         except Exception:
             print("There is no continue button")
             self.d(text="OK").click()
+
+
         try:
             self.d(text="SKIP").click()
         except Exception:
             print("No skip button")
+
+
             
         self.d.click(300, 840)
 

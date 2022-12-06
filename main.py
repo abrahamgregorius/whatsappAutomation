@@ -21,5 +21,5 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerFm('821663438032', 'Jojon')
 
-
-autoHelper.registerBusiness("82163438039", "Jojon")
+while True:
+    autoHelper.registerWhatsapp("82163438032", "Jojon")
