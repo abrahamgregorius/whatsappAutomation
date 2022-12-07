@@ -21,3 +21,5 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerFm('821663438032', 'Jojon')
 
+# autoHelper.registerWhatsapp("85641312392", "Mamang")
+autoHelper.checkPopup()

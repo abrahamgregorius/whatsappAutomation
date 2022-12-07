@@ -13,7 +13,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT300GELD"
+    device_id = "R9CT300FQRE"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -94,6 +94,7 @@ class AutoHelper:
     def disableWifi(self):
         os.system(f'adb -s '+ self.device_id +' shell svc wifi disable')
 
+        
     def makeConnection(self, wifiName, security, password):
         os.system(f'adb -s '+ self.device_id +' shell cmd -w wifi connect-network '+ wifiName + ' '+ security + ' '+ password)
 
@@ -119,15 +120,33 @@ class AutoHelper:
         print("In the menu")
         try:
             self.d(text="English (United States)").click()
+            self.d(text="Terapkan").click()
         except Exception:
             print("No English option")
-
-        self.d(text="Tambah bahasa").click()
-        self.d(text="English").click()
-        self.d(text="United States").click()
-        self.d(text="Atr sbg default").click()
+            try:
+                print("Adding language")
+                self.d(text="Tambah bahasa").click()
+                self.d(text="English").click()
+                self.d(text="United States").click()
+                self.d(text="Atr sbg default").click()
+            except Exception:
+                print("Already in English")
+                return 
+            
+    def checkPopup(self):
+        text = ""
+        result = ""
+        while True:
+            try:
+                text = self.d(resourceId="android:id/message").get_text()
+                result = text.split(".")[0]
+                return result
+            except Exception:
+                print("No message")
+            print(result)
 
     def registerWhatsapp(self, phone_num, name):
+        self.setLanguage()
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
@@ -150,6 +169,10 @@ class AutoHelper:
         for i in phone_num:
             self.pressKey(i)
         self.d(text="NEXT").click()
+
+
+
+
         try:
             self.d(text="SWITCH").click()
         except Exception:
@@ -175,6 +198,7 @@ class AutoHelper:
         #     return False
 
     def registerBusiness(self, phone_num, name):
+        self.setLanguage()
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
         self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
@@ -186,6 +210,7 @@ class AutoHelper:
             self.d(text="English").click()
         except Exception:
             print("No need to choose language")
+
         
         self.d(text="AGREE AND CONTINUE").click()
 
