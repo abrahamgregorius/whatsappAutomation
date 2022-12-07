@@ -88,6 +88,9 @@ class AutoHelper:
         package = random.choice(packdata)
         return package
 
+    def makeConnection(self, wifiName, security, password):
+        os.system(f'adb shell cmd -w wifi connect-network '+ wifiName + ' '+ security + ' '+ password)
+
     def grantPermission(self, packageName):
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CALL_LOG')
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.ACCESS_FINE_LOCATION')

@@ -21,5 +21,4 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerFm('821663438032', 'Jojon')
 
-while True:
-    autoHelper.registerWhatsapp("85811403623", "Jojon")
+autoHelper.makeConnection()
