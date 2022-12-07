@@ -88,6 +88,12 @@ class AutoHelper:
         package = random.choice(packdata)
         return package
 
+    def enableWifi(self):
+        os.system(f'adb -s '+ self.device_id +' shell svc wifi enable')
+
+    def disableWifi(self):
+        os.system(f'adb -s '+ self.device_id +' shell svc wifi disable')
+
     def makeConnection(self, wifiName, security, password):
         os.system(f'adb -s '+ self.device_id +' shell cmd -w wifi connect-network '+ wifiName + ' '+ security + ' '+ password)
 
@@ -472,8 +478,7 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
         self.d(text="CALL").click()
 
-    def receiveCall(self):
-        pass
+    
 
     
 

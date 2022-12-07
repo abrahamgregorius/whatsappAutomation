@@ -21,4 +21,3 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.registerFm('821663438032', 'Jojon')
 
-autoHelper.makeConnection()
