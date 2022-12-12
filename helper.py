@@ -99,14 +99,13 @@ class AutoHelper:
 
     def resetConnection(self):
         os.system(f'adb -s '+ self.device_id +' shell am start -n "com.android.settings/.Settings"')
-        os.system(f'adb -s '+ self.device_id +' shell input swipe 500 2000 500 500')
+        os.system(f'adb -s '+ self.device_id +' shell input swipe 500 2200 500 100')
         self.d.implicitly_wait(3)
         sleep(3)
-        self.d(text="General management").click()
-        self.d(text="Reset").click()
-        self.d(text="Reset network settings").click()
-        self.d(text="Reset settings").click()
-        self.d(text="Reset").click()
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 900')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 2150')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 580')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 600')
         self.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
         self.pressKey("HOME")
         

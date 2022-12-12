@@ -26,3 +26,5 @@ autoHelper = helper.AutoHelper()
 # os.system("adb -s R9CT4007GBM shell am startservice -n com.google.wifisetup/.WifiSetupService -a WiFiSetupService.Reset")
 
 # adb -s R9CT4007GBM shell am start -a com.android.settings.GENERAL_MANAGEMENT_SETTINGS
+while True:
+    autoHelper.resetConnection()
