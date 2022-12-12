@@ -13,7 +13,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT300FQRE"
+    device_id = "R9CT4007GBM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -94,9 +94,22 @@ class AutoHelper:
     def disableWifi(self):
         os.system(f'adb -s '+ self.device_id +' shell svc wifi disable')
 
-        
     def makeConnection(self, wifiName, security, password):
         os.system(f'adb -s '+ self.device_id +' shell cmd -w wifi connect-network '+ wifiName + ' '+ security + ' '+ password)
+
+    def resetConnection(self):
+        os.system(f'adb -s '+ self.device_id +' shell am start -n "com.android.settings/.Settings"')
+        os.system(f'adb -s '+ self.device_id +' shell input swipe 500 2000 500 500')
+        self.d.implicitly_wait(3)
+        sleep(3)
+        self.d(text="General management").click()
+        self.d(text="Reset").click()
+        self.d(text="Reset network settings").click()
+        self.d(text="Reset settings").click()
+        self.d(text="Reset").click()
+        self.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
+        self.pressKey("HOME")
+        
 
     def grantPermission(self, packageName):
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CALL_LOG')
@@ -134,8 +147,6 @@ class AutoHelper:
                 return 
             
     def checkPopup(self):
-        text = ""
-        result = ""
         while True:
             try:
                 text = self.d(resourceId="android:id/message").get_text()
@@ -143,7 +154,8 @@ class AutoHelper:
                 return result
             except Exception:
                 print("No message")
-            print(result)
+                
+                break
 
     def registerWhatsapp(self, phone_num, name):
         self.setLanguage()
@@ -198,7 +210,8 @@ class AutoHelper:
         #     return False
 
     def registerBusiness(self, phone_num, name):
-        self.setLanguage()
+        print("-------------------------------------------------")
+        # self.setLanguage()
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
         self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
@@ -230,7 +243,11 @@ class AutoHelper:
         for i in phone_num:
             self.pressKey(i)
         self.d(text="NEXT").click()
-        
+
+        try: 
+            self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click()
+        except Exception:
+            print("No use number button")
 
         try:
             self.d(text="CONTINUE").click()
@@ -249,6 +266,7 @@ class AutoHelper:
         self.d.click(300, 840)
 
         self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
+        self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
         nama = name.upper()
         for i in nama:
             if i == " ":
@@ -263,6 +281,7 @@ class AutoHelper:
                 self.pressKey("SPACE")
             self.pressKey(i)
 
+        self.d(text="Other Business").click()
         self.d(text="Other Business").click()
         self.d(text="NEXT").click()
         sleep(6)
