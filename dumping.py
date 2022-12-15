@@ -1,15 +1,34 @@
 import uiautomator2 as u2 
 from xml.dom import minidom
-import os
+from time import sleep
 import helper
 
-d = u2.connect("R9CT300GE1D")
+d = u2.connect("R9CT300FQRE")
+helpernya = helper.AutoHelper()
 
-helpera = helper.AutoHelper()
 
-print("blm")
+d(resourceId="com.whatsapp.w4b:id/registration_name").click()
+d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
+nama = "anjay mabar".upper()
+for i in nama:
+    if i == " ":
+        helpernya.pressKey("SPACE")
+    helpernya.pressKey(i)
+d.click(990, 988)
 
-print(helpera.adbs("whoami"))
-print(helpera.adbs("adb shell dumpsys activity activities | grep mCurrentFocus "))
+category = "other"
+kategori = category.upper()
 
-print("udh")
+d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
+d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
+
+for i in kategori:
+    if i == " ":
+        helpernya.pressKey("SPACE")
+    helpernya.pressKey(i)
+
+sleep(1.5)
+
+d(text="Other Business").click()
+d(text="Other Business").click()
+
