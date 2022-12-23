@@ -32,9 +32,9 @@ class AutoHelper:
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
 
-    def dumpUi(self):        
+    def dumpUi(self, device_id):        
         os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + '.xml ')
-        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + '.xml')
+        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + '.xml C:/koko/pkl/flow/uidump/' + device_id + '.xml')
 
     def installPackages(self):
         os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')

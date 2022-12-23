@@ -23,7 +23,7 @@ autoHelper = helper.AutoHelper()
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 
-autoHelper.registerBusiness("85641312392", "Udin")
+# autoHelper.registerBusiness("85641312392", "Udin")
 
 # os.system("adb -s R9CT4007GBM shell am startservice -n com.google.wifisetup/.WifiSetupService -a WiFiSetupService.Reset")
 
@@ -31,3 +31,4 @@ autoHelper.registerBusiness("85641312392", "Udin")
 # while True:
 #     autoHelper.resetConnection()
 
+autoHelper.dumpUi('R9CT300FQRE')
