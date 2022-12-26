@@ -5,6 +5,7 @@ import requests
 import uiautomator2 as u2
 import subprocess
 import sqlite3
+import time
 
 packagename = "com.whatsapp"
 
@@ -32,9 +33,15 @@ class AutoHelper:
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
 
-    def dumpUi(self, device_id):        
-        os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + '.xml ')
-        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + '.xml C:/koko/pkl/flow/uidump/' + device_id + '.xml')
+    def dumpUi(self, device_id):
+        os.system(f'adb kill-server')
+        currentTime = time.ctime().split(" ")[3].replace(":", "_")
+        os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + "_" + currentTime + '.xml ')
+        print(currentTime)
+        sleep(1)
+        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml C:/koko/pkl/flow/uidump/' + device_id + currentTime + '.xml')
+        print(currentTime)
+        os.system(f'adb -s '+ device_id +' shell rm /sdcard/' + device_id + "_" + currentTime + '.xml')
 
     def installPackages(self):
         os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')
@@ -189,9 +196,6 @@ class AutoHelper:
             self.pressKey(i)
         self.d(text="NEXT").click()
 
-
-
-
         try:
             self.d(text="SWITCH").click()
         except Exception:
@@ -233,79 +237,79 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell dumpsys activity | findstr "mCurrentFocus"')
 
         
-        if status == "com.whatsapp.registration.EULA":
-            self.d(text="AGREE AND CONTINUE").click()
+        # if status == "com.whatsapp.registration.EULA":
+        self.d(text="AGREE AND CONTINUE").click()
     
-        if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
-            try:
-                self.d(text="USE A DIFFERENT NUMBER").click()
-            except Exception:
-                print("No need to use a different number")
+        # if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
+        try:
+            self.d(text="USE A DIFFERENT NUMBER").click()
+        except Exception:
+            print("No need to use a different number")
         
-        if status == "com.whatsapp.registration.RegisterPhone":
-            self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
-        if status == "com.whatsapp.w4b/com.whatsapp.phonematching.CountryPicker":
-            self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
-            country = "INDONESIA"
-            sleep(1)
-            for i in country:
-                self.pressKey(i)
-            self.d(text="Indonesia").click()
+        # if status == "com.whatsapp.registration.RegisterPhone":
+        self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+        # if status == "com.whatsapp.w4b/com.whatsapp.phonematching.CountryPicker":
+        self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+        country = "INDONESIA"
+        sleep(1)
+        for i in country:
+            self.pressKey(i)
+        self.d(text="Indonesia").click()
 
-        if status == "com.whatsapp.registration.RegisterPhone":
-            for i in phone_num:
-                self.pressKey(i)
-            self.d(text="NEXT").click()
+        # if status == "com.whatsapp.registration.RegisterPhone":
+        for i in phone_num:
+            self.pressKey(i)
+        self.d(text="NEXT").click()
 
-        if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
-            try: 
-                self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click()
-            except Exception:
-                print("No use number button")
+        # if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
+        try: 
+            self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click()
+        except Exception:
+            print("No use number button")
 
-        if status == "com.whatsapp.registration.RegisterPhone":
-            try:
-                self.d(text="CONTINUE").click()
-            except Exception:
-                print("There is no continue button")
-                self.d(text="OK").click()
+        # if status == "com.whatsapp.registration.RegisterPhone":
+        try:
+            self.d(text="CONTINUE").click()
+        except Exception:
+            print("There is no continue button")
+            self.d(text="OK").click()
 
-        if status == "com.whatsapp.registration.VerifyPhoneNumber":
-            try:
-                self.d(text="SKIP").click()
-            except Exception:
-                print("No skip button")
+        # if status == "com.whatsapp.registration.VerifyPhoneNumber":
+        try:
+            self.d(text="SKIP").click()
+        except Exception:
+            print("No skip button")
         
-        if status == "com.whatsapp.registration.RegisterName":
-            self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
-            self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click()
+        # if status == "com.whatsapp.registration.RegisterName":
+        self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
+        self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
+        nama = name.upper()
+        for i in nama:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click()
 
-        if status == "com.whatsapp.w4b/com.whatsapp.businessprofilecategory.EditBusinessCategoryActivity":
-            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
-            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
-            category = "other"
-            kategori = category.upper()
-            for i in kategori:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            sleep(1.5)
-            self.d(text="Other Business").click()
-            self.d(text="Other Business").click()
+        # if status == "com.whatsapp.w4b/com.whatsapp.businessprofilecategory.EditBusinessCategoryActivity":
+        self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
+        self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
+        category = "other"
+        kategori = category.upper()
+        for i in kategori:
+            if i == " ":
+                self.pressKey("SPACE")
+            self.pressKey(i)
+        sleep(1.5)
+        self.d(text="Other Business").click()
+        self.d(text="Other Business").click()
         
-        if status == "com.whatsapp.w4b/com.whatsapp.registration.EditRegistrationActivity":
-            self.d(text="NEXT").click()
+        # if status == "com.whatsapp.w4b/com.whatsapp.registration.EditRegistrationActivity":
+        self.d(text="NEXT").click()
             
         sleep(6)
 
-        if status == "com.whatsapp.w4b/com.whatsapp.businessregistration.OnboardingActivity":
-            self.d(text="NOT NOW").click()
+        # if status == "com.whatsapp.w4b/com.whatsapp.businessregistration.OnboardingActivity":
+        self.d(text="NOT NOW").click()
 
     def registerFm(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')

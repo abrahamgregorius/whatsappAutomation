@@ -3,8 +3,11 @@ from xml.dom import minidom
 from time import sleep
 import helper
 import os
+import time
+
 
 device_id = "R9CT300FQRE"
 
-os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + '.xml ')
-os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + '.xml')
+
+currentTime = time.ctime().split(" ")[3].replace(":", "_")
+print(currentTime)
