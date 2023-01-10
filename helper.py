@@ -174,50 +174,73 @@ class AutoHelper:
                 break
 
     def registerWhatsapp(self, phone_num, name):
-        self.setLanguage()
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
+        # os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
         self.grantPermission("com.whatsapp")
         self.d.app_start("com.whatsapp")
-
-        # status = self.checkActivity()
-
-        # if status == "com.whatsapp/com.whatsapp.registration.EULA":
+        
         try:
             self.d(text="English").click()
         except Exception:
             print("No need to choose language")
-        self.d(text="AGREE AND CONTINUE").click()
-        self.d(resourceId="com.whatsapp:id/registration_country").click()
-        self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
+
+        try:    
+            self.d(text="AGREE AND CONTINUE").click()
+            print("Success AGREE AND CONTINUE")
+            self.d(resourceId="com.whatsapp:id/registration_country").click()
+            print("Success registration_country")
+            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+            print("Success menuitem_search")
+        except:
+            print("Failed AGREE AND CONTINUE and Clicking country menu")
+
+
+        try:
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            self.d(text="Indonesia").click()
+            print("Success choosing Indonesia")
+        except:
+            print("Failed choosing Indonesia")
+
+        try:
+            for i in phone_num:
+                self.pressKey(i)
+            self.d(text="NEXT").click()
+            print("Success clicking phone number")
+        except:
+            print("Failed clicking phone number")
+        
 
         try:
             self.d(text="SWITCH").click()
         except Exception:
             print("No switch requested")
+
+
         try:
             self.d(text="OK").click()
         except Exception:
             print("No OK button")
         sleep(10)
+
+
         try:
             self.d(text="SKIP").click()
         except Exception:
             print("No skip button")
-        self.d.click(280, 900)
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
+
+        try:
+            self.d.click(280, 900)
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
             self.pressKey(i)
-        self.d(text="NEXT").click()
+            self.d(text="NEXT").click()
+        except:
+            print("Failed input name")
         # else:
         #     print("Already registered")
         #     return False
@@ -377,6 +400,7 @@ class AutoHelper:
         # Inputting name
         try:
             sleep(5)
+            self.d(resourceId="com.fmwhatsapp:id/registration_name").click(timeout=25)
             nama = name.upper()
             for i in nama:
                     if i == " ":
