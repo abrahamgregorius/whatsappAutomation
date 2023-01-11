@@ -27,4 +27,12 @@ autoHelper.registerAero('85811403649', 'Jojon')
 
 # 62 - 85811403649
 
+<<<<<<< HEAD
 # autoHelper.dumpUi('R9CT4000AAM')
+=======
+# adb -s R9CT4007GBM shell am start -a com.android.settings.GENERAL_MANAGEMENT_SETTINGS
+# while True:
+#     autoHelper.resetConnection()
+
+autoHelper.dumpUi('R9CT300FQRE')
+>>>>>>> origin/main
