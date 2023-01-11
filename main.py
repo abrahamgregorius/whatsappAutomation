@@ -19,12 +19,12 @@ autoHelper = helper.AutoHelper()
 # C | 82163438032(BANNED) || 82163438038(FMWHATSAPP)
 # 85641312392, 85641312394
 
-autoHelper.registerFm('85892284244', 'Jojon')
+# autoHelper.registerFm('85811403649', 'Jojon')
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 
 # 62 - 85892284244
 
-# 62 - 85811303649
+# 62 - 85811403649
 
-# autoHelper.dumpUi('R9CT300FQRE')
+autoHelper.dumpUi('R9CT4000AAM')

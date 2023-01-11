@@ -35,8 +35,10 @@ class AutoHelper:
 
     def dumpUi(self, device_id):
         os.system(f'adb kill-server')
-        currentTime = time.ctime().split(" ")[3].replace(":", "_")
-        os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + "_" + currentTime + '.xml ')
+        currentTime = "abcdef"
+        # currentTime = time.ctime().split(" ")[3].replace(":", "_")
+        # os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id + "_" + currentTime + '.xml ')
+        os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id  + '.xml ')
         print(currentTime)
         sleep(1)
         os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml C:/koko/pkl/flow/uidump/' + device_id + currentTime + '.xml')
@@ -355,7 +357,7 @@ class AutoHelper:
 
         # Switching from business
         try:
-            self.d(text="SWITCH").click(timeout=25)
+            self.d(text="SWITCH").click(timeout=15)
         except Exception:
             print("No switch requested")
         
@@ -374,6 +376,7 @@ class AutoHelper:
 
         # Inputting name
         try:
+            sleep(5)
             nama = name.upper()
             for i in nama:
                     if i == " ":
