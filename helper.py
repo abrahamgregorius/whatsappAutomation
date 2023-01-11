@@ -14,7 +14,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT300FQRE"
+    device_id = "R9CT4000AAM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -311,47 +311,91 @@ class AutoHelper:
         # if status == "com.whatsapp.w4b/com.whatsapp.businessregistration.OnboardingActivity":
         self.d(text="NOT NOW").click()
 
-    def registerFm(self, phone_num, name):
+    def registerFm(self, phone_num, name):        
+        # Granting permission and starting app
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
+        print("Granted permissions and started app")
 
-        # status = self.checkActivity()
 
-        # if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
+        # Agree and continue
+        self.d(text="AGREE AND CONTINUE").click(timeout=25)
+        print("Clicked Agree and Conintue")
 
-        self.d(text="AGREE AND CONTINUE").click()
-
-        self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
-        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
+        
+        # Clicking country picker and search bar
+        self.d(resourceId="com.fmwhatsapp:id/registration_country").click(timeout=25)
+        print("Clicked country picker")
+        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click(timeout=25)
+        print("Clicked country picker search bar")
+        
+        
+        # Typing and clicking INDONESIA        
         country = "INDONESIA"
         sleep(1)
         for i in country:
             self.pressKey(i)
-        self.d(text="Indonesia").click()
-
+        print("Typed country")
+        self.d(text="Indonesia").click(timeout=25)
+        print("Typed and clicked Indonesia")
+        
+        
+        # Typing phone number
         for i in phone_num:
-                self.pressKey(i)
-        self.d(text="NEXT").click()
+            self.pressKey(i)
+        print("Typed phone number")
+        
+            
+        # Clicking NEXT
+        try:
+            self.d(text="NEXT").click(timeout=25)
+            print("Clicked NEXT")
+        except:
+            print("No NEXT button")
 
         # Switching from business
         try:
-            self.d(text="SWITCH").click()
+            self.d(text="SWITCH").click(timeout=25)
         except Exception:
             print("No switch requested")
-        self.d(text="OK").click()
-            # Google permission
+        
+        # Clicking OK
         try:
-            self.d(text="SKIP").click()
+            self.d(text="OK").click(timeout=25)
+        except Exception:
+            print("No OK button")
+        
+        # Google permission
+        try:
+            self.d(text="SKIP").click(timeout=25)
         except Exception:
             print("No skip button")
 
-        nama = name.upper()
-        for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-        self.d(text="NEXT").click()
-        self.d(text="CLOSE").click()
+
+        # Inputting name
+        try:
+            nama = name.upper()
+            for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+        except:
+            print("Unable to input name")
+        
+        try:
+            self.d(text="NEXT").click(timeout=25)
+        except:
+            print("No NEXT button")
+        
+        try: 
+            self.d(text="CANCEL").click(timeout=25)
+        except:
+            print("No UPDATE button")
+        try:
+            self.d(text="CLOSE").click(timeout=25)
+        except:
+            print("No CLOSE button")
+        
         # else:
         #     print("Already registered")
         #     return False
