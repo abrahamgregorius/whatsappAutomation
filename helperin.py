@@ -245,7 +245,6 @@ class AutoHelper:
         except:
             print("Failed")
 
-        
         # Second "USE A DIFFERENT NUMBER" page
         try:
             self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click(timeout=15)

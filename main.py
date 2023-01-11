@@ -19,16 +19,12 @@ autoHelper = helper.AutoHelper()
 # C | 82163438032(BANNED) || 82163438038(FMWHATSAPP)
 # 85641312392, 85641312394
 
-# autoHelper.registerFm('821663438032', 'Jojon')
+autoHelper.registerFm('821663438032', 'Jojon')
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 
-# autoHelper.registerBusiness("85641312392", "Udin")
+# 62 - 85892284244
 
-# os.system("adb -s R9CT4007GBM shell am startservice -n com.google.wifisetup/.WifiSetupService -a WiFiSetupService.Reset")
+# 62 - 85811303649
 
-# adb -s R9CT4007GBM shell am start -a com.android.settings.GENERAL_MANAGEMENT_SETTINGS
-# while True:
-#     autoHelper.resetConnection()
-
-autoHelper.dumpUi('R9CT300FQRE')
+# autoHelper.dumpUi('R9CT300FQRE')

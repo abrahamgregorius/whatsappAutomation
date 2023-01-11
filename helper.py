@@ -312,7 +312,6 @@ class AutoHelper:
         self.d(text="NOT NOW").click()
 
     def registerFm(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')
         self.grantPermission("com.fmwhatsapp")
         self.d.app_start('com.fmwhatsapp')
 
