@@ -19,20 +19,14 @@ autoHelper = helper.AutoHelper()
 # C | 82163438032(BANNED) || 82163438038(FMWHATSAPP)
 # 85641312392, 85641312394
 
-autoHelper.registerAero('85811403649', 'Jojon')
+autoHelper.registerAero('82170186532', 'Jojon')
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 
 # 62 - 85892284244
 
+# 62 - 82170186532
+
 # 62 - 85811403649
 
-<<<<<<< HEAD
 # autoHelper.dumpUi('R9CT4000AAM')
-=======
-# adb -s R9CT4007GBM shell am start -a com.android.settings.GENERAL_MANAGEMENT_SETTINGS
-# while True:
-#     autoHelper.resetConnection()
-
-autoHelper.dumpUi('R9CT300FQRE')
->>>>>>> origin/main

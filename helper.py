@@ -241,9 +241,6 @@ class AutoHelper:
             self.d(text="NEXT").click()
         except:
             print("Failed input name")
-        # else:
-        #     print("Already registered")
-        #     return False
 
     def registerBusiness(self, phone_num, name):
         print("-------------------------------------------------")
@@ -417,16 +414,12 @@ class AutoHelper:
         try: 
             self.d(text="CANCEL").click(timeout=25)
         except:
-            print("No UPDATE button")
+            print("No CANCEL button")
         try:
             self.d(text="CLOSE").click(timeout=25)
         except:
             print("No CLOSE button")
         
-        # else:
-        #     print("Already registered")
-        #     return False
-
     def registerYo(self, phone_num, name):        
         # Granting permission and starting app
         try:
@@ -437,7 +430,7 @@ class AutoHelper:
             print("Permission not granted and app is not started")
 
 
-        # Front page
+        # Agree and continue
         try:
             self.d(text="AGREE AND CONTINUE").click(timeout=15)
             print("Clicked AGREE AND CONTINUE")
@@ -523,7 +516,7 @@ class AutoHelper:
         # Granting permission and starting app
         try:
             self.grantPermission("com.aero")
-            self.d.app_start('com.aero')
+            self.d.app_start("com.aero")
             print("Permission granted and app started")
         except: 
             print("Permission not granted and app not started")
@@ -571,9 +564,6 @@ class AutoHelper:
             self.d(text="SWITCH").click(timeout=15)
         except Exception:
             print("No switch requested")
-        
-        
-        sleep(5)
 
         
         # Confirmation
@@ -581,6 +571,13 @@ class AutoHelper:
             self.d(text="OK").click(timeout=15)
         except Exception:
             print("No OK button")
+            
+        # Google backup
+        try:
+            self.d(text="SKIP").click(timeout=15)
+            print("Clicked SKIP")
+        except:
+            print("Failed clicking SKIP")
 
 
         # Inputting name
@@ -593,13 +590,6 @@ class AutoHelper:
             print("Success inputting name")
         except:
             print("Failed inputting name")
-                
-        # Google backup
-        try:
-            self.d(text="SKIP").click(timeout=15)
-            print("Clicked SKIP")
-        except:
-            print("Failed clicking SKIP")
         
         
         # Clicking NEXT
