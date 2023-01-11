@@ -341,32 +341,43 @@ class AutoHelper:
 
 
         # Agree and continue
-        self.d(text="AGREE AND CONTINUE").click(timeout=25)
-        print("Clicked Agree and Conintue")
-
+        try:
+            self.d(text="AGREE AND CONTINUE").click(timeout=25)
+            print("Clicked Agree and Continue")
+        except:
+            print("Failed clicking Agree and Continue")
+        
         
         # Clicking country picker and search bar
-        self.d(resourceId="com.fmwhatsapp:id/registration_country").click(timeout=25)
-        print("Clicked country picker")
-        self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click(timeout=25)
-        print("Clicked country picker search bar")
+        try:
+            self.d(resourceId="com.fmwhatsapp:id/registration_country").click(timeout=25)
+            print("Clicked country picker")
+            self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click(timeout=25)
+            print("Clicked country picker search bar")
+        except:
+            print("Failed clicking country picker and search bar")
         
         
         # Typing and clicking INDONESIA        
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        print("Typed country")
-        self.d(text="Indonesia").click(timeout=25)
-        print("Typed and clicked Indonesia")
+        try:
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            print("Typed country")
+            self.d(text="Indonesia").click(timeout=25)
+            print("Typed and clicked Indonesia")
+        except:
+            print("Failed typing and clicking Indonesia")
         
         
         # Typing phone number
-        for i in phone_num:
-            self.pressKey(i)
-        print("Typed phone number")
-        
+        try:
+            for i in phone_num:
+                self.pressKey(i)
+            print("Typed phone number")
+        except:
+            print("Failed typing phone number")
             
         # Clicking NEXT
         try:
@@ -406,15 +417,19 @@ class AutoHelper:
         except:
             print("Unable to input name")
         
+        # Clicking NEXT
         try:
             self.d(text="NEXT").click(timeout=25)
         except:
             print("No NEXT button")
         
+        # Clicking CANCEL
         try: 
             self.d(text="CANCEL").click(timeout=25)
         except:
             print("No CANCEL button")
+            
+        # Clicking CLOSE
         try:
             self.d(text="CLOSE").click(timeout=25)
         except:
