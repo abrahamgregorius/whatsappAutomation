@@ -377,7 +377,6 @@ class AutoHelper:
             print("Not now error")
             return False
                     
-
     def registerFm(self, phone_num, name):
         os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')
         self.grantPermission("com.fmwhatsapp")

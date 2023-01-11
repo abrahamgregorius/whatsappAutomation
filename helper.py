@@ -357,7 +357,7 @@ class AutoHelper:
 
         # Switching from business
         try:
-            self.d(text="SWITCH").click(timeout=15)
+            self.d(text="SWITCH").click(timeout=10)
         except Exception:
             print("No switch requested")
         
@@ -403,124 +403,201 @@ class AutoHelper:
         #     print("Already registered")
         #     return False
 
-    def registerYo(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')
-        self.grantPermission("com.yowhatsapp")
-        self.d.app_start('com.yowhatsapp')
+    def registerYo(self, phone_num, name):        
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.yowhatsapp")
+            self.d.app_start('com.yowhatsapp')
+            print("Permission granted and started app")
+        except:
+            print("Permission not granted and app is not started")
 
-        # status = self.checkActivity()
-
-        # if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
 
         # Front page
-        self.d(text="AGREE AND CONTINUE").click()
+        try:
+            self.d(text="AGREE AND CONTINUE").click(timeout=15)
+            print("Clicked AGREE AND CONTINUE")
+        except:
+            print("Failed clicking AGREE AND CONTINUE")
 
-        self.d(resourceId="com.yowhatsapp:id/registration_country").click()
-        self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
+
+        # Country picking and choosing Indonesia
+        try:
+            self.d(resourceId="com.yowhatsapp:id/registration_country").click(timeout=15)
+            self.d(resourceId="com.yowhatsapp:id/menuitem_search").click(timeout=15)
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            self.d(text="Indonesia").click(timeout=15)
+        except: 
+            print("Failed picking country and choosing INDONESIA")
+
 
         # Input number
-        self.d(text="phone number").click()
-        for i in phone_num:
-                self.pressKey(i)
-        self.d(text="NEXT").click()
-
         try:
-            self.d(text="SWITCH").click()
+            self.d(text="phone number").click(timeout=15)
+            for i in phone_num:
+                    self.pressKey(i)
+            self.d(text="NEXT").click(timeout=15)
+        except: 
+            print("Failed inputting number and clicking NEXT")
+
+
+        # Switching from Business
+        try:
+            self.d(text="SWITCH").click(timeout=15)
         except Exception:
             print("There is no switch request")
 
+
         # Confirmation
         try:
-            self.d(text="OK").click()
+            self.d(text="OK").click(timeout=15)
         except Exception:
             print("No OK button")
-            
-        sleep(6)
 
+
+        # Backing up from Google Drive
         try:
-            self.d(text="SKIP").click()
+            self.d(text="SKIP").click(timeout=15)
         except Exception:
             print("No skip button")
 
-        nama = name.upper()
-        for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
+
+        # Inputting name
         try:
-            self.d(text="NEXT").click()
+            sleep(5)
+            nama = name.upper()
+            for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+        except:
+            print("Failed inputting name")
+
+
+        # Clicking NEXT
+        try:
+            self.d(text="NEXT").click(timeout=15)
         except Exception:
             print("No NEXT button")
+
+        # Clickng CANCEL for updates
         try:
-            self.d(text="CLOSE").click()
+            self.d(text="CANCEL").click(timeout=15)
+        except:
+            print("No CANCEL button")
+        
+        # Clicking CLOSE
+        try:
+            self.d(text="CLOSE").click(timeout=15)
         except Exception:
             print("No CLOSE button")
-        # else:
-        #     print("Already registered")
-        #     return False
 
     def registerAero(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.aero')
-        self.grantPermission("com.aero")
-        self.d.app_start('com.aero')
-
-        # status = self.checkActivity()
-
-        # if status == "com.aero/com.aero.registration.EULA":
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.aero")
+            self.d.app_start('com.aero')
+            print("Permission granted and app started")
+        except: 
+            print("Permission not granted and app not started")
+        
+        
         # Front page
-        self.d(text="AGREE AND CONTINUE").click()
+        try:
+            self.d(text="AGREE AND CONTINUE").click(timeout=15)
+            print("Clicked AGREE AND CONTINUE")
+        except:
+            print("Failed clicking AGREE AND CONTINUE")
 
-        self.d(resourceId="com.aero:id/registration_country").click()
-        self.d(resourceId="com.aero:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
-
-        # Input number
-        self.d(text="phone number").click()
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
+        try:
+            self.d(resourceId="com.aero:id/registration_country").click(timeout=15)
+            self.d(resourceId="com.aero:id/menuitem_search").click(timeout=15)
+            print("Clicked country picker and search bar")
+        except:
+            print("Failed clicking country picker and search bar")
         
         try:
-            self.d(text="SWITCH").click()
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            self.d(text="Indonesia").click(timeout=15)
+            print("Success choosing INDONESIA")
+        except: 
+            print("Failed typing and choosing INDONESIA")
+
+        # Input number
+        try:
+            self.d(text="phone number").click(timeout=15)
+            for i in phone_num:
+                self.pressKey(i)
+            self.d(text="NEXT").click(timeout=15)
+            print("Inputted phone number and clicked NEXT")
+        except: 
+            print("Failed inputting phone number and clicked NEXT")
+            
+        
+        
+        
+        # Switching from Business
+        try:
+            self.d(text="SWITCH").click(timeout=15)
         except Exception:
             print("No switch requested")
         
+        
         sleep(5)
-            
+
+        
+        # Confirmation
         try:
-            self.d(text="OK").click()
+            self.d(text="OK").click(timeout=15)
         except Exception:
             print("No OK button")
 
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
+
+        # Inputting name
         try:
-            self.d(text="NEXT").click()
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            print("Success inputting name")
+        except:
+            print("Failed inputting name")
+                
+        # Google backup
+        try:
+            self.d(text="SKIP").click(timeout=15)
+            print("Clicked SKIP")
+        except:
+            print("Failed clicking SKIP")
+        
+        
+        # Clicking NEXT
+        try:
+            self.d(text="NEXT").click(timeout=15)
         except Exception:
             print("No NEXT button")
+        
+        
+        # Clicking LATER
         try:
-            self.d(text="LATER").click()
+            self.d(text="LATER").click(timeout=15)
         except Exception:
             print("No LATER button")
+        
+        
+        # Clicking THANKS
         try:
-            self.d(text="THANKS!").click()
+            self.d(text="THANKS!").click(timeout=15)
         except Exception:
             print("No THANKS button")
-        # else: 
-        #     print("Already registered")
-        #     return False
+            
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
