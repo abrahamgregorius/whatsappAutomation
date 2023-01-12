@@ -18,8 +18,10 @@ autoHelper = helper.AutoHelper()
 # B | 82163438039(BUSINESS WHATSAPP) || 82163438037(WHATSAPP)
 # C | 82163438032(BANNED) || 82163438038(FMWHATSAPP)
 # 85641312392, 85641312394
+# 85892284244, 85641312393
+# 85641312241, 85641312242, 85805454648
 
-autoHelper.installPackages()
+autoHelper.registerAero("85805454648", "Jojon")
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 

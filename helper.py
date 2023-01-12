@@ -248,95 +248,158 @@ class AutoHelper:
             print("Failed input name")
 
     def registerBusiness(self, phone_num, name):
-        print("-------------------------------------------------")
-        # self.setLanguage()    
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
+        
+        # Granting permission and starting app
         self.grantPermission("com.whatsapp.w4b")
         self.d.app_start('com.whatsapp.w4b')
+        print("Granted permissions and started app")
 
-        status = self.checkActivity()
 
-        # if status == "com.whatsapp.w4b/com.whatsapp.w4b.registration.EULA":
+        # English option
         try:
             self.d(text="English").click()
+            print("Clicked English")
         except Exception:
-            print("No need to choose language")
-        os.system(f'adb -s '+ self.device_id +' shell dumpsys activity | findstr "mCurrentFocus"')
+            print("No ENGLISH button")
+            
 
-        
-        # if status == "com.whatsapp.registration.EULA":
-        self.d(text="AGREE AND CONTINUE").click()
+        # Agree and continue
+        try:
+            self.d(text="AGREE AND CONTINUE").click()
+            print("Clicked Agree and continue")
+        except:
+            print("Failed clicking Agree and continue")
     
-        # if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
+    
+        # Use a different number 
         try:
             self.d(text="USE A DIFFERENT NUMBER").click()
+            print("Clicked USE A DIFFERENT NUMBER")
         except Exception:
-            print("No need to use a different number")
+            print("No USE A DIFFERENT NUMBER button")
         
-        # if status == "com.whatsapp.registration.RegisterPhone":
-        self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
-        # if status == "com.whatsapp.w4b/com.whatsapp.phonematching.CountryPicker":
-        self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
-        country = "INDONESIA"
-        sleep(1)
-        for i in country:
-            self.pressKey(i)
-        self.d(text="Indonesia").click()
+        
+        # Clicking country picker and search bar
+        try:  
+            self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+            print("Clicked country picker")
+        except:
+            print("Failed clicking country picker")
+        try:
+            self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+            print("Clicked search bar")
+        except:
+            print("Failed clicking search bar")
+            
+        
+        # Typing and choosing Indonesia
+        try:
+            country = "INDONESIA"
+            sleep(1)
+            for i in country:
+                self.pressKey(i)
+            self.d(text="Indonesia").click()
+            print("Clicked INDONESIA")
+        except:
+            print("Failed choosing Indonesia")
 
-        # if status == "com.whatsapp.registration.RegisterPhone":
-        for i in phone_num:
-            self.pressKey(i)
-        self.d(text="NEXT").click()
 
-        # if status == "com.whatsapp.businessregistration.MigrateFromConsumerDirectlyActivity":
+        # Typing number and clicking next
+        try:
+            for i in phone_num:
+                self.pressKey(i)
+            self.d(text="NEXT").click()
+        except:
+            print("Failed typing number and clicking NEXT")
+
+
+        # Clicking USE THIS NUMBER button
         try: 
             self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click()
-        except Exception:
-            print("No use number button")
+        except:
+            print("Failed clicking USE THIS NUMBER button")
 
-        # if status == "com.whatsapp.registration.RegisterPhone":
+
+        # Clicking CONTINUE and OK
         try:
             self.d(text="CONTINUE").click()
         except Exception:
-            print("There is no continue button")
+            print("Failed clicking CONTINUE button")
+        try:
             self.d(text="OK").click()
+        except:
+            print("Failed clicking OK button")
 
-        # if status == "com.whatsapp.registration.VerifyPhoneNumber":
+
+        # Google Backup
         try:
             self.d(text="SKIP").click()
         except Exception:
             print("No skip button")
-        
-        # if status == "com.whatsapp.registration.RegisterName":
-        self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
-        self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
-        nama = name.upper()
-        for i in nama:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click()
 
-        # if status == "com.whatsapp.w4b/com.whatsapp.businessprofilecategory.EditBusinessCategoryActivity":
-        self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
-        self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
-        category = "other"
-        kategori = category.upper()
-        for i in kategori:
-            if i == " ":
-                self.pressKey("SPACE")
-            self.pressKey(i)
-        sleep(1.5)
-        self.d(text="Other Business").click()
-        self.d(text="Other Business").click()
         
-        # if status == "com.whatsapp.w4b/com.whatsapp.registration.EditRegistrationActivity":
-        self.d(text="NEXT").click()
+        # Registering name
+        try:
+            self.d(resourceId="com.whatsapp.w4b:id/registration_name").click()
+            self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
+            nama = name.upper()
+            for i in nama:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            print("Success registering name")
+        except:
+            print("Failed registering name")
+
+
+        # Clicking BUSINESS TYPE menu
+        try:
+            self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click()
+            print("Clicked BUSINESS TYPE menu")
+        except:
+            print("Failed clicking BUSINESS TYPE menu")
+
+
+        # Clicking and clearing search bar
+        try:
+            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
+            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
+            print("Clicked and cleared search bar")
+        except:
+            print("Failed clicking and clearing search bar")
+            
+            
+        # Choosing other business
+        try:
+            category = "other"
+            kategori = category.upper()
+            for i in kategori:
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            sleep(1.5)
+            self.d(text="Other Business").click()
+            print("Chosen OTHER BUSINESS")
+        except:
+            print("Failed choosing OTHER BUSINESS")
+
+        
+        # Clicking NEXT
+        try:
+            self.d(text="NEXT").click()
+            print("Clicked NEXT")
+        except: 
+            print("Failed clicking NEXT")
             
         sleep(6)
 
-        # if status == "com.whatsapp.w4b/com.whatsapp.businessregistration.OnboardingActivity":
-        self.d(text="NOT NOW").click()
+        # Clicking NOT NOW
+        try:
+            self.d(text="NOT NOW").click()
+            print("Clicked NOT NOW")
+        except:
+            print("Failed clicking NOT NOW")
+
 
     def registerFm(self, phone_num, name):        
         # Granting permission and starting app
@@ -440,6 +503,12 @@ class AutoHelper:
         except:
             print("No CLOSE button")
         
+        # Clicking OK for changelog
+        try:
+            self.d(text="OK").click(timeout=25)
+        except:
+            print("No OK button")
+        
     def registerYo(self, phone_num, name):        
         # Granting permission and starting app
         try:
@@ -531,6 +600,12 @@ class AutoHelper:
             self.d(text="CLOSE").click(timeout=15)
         except Exception:
             print("No CLOSE button")
+            
+        # Clicking OK for changelog
+        try:
+            self.d(text="OK").click(timeout=25)
+        except:
+            print("No OK button")
 
     def registerAero(self, phone_num, name):
         # Granting permission and starting app
@@ -636,6 +711,12 @@ class AutoHelper:
             self.d(text="THANKS!").click(timeout=15)
         except Exception:
             print("No THANKS button")
+            
+        # Clicking OK
+        try:
+            self.d(text="OK").click(timeout=15)
+        except Exception:
+            print("No OK button")
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
