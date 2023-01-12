@@ -26,6 +26,11 @@ class AutoHelper:
 
     def startApp(self):     
         self.d.app_start("" + self.generatePackage() + "")
+        
+    def resetAdb(self):
+        os.system(f'adb kill-server')
+        sleep(15)
+        os.system(f'adb start-server')
 
     def pressKey(self, keycode):
         os.system(f'adb -s '+ self.device_id +' shell input keyevent KEYCODE_' + keycode)
@@ -544,6 +549,8 @@ class AutoHelper:
         except:
             print("Failed clicking AGREE AND CONTINUE")
 
+
+        # Clicking country picker and search bar
         try:
             self.d(resourceId="com.aero:id/registration_country").click(timeout=15)
             self.d(resourceId="com.aero:id/menuitem_search").click(timeout=15)
@@ -551,6 +558,8 @@ class AutoHelper:
         except:
             print("Failed clicking country picker and search bar")
         
+        
+        # Typing and choosing INDONESIA
         try:
             country = "INDONESIA"
             sleep(1)
@@ -561,7 +570,8 @@ class AutoHelper:
         except: 
             print("Failed typing and choosing INDONESIA")
 
-        # Input number
+
+        # Inputting number
         try:
             self.d(text="phone number").click(timeout=15)
             for i in phone_num:
@@ -626,7 +636,6 @@ class AutoHelper:
             self.d(text="THANKS!").click(timeout=15)
         except Exception:
             print("No THANKS button")
-            
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
