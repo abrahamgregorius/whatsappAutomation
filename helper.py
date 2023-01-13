@@ -179,26 +179,41 @@ class AutoHelper:
                 break
 
     def registerWhatsapp(self, phone_num, name):
-        # os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
-        self.grantPermission("com.whatsapp")
-        self.d.app_start("com.whatsapp")
         
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.whatsapp")
+            self.d.app_start("com.whatsapp")
+            print("Permission granted and started app")
+        except:
+            print("Permission not granted and app not started")
+
+        
+        # English option
         try:
             self.d(text="English").click()
         except Exception:
             print("No need to choose language")
 
+
+        # Agree and continue
         try:    
             self.d(text="AGREE AND CONTINUE").click()
             print("Success AGREE AND CONTINUE")
-            self.d(resourceId="com.whatsapp:id/registration_country").click()
-            print("Success registration_country")
-            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-            print("Success menuitem_search")
         except:
-            print("Failed AGREE AND CONTINUE and Clicking country menu")
+            print("Failed clicking AGREE AND CONTINUES")
+        
+            
+        # Clicking country picker and search bar
+        try:
+            self.d(resourceId="com.whatsapp:id/registration_country").click()
+            print("Clicked country picker")
+            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+            print("Clicked search bar")
+        except:
+            print("Clicked country picker and search bar")
 
-
+        # Choosing INDONESIA
         try:
             country = "INDONESIA"
             sleep(1)
@@ -209,6 +224,8 @@ class AutoHelper:
         except:
             print("Failed choosing Indonesia")
 
+        
+        # Typing phone number
         try:
             for i in phone_num:
                 self.pressKey(i)
@@ -218,12 +235,14 @@ class AutoHelper:
             print("Failed clicking phone number")
         
 
+        # Switch request
         try:
             self.d(text="SWITCH").click()
         except Exception:
             print("No switch requested")
 
 
+        # Clicking OK
         try:
             self.d(text="OK").click()
         except Exception:
@@ -231,11 +250,13 @@ class AutoHelper:
         sleep(10)
 
 
+        # Google backup
         try:
             self.d(text="SKIP").click()
         except Exception:
             print("No skip button")
 
+        # Registering name
         try:
             self.d.click(280, 900)
             nama = name.upper()
@@ -243,9 +264,18 @@ class AutoHelper:
                 if i == " ":
                     self.pressKey("SPACE")
             self.pressKey(i)
-            self.d(text="NEXT").click()
         except:
             print("Failed input name")
+            
+            
+        # Clicking NEXT
+        try:
+            self.d(text="NEXT").click()
+            print("Clicked NEXT")
+        except:
+            print("Failed clicking NEXT")
+
+
 
     def registerBusiness(self, phone_num, name):
         
@@ -401,6 +431,7 @@ class AutoHelper:
             print("Failed clicking NOT NOW")
 
 
+
     def registerFm(self, phone_num, name):        
         # Granting permission and starting app
         self.grantPermission("com.fmwhatsapp")
@@ -508,6 +539,8 @@ class AutoHelper:
             self.d(text="OK").click(timeout=25)
         except:
             print("No OK button")
+
+
         
     def registerYo(self, phone_num, name):        
         # Granting permission and starting app
@@ -606,6 +639,8 @@ class AutoHelper:
             self.d(text="OK").click(timeout=25)
         except:
             print("No OK button")
+
+
 
     def registerAero(self, phone_num, name):
         # Granting permission and starting app
@@ -717,6 +752,8 @@ class AutoHelper:
             self.d(text="OK").click(timeout=15)
         except Exception:
             print("No OK button")
+
+
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp
