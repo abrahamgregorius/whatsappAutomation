@@ -235,9 +235,10 @@ class AutoHelper:
             print("Failed clicking phone number")
         
 
-        # Switch request
+        # Switching request
         try:
             self.d(text="SWITCH").click()
+            print("Clicked SWITCH")
         except Exception:
             print("No switch requested")
 
@@ -245,10 +246,17 @@ class AutoHelper:
         # Clicking OK
         try:
             self.d(text="OK").click()
+            print("Clicked OK")
         except Exception:
             print("No OK button")
         sleep(10)
 
+        # Clicking SKIP
+        try:
+            self.d(text="SKIP").click()
+            print("Success skip")
+        except:
+            print("Failed skip")
 
         # Google backup
         try:
