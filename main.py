@@ -21,7 +21,7 @@ autoHelper = helper.AutoHelper()
 # 85892284244, 85641312393
 # 85641312241, 85641312242, 85805454648
 
-autoHelper.registerAero("85805454648", "Jojon")
+autoHelper.registerWhatsapp("85805454648", "Jojon")
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 

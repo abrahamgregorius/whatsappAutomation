@@ -251,6 +251,7 @@ class AutoHelper:
             print("No OK button")
         sleep(10)
 
+
         # Clicking SKIP
         try:
             self.d(text="SKIP").click()
@@ -258,11 +259,13 @@ class AutoHelper:
         except:
             print("Failed skip")
 
+
         # Google backup
         try:
             self.d(text="SKIP").click()
         except Exception:
             print("No skip button")
+
 
         # Registering name
         try:
@@ -272,6 +275,7 @@ class AutoHelper:
                 if i == " ":
                     self.pressKey("SPACE")
             self.pressKey(i)
+            print("Success typing name")
         except:
             print("Failed input name")
             
