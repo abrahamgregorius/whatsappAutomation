@@ -42,7 +42,7 @@ class AutoHelper:
         # os.system(f'adb kill-server')
         currentTime = time.ctime().split(" ")[3].replace(":", "_")
         os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id + "_" + currentTime + '.xml ')
-        print(
+        print(device_id + "_" + currentTime)
         sleep(1)
         os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml ~/Desktop/koko/flow/whatsappRegister' + device_id + currentTime + '.xml')
         print(currentTime)
@@ -770,6 +770,7 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone='+ phone_num + '" ' + packageName)
         # Tulis pesan
         self.d(resourceId="com.whatsapp:id/entry").clear_text()
+        self.d(resourceId="com.whatsapp:id/entry").click()
         sleep(1)
         pesan = message.upper()
         for i in pesan:
