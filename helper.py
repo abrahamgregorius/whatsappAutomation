@@ -39,16 +39,14 @@ class AutoHelper:
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
 
     def dumpUi(self, device_id):
-        os.system(f'adb kill-server')
-        currentTime = "abcdef"
-        # currentTime = time.ctime().split(" ")[3].replace(":", "_")
-        # os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id + "_" + currentTime + '.xml ')
-        os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id  + '.xml ')
-        print(currentTime)
+        # os.system(f'adb kill-server')
+        currentTime = time.ctime().split(" ")[3].replace(":", "_")
+        os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id + "_" + currentTime + '.xml ')
+        print(
         sleep(1)
-        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml C:/koko/pkl/flow/uidump/' + device_id + currentTime + '.xml')
+        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml ~/Desktop/koko/flow/whatsappRegister' + device_id + currentTime + '.xml')
         print(currentTime)
-        os.system(f'adb -s '+ device_id +' shell rm /sdcard/' + device_id + "_" + currentTime + '.xml')
+        # os.system(f'adb -s '+ device_id +' shell rm /sdcard/' + device_id + "_" + currentTime + '.xml')
 
     def installPackages(self):
         os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')
@@ -123,7 +121,7 @@ class AutoHelper:
         sleep(1)
         os.system(f'adb -s '+ self.device_id +' shell input tap 500 2150')
         sleep(1)
-        self.d(text="Reset netowrk settings").click()
+        self.d(text="Reset network settings").click()
         sleep(2)
         self.d(text="Reset settings").click()
         sleep(2)
@@ -768,9 +766,10 @@ class AutoHelper:
 
 
     def sendMessage(self, phone_num, packageName, message):
-        # Buka chatroom whatsapp
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
+        # Buka chatroom whatsapp - use country code when inputting number 
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone='+ phone_num + '" ' + packageName)
         # Tulis pesan
+        self.d(resourceId="com.whatsapp:id/entry").clear_text()
         sleep(1)
         pesan = message.upper()
         for i in pesan:
