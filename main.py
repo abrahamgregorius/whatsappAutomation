@@ -21,7 +21,18 @@ autoHelper = helper.AutoHelper()
 # 85892284244, 85641312393
 # 85641312241, 85641312242, 85805454648
 
-autoHelper.registerWhatsapp("85805454648", "Jojon")
+# autoHelper.registerAero("81239283553", "Sukma Bagus")
+# count = 0
+# for i in range(50):
+#     print(count)
+    # autoHelper.sendMessage("6281311951704", "com.whatsapp", "Halo bank")
+    # autoHelper.pushPhoto("6285641312393", "com.fmwhatsapp", "Bank halo")
+    # autoHelper.sendMessage("6285892284244", "com.whatsapp", "Anjay bank")
+    # autoHelper.pushVideo("6285641312393", "com.whatsapp", "")
+    # count+=1
+
+
+# autoHelper.dumpUi("R9CT4000AAM")
 
 # autoHelper.makeConnection("Tselhome-FFC6", "wpa2", "71313451")
 
@@ -31,4 +42,6 @@ autoHelper.registerWhatsapp("85805454648", "Jojon")
 
 # 62 - 85811403649
 
-# autoHelper.dumpUi('R9CT4000AAM')
+# autoHelper.dumpUi('R9CT4007GBM')
+
+autoHelper.clearRecentApp()

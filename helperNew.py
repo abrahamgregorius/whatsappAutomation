@@ -1171,7 +1171,7 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
         sleep(3)
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
-        self.d(text="CALL").click()
+        self.d(text="CALLz").click()
         # try:
         #     d(text="CONTINUE").click()
         #     d(text="While using the app").click()

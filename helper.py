@@ -14,7 +14,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4000AAM"
+    device_id = "R9CT4007GBM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -46,7 +46,6 @@ class AutoHelper:
         sleep(1)
         os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml ~/Desktop/koko/flow/whatsappRegister' + device_id + currentTime + '.xml')
         print(currentTime)
-        # os.system(f'adb -s '+ device_id +' shell rm /sdcard/' + device_id + "_" + currentTime + '.xml')
 
     def installPackages(self):
         os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')
@@ -175,6 +174,15 @@ class AutoHelper:
                 print("No message")
                 
                 break
+
+    def clearRecentApp(self):
+        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_APP_SWITCH')
+        try:
+            self.d(resourceId="com.sec.android.app.launcher:id/clear_all_button").click()
+            print("Cleared recent apps")
+        except:
+            print("Failed clearing recent apps")
+        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_HOME')
 
     def registerWhatsapp(self, phone_num, name):
         
@@ -764,13 +772,11 @@ class AutoHelper:
             print("No OK button")
 
 
-
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp - use country code when inputting number 
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone='+ phone_num + '" ' + packageName)
         # Tulis pesan
-        self.d(resourceId="com.whatsapp:id/entry").clear_text()
-        self.d(resourceId="com.whatsapp:id/entry").click()
+        self.d(resourceId="" + packageName + ':id/entry').clear_text()
         sleep(1)
         pesan = message.upper()
         for i in pesan:
@@ -778,29 +784,31 @@ class AutoHelper:
                 self.pressKey("SPACE")
             self.pressKey(i)
         # CLick send
-        os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
+        self.d(resourceId="" + packageName + ':id/send').click()
 
     def pushPhoto(self, phone_num, packageName, message=None):
         os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/Camera')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/peekingsponge.jpg -p ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/peekingsponge.jpg -p ' + packageName)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
+        self.d(resourceId="" + packageName + ':id/caption').set_text(message)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/send").click()
+        self.d(resourceId="" + packageName + ':id/send').click()
 
     def pushVideo(self, phone_num, packageName, message=None):
         # Push
         os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/Camera')
         sleep(2)
         # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/video.mp4 -p ' + packageName + '')
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/video.mp4 -p ' + packageName + '')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
+        try:
+            self.d(text="OK").click(timeout=25)
+        except:
+            print("Failed clicking OK")
+        self.d(resourceId="" + packageName + ':id/caption').set_text(message, timeout=25)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
-        sleep(1)
-        self.d(resourceId="com.whatsapp:id/send").click()
+        self.d(resourceId="" + packageName + ':id/send').click(timeout=25)
         
     def listAllWhatsapp(self):
         a = self.adbs(f'adb -s '+ self.device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
@@ -844,6 +852,8 @@ class AutoHelper:
     
 
 # UNUSED FUNCTIONS
+    # autoHelper.sendMessage("6285641312393", "com.whatsapp", "Bank halo")
+    # autoHelper.sendMessage("6285892284244", "com.whatsapp", "Anjay bank")
 # ALPHABET FUNCTION
 # def pressA():
 #     os.system(f'adb -s '+ device_id +' shell input keyevent KEYCODE_A')

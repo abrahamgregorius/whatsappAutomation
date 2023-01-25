@@ -1,43 +1,133 @@
 import os
 import random
 from time import sleep
+import time
 import requests
 import uiautomator2 as u2
 import subprocess
 import sqlite3
-
-packagename = "com.whatsapp"
-
-
-response = requests.get("https://names.drycodes.com/1?combine=2&nameOptions=boy_names")
-names = response.json()
-packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
+import helpers as helpers
+import namegenerator
+from lxml import html
+import requests
+import config as cfg
 
 class AutoHelper:
-    numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4000AAM"
-    d = u2.connect(device_id)
 
-    def __init__(self):
-        pass
+    def __init__(self, device_id, phone_number, phone_name, pull_id =0, acc_id =0):
+        self.device_id = device_id
+        self.phone_number = phone_number
+        self.heperny = helpers.QueryHelp(device_id,1)
+        self.d = u2.connect(device_id)
+        self.phone_name = phone_name
+        self.pull_id = pull_id
+        self.data_account = self.heperny.checkAccountReady(device_id)
+
 
     def adbs(self, command):
-        a = subprocess.run(command, capture_output=True)
-        return a.stdout.decode()
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        (out, _) = proc.communicate()
+        print(out)
+        return out.decode('utf-8')
+    def adb(self, command):
+    
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        (out, _) = proc.communicate()
+        return out.decode('utf-8')
+
 
     def startApp(self):     
         self.d.app_start("" + self.generatePackage() + "")
+
+    def generateFirstName(self):
+        for i in names:
+            res = i.split('_')[0]
+            return res
+
+    def generateLastName(self):
+        for i in names:
+            res = i.split('_')[1]
+            return res
 
     def generatePassword(self):
         for i in names:
             res = i
             return res
+    
+    def clearRecentApp(self):
+        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_APP_SWITCH')
+        sleep(0.5)
+        os.system(f'adb -s {self.device_id} shell input tap 557 1900') 
+        sleep(0.5)
+        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_HOME')    
+    
+    def setLanguage(self):
+        os.system("adb -s " + self.device_id + " shell am start -a android.settings.LOCALE_SETTINGS")
+        print("In the menu")
+        try:
+            self.d(text="English (United States)").click()
+            self.d(text="Terapkan").click()
+        except Exception:
+            print("No English option")
+        try:
+            self.d(text="Tambah bahasa").click()
+            self.d(text="English").click()
+            self.d(text="United States").click()
+            self.d(text="Atr sbg default").click()
+        except:
+            print("Already in English")
+            return
 
     def pressKey(self, keycode):
         os.system(f'adb -s '+ self.device_id +' shell input keyevent KEYCODE_' + keycode)
 
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
+
+    def clearApp(self, packageName):
+        os.system(f'adb -s {self.device_id} shell pm clear {packageName}')
+
+    def resetWifiConnection(self):
+        try:
+            os.system(f'adb -s '+ self.device_id +' shell am start -n "com.android.settings/.Settings"')
+        except:
+            print("Failed")
+        sleep(1)
+        
+        try:
+            os.system(f'adb -s '+ self.device_id +' shell input swipe 500 2200 500 100') # Swipe kebawah
+        except:
+            print("Failed")
+        sleep(1)
+        
+        try:
+            self.d(text="General management").click() # General management 
+        except:
+            print("Failed")        
+        sleep(0.7)
+        
+        try:
+            self.d(text="Reset").click() # Reset 
+        except:
+            print("Failed")        
+        sleep(0.7)
+        
+        try:
+            self.d(text="Reset network settings").click() # Reset network settings 
+        except:
+            print("Failed")        
+        sleep(0.1)
+        
+        try:
+            self.d(resourceId="com.android.settings:id/initiate_reset_network").click() # Reset settings 
+        except:
+            print("Failed")        
+        sleep(0.7)
+        
+        try:
+            self.d(resourceId="com.android.settings:id/execute_reset_network").click() # Reset
+        except:
+            print("Failed")            
 
     def installPackages(self):
         os.system(f'adb -s ' + self.device_id + ' install apk/com.whatsapp.apk')
@@ -52,6 +142,26 @@ class AutoHelper:
         os.system(f'adb -s ' + self.device_id + ' uninstall com.aero')
         os.system(f'adb -s ' + self.device_id + ' uninstall com.yowhatsapp')
         os.system(f'adb -s ' + self.device_id + ' uninstall com.fmwhatsapp')
+
+    def errorHandling(self, device_id, package_name, error_code, error_note):
+            try:
+                url = f"{cfg.app['apiURL']}/api/error_change"
+
+                payload={'device_id': device_id,
+                'package_name': package_name,
+                'error_code': error_code,
+                'error_note': error_note}
+                files=[
+
+                ]
+                headers = {}
+
+                response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+                print(response.text)
+            except:
+                print("Failed pushing API")
+
 
     def randomMonth(self):
         monthCoordinates = {
@@ -87,6 +197,14 @@ class AutoHelper:
         res = random.choice(list(genderCoordinates.values()))
         return res
 
+    def dumpUi(self, device_id):
+        currentTime = time.ctime().split(" ")[3].replace(":", "_")
+        os.system(f'adb -s '+ device_id +' shell uiautomator dump --compressed /sdcard/' + device_id + "_" + currentTime + '.xml ')
+        print(currentTime)
+        sleep(1)
+        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml  /home/pony/WORKON/appium-farming/uidump/' + device_id + currentTime + '.xml')
+        print(currentTime)
+
     def generateNumber(self):
         number = random.choice(self.numdata)
         return number
@@ -94,6 +212,26 @@ class AutoHelper:
     def generatePackage(self):
         package = random.choice(packdata)
         return package
+
+    def enableWifi(self):
+        os.system(f'adb -s '+ self.device_id +' shell svc wifi enable')
+
+    def disableWifi(self):
+        os.system(f'adb -s '+ self.device_id +' shell svc wifi disable')
+
+    def makeConnection(self, name, security, password):
+        os.system(f'adb -s '+ self.device_id +' shell cmd -w wifi connect-network '+ name + ' '+ security + ' '+ password) 
+
+    def resetConnection(self):
+        os.system(f'adb -s '+ self.device_id +' shell am start -n "com.android.settings/.Settings"')
+        os.system(f'adb -s '+ self.device_id +' shell input swipe 500 2200 500 100')
+        self.d.implicitly_wait(3)
+        sleep(3)
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 900')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 2150')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 580')
+        os.system(f'adb -s '+ self.device_id +' shell input tap 500 600')
+        self.pressKey("HOME")
 
     def grantPermission(self, packageName):
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CALL_LOG')
@@ -112,172 +250,105 @@ class AutoHelper:
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.RECORD_AUDIO')
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CONTACTS')
 
+    def checkDialog(self):
+        text = self.d(resourceId="android:id/message").get_text()
+        return text
+
     def registerWhatsapp(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp')
-        self.grantPermission("com.whatsapp")
-        self.d.app_start("com.whatsapp")
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.whatsapp")
+            self.d.app_start("com.whatsapp")
+            print("Permission granted and started app")
+            self.errorHandling(self.device_id, "com.whatsapp", "1", "Permission granted and started app")
+        except:
+            print("Permission not granted and app not started")
+            self.errorHandling(self.device_id, "com.whatsapp", "-1", "Permission not granted and app not started")
 
-        status = self.checkActivity()
 
-        if status == "com.whatsapp/com.whatsapp.registration.EULA":
-            try:
-                self.d(text="English").click()
-            except Exception:
-                print("No need to choose language")
-            try:
-                self.d(text="AGREE AND CONTINUE").click()
-                self.d(resourceId="com.whatsapp:id/registration_country").click()
-                self.d(resourceId="com.whatsapp:id/menuitem_search").click()
-                country = "INDONESIA"
-                sleep(1)
-                for i in country:
-                    self.pressKey(i)
-                self.d(text="Indonesia").click()
-                for i in phone_num:
-                    self.pressKey(i)
-                self.d(text="NEXT").click()
-                self.d(text="OK").click()
-            except Exception:
-                return False
         
-            try:
-                self.d(text="SKIP").click()
-                print("Success skip")
-            except:
-                print("Failed skip")
+        # English option
+        try:
+            self.d(resourceId="com.whatsapp:id/next_button").click()
+            print("Clicked next button")
+            self.errorHandling(self.device_id, "com.whatsapp", "2", "Clicked next button")
+        except Exception:
+            print("No need to choose language or no next button")
+            self.errorHandling(self.device_id, "com.whatsapp", "-2", "No need to choose language or no next button")
+
+
+
+        # Agree and continue
+        try:    
+            self.d(text="AGREE AND CONTINUE").click()
+            print("Clicked AGREE AND CONTINUE")
+            self.errorHandling(self.device_id, "com.whatsapp", "3", "Clicked AGREE AND CONTINUE")
+        except:
+            print("Failed clicking AGREE AND CONTINUE")
+            self.errorHandling(self.device_id, "com.whatsapp", "-3", "Failed clicking AGREE AND CONTINUE")
         
-            i = 0
-
-            while True:
-                data_acc = self.heperny.getAccounts()
-
-                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-                if checkbydb_columotp[4] != None:
-                    numberotp = checkbydb_columotp[4]
-                    print(numberotp)
-                    break
-                else:
-                    print("Waiting SMS Recive OTP")
-                i+=1
-                if i > 60:
-                    return False
-                    break
-                sleep(1)
-            try:
-                print("OTP FOUND "+str(numberotp))
-                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-                sleep(1)
-
-
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-                print("Set pullid otp to null")
-                print("Success input otp")
-            except Exception:
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-                print("Set pullid otp to null")
-                print("Failed input otp")
-
-            try:
-                self.d(text="OK").click()
-                sleep(1)
-                self.d(text="SKIP").click()
-
-
-                print("Success klik ok and skip")
-            except Exception:
-                print("Failed Skip backup")
-        
-            try:
-                self.d.click(280, 900)
-                nama = name.upper()
-                for i in nama:
-                    if i == " ":
-                        self.pressKey("SPACE")
-                    self.pressKey(i)
-                self.d(text="NEXT").click()
-            except Exception:
-                return False
             
-        else:
-            self.heperny.updateAccApps(1, "com.whatsapp", self.data_account[0])
-            return True
-
-    def registerBusiness(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.whatsapp.w4b')
-        self.grantPermission("com.whatsapp.w4b")
-        self.d.app_start('com.whatsapp.w4b')
-
-        status = self.checkActivity()
-        
-        # Indefinite page (Halaman tidak selalu muncul)
+            
+        # Clicking country picker and search bar
         try:
-            self.d(text="English").click(timeout=15)
-        except Exception:
-            print("No need to choose language")
-
-        # Halaman awal
-        try:
-            self.d(text="AGREE AND CONTINUE").click(timeout=15)
+            self.d(resourceId="com.whatsapp:id/registration_country").click()
+            self.d(resourceId="com.whatsapp:id/menuitem_search").click()
+            print("Clicked country picker and search bar")
+            self.errorHandling(self.device_id, "com.whatsapp", "4", "Clicked country picker and search bar")
         except:
-            print("Next step, 'AGREE AND CONTINUE' already pressed")
+            print("Failed clicking country picker and search bar")
+            self.errorHandling(self.device_id, "com.whatsapp", "-4", "Failed clicking country picker and search bar")
 
-        # First "USE A DIFFERENT NUMBER" page
+        # Choosing INDONESIA
         try:
-            self.d(text="USE A DIFFERENT NUMBER").click(timeout=15)
-        except Exception:
-            print("No need to use a different number")
-
-        # Clicking "registration_country" in "RegisterPhone"
-        try:
-            self.d(resourceId="com.whatsapp.w4b:id/registration_country").click(timeout=15)
-        except:
-            print("Already clicked 'registration_country'")
-
-        # Typing and choosing "Indonesia" as "registration_country"
-        try:
-            self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click(timeout=15)
             country = "INDONESIA"
             sleep(1)
             for i in country:
                 self.pressKey(i)
-            self.d(text="Indonesia").click(timeout=15)
-            print("Country 'Indonesia' is picked")
+            self.d(text="Indonesia").click()
+            print("Success choosing Indonesia")
+            self.errorHandling(self.device_id, "com.whatsapp", "5", "Success choosing Indonesia")
         except:
-            print("Failed")
+            print("Failed choosing Indonesia")
+            self.errorHandling(self.device_id, "com.whatsapp", "-5", "Failed choosing Indonesia")
 
-        # Second "USE A DIFFERENT NUMBER" page
-        try:
-            self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click(timeout=15)
-        except:
-            print("Failed use the same number")
         
-        # Type "phone_number"
+        # Typing phone number
+        sleep(5)
         try:
-            self.d(resourceId="com.whatsapp.w4b:id/registration_phone").click(timeout=15)
-            print(phone_num)
             for i in phone_num:
                 self.pressKey(i)
-            self.d(text="NEXT").click(timeout=15)
-        except Exception:
-            return False
-
-        try:
-            self.d(text="OK").click(timeout=10)
+            self.d(text="NEXT").click()
+            print("Success clicking phone number")
+            self.errorHandling(self.device_id, "com.whatsapp", "6", "Inputted phone number")
         except:
-            print("Failed clicked OK")
-            
-        try:
-            self.d(text="OK").click(timeout=10)
-        except:
-            print("Failed clicked OK")
+            print("Failed clicking phone number")
+            self.errorHandling(self.device_id, "com.whatsapp", "-6", "Failed inputting phone number")
+        
 
+        # Switching request
         try:
-            self.d(text="CONTINUE").click(timeout=15)
+            self.d(text="SWITCH").click()
+            print("Clicked SWITCH")
+            self.errorHandling(self.device_id, "com.whatsapp", "7", "Clicked SWITCH")
         except Exception:
-            print("Failed clicked CONTINUE")
+            print("No switch requested or failed clicking switch")
+            self.errorHandling(self.device_id, "com.whatsapp", "-7", "No switch requested or failed clicking SWITCH")
 
 
-        # Receive and type OTP
+        # Clicking OK
+        try:
+            self.d(text="OK").click()
+            print("Clicked OK")
+            self.errorHandling(self.device_id, "com.whatsapp", "8", "Clicked OK")
+        except Exception:
+            print("No OK button")
+            self.errorHandling(self.device_id, "com.whatsapp", "-8", "No OK button or failed clicking OK")
+        sleep(10)
+ 
+    
+        # <===========================OTP===========================>
+    
         i = 0
         while True:
             data_acc = self.heperny.getAccounts()
@@ -290,8 +361,8 @@ class AutoHelper:
             else:
                 print("Waiting SMS Recive OTP")
             i+=1
-            if i > 100:            
-                os.system(f'adb -s '+ self.device_id + ' shell pm clear com.whatsapp.w4b')
+            if i > 60:
+                return False
                 break
             sleep(1)
         try:
@@ -300,196 +371,199 @@ class AutoHelper:
             sleep(1)
 
             updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
-
-
             print("Set pullid otp to null")
             print("Success input otp")
+            self.errorHandling(self.device_id, "com.whatsapp", "9", "Inputted OTP")
         except Exception:
             updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
             print("Set pullid otp to null")
             print("Failed input otp")
+            self.errorHandling(self.device_id, "com.whatsapp", "-9", "Failed inputting OTP")
 
+        # <========================POST-OTP=========================>
+
+        # Clicking OK
         try:
-            self.d(text="SKIP").click(timeout=15)
-            self.d.click(300, 840)
-            print("success skip")
+            self.d(text="OK").click()
+            print("Clicked OK")
+            self.errorHandling(self.device_id, "com.whatsapp", "10", "Clicked OK")
+            sleep(1)
         except:
-            print("No Skipp")
+            print("Failed clicking OK")
+            self.errorHandling(self.device_id, "com.whatsapp", "-10", "Failed clicking OK")
         
-        # Type name
-        print("MAU INPUT NAME "+str(status))
-            
-        try:
-            print("MASUK INPUT NAME")
-            self.d(resourceId="com.whatsapp.w4b:id/registration_name").click(timeout=15)
-            self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
-            # nama = name.upper()
-            genertname = namegenerator.gen().split("-")[0]
-            nama = genertname.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-        except:
-            print("Failed input name")
-
-        # Clicking business category menu
-        try:
-            self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click(timeout=15)
-        except:
-            print("Failed clicked 'Business Category'")
-        print("MAU INPUT CHOICE CATEGORY "+str(status))
         
-
-        # Choosing business type
-        try:
-            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click(timeout=30.0)
-            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
-            self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click(timeout=30.0)
-            category = "other business".upper()
-            for i in category:
-                if i == " ":
-                    self.pressKey("SPACE")
-                
-                self.pressKey(i)
-                sleep(0.5)
-            print("Done search other business")
-        except:
-            print("Failed to search other business")
-        sleep(2)
-
-
-        try:
-            self.d(text="Other Business").click(timeout=30.0)
-            
-        except:
-            print("Failed click 'Other Business'")
-        sleep(1)
-        
-        try:
-            self.d(text="NEXT").click(timeout=30.0)
-        except:
-            print("Failed clicked 'NEXT'")
-
-        try:
-            self.d(text="NOT NOW").click(timeout=30.0) 
-        except:
-            print("Not now error")
-            return False
-                    
-    def registerFm(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.fmwhatsapp')
-        self.grantPermission("com.fmwhatsapp")
-        self.d.app_start('com.fmwhatsapp')
-
-        status = self.checkActivity()
-
-        if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
-
-            try:
-                self.d(text="AGREE AND CONTINUE").click()
-                self.d(resourceId="com.fmwhatsapp:id/registration_country").click()
-                self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click()
-                country = "INDONESIA"
-                sleep(1)
-                for i in country:
-                    self.pressKey(i)
-                self.d(text="Indonesia").click()
-
-                for i in phone_num:
-                     self.pressKey(i)
-                self.d(text="NEXT").click()
-            except Exception:
-                return False
-
-            # Switching from business
-            try:
-                self.d(text="SWITCH").click()
-            except Exception:
-                print("No switch requested")
-
-            i = 0
-
-            while True:
-                data_acc = self.heperny.getAccounts()
-
-                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
-                if checkbydb_columotp[4] != None:
-                    numberotp = checkbydb_columotp[4]
-                    print(numberotp)
-                    break
-                else:
-                    print("Waiting SMS Recive OTP")
-                i+=1
-                if i > 60:
-                    return False
-                    break
-                sleep(1)
-            try:
-                print("OTP FOUND "+str(numberotp))
-                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
-                sleep(1)
-
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-                print("Set pullid otp to null")
-                print("Success input otp")
-            except Exception:
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
-                print("Set pullid otp to null")
-                print("Failed input otp")
-
-                # Google permission
+        # Clicking SKIP
+        try: 
             self.d(text="SKIP").click()
+            print("Success clicking skip")
+            self.errorHandling(self.device_id, "com.whatsapp", "11", "Clicked skip")
+        except Exception:
+            print("Failed clicking skip")
+            self.errorHandling(self.device_id, "com.whatsapp", "-11", "Failed clicking skip")
 
+    
+        # Registering name
+        try:
+            self.d.click(280, 900)
             nama = name.upper()
             for i in nama:
-                    if i == " ":
-                        self.pressKey("SPACE")
-                    self.pressKey(i)
+                if i == " ":
+                    self.pressKey("SPACE")
+                self.pressKey(i)
+            print("Inputted name")
+            self.errorHandling(self.device_id, "com.whatsapp", "12", "Inputted name")
+        except:
+            print("Failed typing name")
+            self.errorHandling(self.device_id, "com.whatsapp", "-12", "Failed inputting name")
+
+
+        # Clicking NEXT
+        try:
             self.d(text="NEXT").click()
-            self.d(text="CLOSE").click()
-        else:
-            self.heperny.updateAccApps(1, "com.fmwhatsapp", self.data_account[0])
+            self.heperny.updateAccAppsPullid(1, self.pull_id, self.pull_id, "com.whatsapp", self.data_account[0])
+            print("Clicked NEXT")
+            self.errorHandling(self.device_id, "com.whatsapp", "13", "Clicked NEXT")
             return True
-
-    def registerYo(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.yowhatsapp')
-        self.grantPermission("com.yowhatsapp")
-        self.d.app_start('com.yowhatsapp')
             
-        status = self.checkActivity()
+        except:
+            print("Failed input name")
+            self.errorHandling(self.device_id, "com.whatsapp", "-13", "Failed clicking NEXT")
+            return False
+            
 
-        if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
+    def registerBusiness(self, phone_num, name):
+        execute=0
+        maxexecute = 2
+        condition = 0
+        register_position = 0
+        while True:
+            print("PERCOBAAN KE - "+str(execute))
+            if execute == maxexecute and maxexecute > 0:
+                return False
+                break
+            if phone_num != None:
                 try:
-            # Front page
-                    self.d(text="AGREE AND CONTINUE").click()
+                    self.grantPermission("com.whatsapp.w4b")
+                    print("Success Grant Permission and Next Open Whatsapp")
+                    register_position = 1
+                except:
+                    print("Next Step open Whatsapp")
+                    register_position = -1
+                    pass
+                self.d.app_start('com.whatsapp.w4b')
+                print("Success Open APP Wa")
 
-                    self.d(resourceId="com.yowhatsapp:id/registration_country").click()
-                    self.d(resourceId="com.yowhatsapp:id/menuitem_search").click()
+                status = self.checkActivity()
+                print("Get Check Activity")
+                
+                if status == "com.whatsapp.HomeActivity":
+                    self.heperny.updateAccAppsPullid(1, self.pull_id, self.pull_id, "com.whatsapp.w4b", self.data_account[0])
+                    return False
+                    break
+                if status == "com.whatsapp.registration.EULA" or status != "com.whatsapp.HomeActivity" or status == null:
+                    self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
+
+
+                # English option
+                try:
+                    self.d(resourceId="com.whatsapp:id/next_button").click()
+                    print("Clicked next button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "1", "Clicked next button")
+                except Exception:
+                    print("No next button or failed clicking button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-1", "No next button or failed clicking next button")
+
+
+                # Agree and continue
+                try:
+                    self.d(text="AGREE AND CONTINUE").click()
+                    print("Clicked AGREE AND CONTINUE")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "2", "Clicked AGREE AND CONTINUE")
+                except:
+                    print("Failed clicking AGREE AND CONTINUE")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-2", "Failed clicking AGREE AND CONTINUE")
+    
+    
+                # Use a different number 
+                try:
+                    self.d(text="USE A DIFFERENT NUMBER").click()
+                    print("Clicked USE A DIFFERENT NUMBER")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "3", "Clicked USE A DIFFERENT NUMBER")
+                except Exception:
+                    print("No USE A DIFFERENT NUMBER button or failed clicking button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-3", "No USE A DIFFERENT NUMBER button or failed clicking button")
+
+
+                # Clicking country picker and search bar
+                try:  
+                    self.d(resourceId="com.whatsapp.w4b:id/registration_country").click()
+                    self.d(resourceId="com.whatsapp.w4b:id/menuitem_search").click()
+                    print("Clicked country picker and search bar")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "4", "Clicked country picker and search bar")
+                except:
+                    print("Failed clicking country picker and search bar")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-4", "Failed clicking country picker and search bar")
+
+
+                # Typing and choosing Indonesia
+                try:
                     country = "INDONESIA"
                     sleep(1)
                     for i in country:
                         self.pressKey(i)
                     self.d(text="Indonesia").click()
+                    print("Success choosing INDONESIA")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "5", "Success choosing INDONESIA")
+                except:
+                    print("Failed choosing Indonesia")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-5", "Failed choosing INDONESIA")
 
-                    # Input number
-                    self.d(text="phone number").click()
-                    for i in phone_num:
-                            self.pressKey(i)
-                    self.d(text="NEXT").click()
-                except Exception:
-                    return False
-                    
+
+                # Typing number and clicking next
                 try:
-                    self.d(text="SWITCH").click()
+                    for i in phone_num:
+                        self.pressKey(i)
+                    self.d(text="NEXT").click()
+                    print("Typed number and clicked NEXT")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "6", "Typed number and clicked NEXT")
+                except:
+                    print("Failed typing number and clicking NEXT")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-6", "Failed typing number and clicking NEXT")
+
+
+                # Clicking USE THIS NUMBER button
+                try: 
+                    self.d(resourceId="com.whatsapp.w4b:id/use_consumer_app_info_button").click()
+                    print("Clicked USE THIS NUMBER button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "7", "Clicked USE THIS NUMBER button")
+                except:
+                    print("Failed clicking USE THIS NUMBER button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-7", "Failed clicking USE THIS NUMBER button")
+
+
+                # Clicking CONTINUE
+                try:
+                    self.d(text="CONTINUE").click()
+                    print("Clicked CONTINUE")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "8", "Clicked CONTINUE")
                 except Exception:
-                    print("There is no switch request")
+                    print("Failed clicking CONTINUE button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-8", "Failed clicking CONTINUE button")
+                    
+                # Clicking OK
+                try:
+                    self.d(text="OK").click()
+                    print("Clicked OK")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "9", "Clicked OK")
+                except:
+                    print("Failed clicking OK button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-9", "Failed clicking OK button")
 
-                # Confirmation
-                self.d(text="OK").click()
+                # <===========================OTP===========================>
 
+                # Receive and type OTP
                 i = 0
-
                 while True:
                     data_acc = self.heperny.getAccounts()
 
@@ -501,8 +575,8 @@ class AutoHelper:
                     else:
                         print("Waiting SMS Recive OTP")
                     i+=1
-                    if i > 60:
-                        return False
+                    if i > 100:            
+                        os.system(f'adb -s '+ self.device_id + ' shell pm clear com.whatsapp.w4b')
                         break
                     sleep(1)
                 try:
@@ -510,56 +584,211 @@ class AutoHelper:
                     os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
                     sleep(1)
 
+                    updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
 
-                    updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+
                     print("Set pullid otp to null")
-                    print("Success input otp")
+                    print("Success inputting otp")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "10", "Success inputting OTP")
                 except Exception:
-                    updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                    updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
                     print("Set pullid otp to null")
-                    print("Failed input otp")
+                    print("Failed inputting otp")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-10", "Failed inputting OTP")
+                    
+                # <========================POST-OTP=========================>
 
-                # Google permission request
-                self.d(text="SKIP").click()
-                nama = name.upper()
-                for i in nama:
-                     if i == " ":
-                          self.pressKey("SPACE")
-                     self.pressKey(i)
-                self.d(text="NEXT").click()
-                self.d(text="CLOSE").click()
+                # Google Backup
+                try:
+                    self.d(text="SKIP").click(timeout=15)
+                    self.d.click(300, 840)
+                    print("Clicked SKIP")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "11", "Clicked SKIP")
+                except:
+                    print("No SKIP button or failed clicking button")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-11", "No SKIP button or failed clicking button")
+                
 
-        else:
-            self.heperny.updateAccApps(1, "com.yowhatsapp", self.data_account[0])
-            return True
-            
-    def registerAero(self, phone_num, name):
-        os.system(f'adb -s '+ self.device_id +' shell pm clear com.aero')
-        self.grantPermission("com.aero")
-        self.d.app_start('com.aero')
+                # Type name
+                print("MAU INPUT NAME "+str(status))
+                    
+                try:
+                    print("MASUK INPUT NAME")
+                    self.d(resourceId="com.whatsapp.w4b:id/registration_name").click(timeout=15)
+                    self.d(resourceId="com.whatsapp.w4b:id/registration_name").clear_text()
+                    # nama = name.upper()
+                    url = "http://ninjaname.horseridersupply.com/indonesian_name.php?number_generate=1&gender_type=male&submit=Generate"
 
-        status = self.checkActivity()
+                    payload={
+                        'number_generate': '1',
+                        'gender_type': 'male',
+                        'submit': 'Generate'
+                    }
+                    headers = {
+                        'number_generate': '1',
+                        'gender_type': 'male',
+                        'submit': 'Generate'
+                    }
 
-        if status == "com.aero/com.aero.registration.EULA":
+                    a = requests.request("POST", url,headers=headers, data=payload)
+                    get = html.fromstring(a.text)
+                    nama = get.xpath('/html/body/div[1]/div[2]/div[2]/div[1]/div[4]//text()')
+                    genertname = nama[0].replace("• ", "")
+                    nama = genertname.upper()
+                    for i in nama:
+                        if i == " ":
+                            self.pressKey("SPACE")
+                        self.pressKey(i)
+                        
+                    print("Success inputting name")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "12", "Success inputting name")
+                except:
+                    print("Failed inputting name")
+                    # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-12", "Failed inputting name")
+
+                # Clicking BUSINESS TYPE menu
             try:
-                # Front page
-                self.d(text="AGREE AND CONTINUE").click()
+                self.d(resourceId="com.whatsapp.w4b:id/register_name_business_categories").click()
+                print("Clicked BUSINESS TYPE menu")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "13", "Clicked BUSINESS TYPE menu")
+            except:
+                print("Failed clicking BUSINESS TYPE menu")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-13", "Failed clicking BUSINESS TYPE menu")
 
-                self.d(resourceId="com.aero:id/registration_country").click()
-                self.d(resourceId="com.aero:id/menuitem_search").click()
+
+            # Clicking and clearing search bar
+            try:
+                self.d(resourceId="com.whatsapp.w4b:id/search_src_text").click()
+                self.d(resourceId="com.whatsapp.w4b:id/search_src_text").clear_text()
+                print("Clicked and cleared search bar")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "14", "Clicked and cleared search bar")
+            except:
+                print("Failed clicking and clearing search bar")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-14", "Failed clicking and clearing search bar")
+
+
+            # Choosing other business
+            try:
+                category = "other"
+                kategori = category.upper()
+                for i in kategori:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+                sleep(1.5)
+                self.d(text="Other Business").click()
+                print("Chosen OTHER BUSINESS")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "15", "Chosen OTHER BUSINESS")
+            except:
+                print("Failed choosing OTHER BUSINESS")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-15", "Failed choosing OTHER BUSINESS")
+
+
+            # Clicking NEXT
+            try:
+                self.d(text="NEXT").click()
+                print("Clicked NEXT")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "16", "Clicked NEXT")
+            except: 
+                print("Failed clicking NEXT")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-16", "No NEXT button or Failed clicking NEXT")
+
+            sleep(6)
+
+            # Clicking NOT NOW
+            try:
+                self.d(text="NOT NOW").click()
+                print("Clicked NOT NOW")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-17", "Clicked NOT NOW")
+                status_reg=1
+                self.heperny.updateAccAppsPullid(status_reg, self.pull_id, self.pull_id, "com.whatsapp.w4b", self.data_account[0])
+                return True
+                break
+            except:     
+                print("No NOT NOW button or failed clicking button")
+                # self.errorHandling(self.device_id, "com.whatsapp.w4b", "-17", "No NOT NOW button or failed clicking button")
+                return False
+                break
+            execute+=1
+            sleep(1)
+
+    def registerFm(self, phone_num, name):
+        # Granting permission and starting app
+        self.grantPermission("com.fmwhatsapp")
+        self.d.app_start('com.fmwhatsapp')
+        print("Granted permissions and started app")
+        
+        # status = self.checkActivity()
+        status = "com.fmwhatsapp/com.fmwhatsapp.registration.EULA"
+        print("RegisterFMWhatsapp starting...")
+        if status == "com.fmwhatsapp/com.fmwhatsapp.registration.EULA":
+
+            # Agree and continue
+            try:
+                self.d(text="AGREE AND CONTINUE").click(timeout=25)
+                print("Clicked Agree and Continue")
+            except:
+                print("Failed clicking Agree and Continue")
+            
+           # Clicking country picker and search bar
+            try:
+                self.d(resourceId="com.fmwhatsapp:id/registration_country").click(timeout=25)
+                self.d(resourceId="com.fmwhatsapp:id/menuitem_search").click(timeout=25)
+                print("Clicked country picker and search bar")
+            except:
+                print("Failed clicking country picker and search bar")
+            
+         
+            # Typing and clicking INDONESIA        
+            try:
                 country = "INDONESIA"
                 sleep(1)
                 for i in country:
                     self.pressKey(i)
-                self.d(text="Indonesia").click()
-
-                # Input number
-                self.d(text="phone number").click()
+                print("Typed country")
+                self.d(text="Indonesia").click(timeout=25)
+                print("Typed and clicked Indonesia")
+            except:
+                print("Failed typing and clicking Indonesia")
+         
+         
+            # Typing phone number
+            try:
                 for i in phone_num:
                     self.pressKey(i)
-                self.d(text="NEXT").click()
+                print("Typed phone number")
+            except:
+                print("Failed typing phone number")
+                
+
+            # Clicking NEXT
+            try:
+                self.d(text="NEXT").click(timeout=25)
+                print("Clicked NEXT")
+            except:
+                print("Failed clicking NEXT button")
+                
+            # Switching from business
+            try:
+                self.d(text="SWITCH").click(timeout=10)
+                print("Clicked SWITCH")
             except Exception:
-                return False
+                print("No switch requested")
+
+            # Clicking OK
+            try:
+                self.d(text="OK").click(timeout=25)
+            except Exception:
+              print("No OK button")
+            
+
+            # Switching from business
+            try:
+                self.d(text="SWITCH").click()
+            except Exception:
+                print("No switch requested")
+
+            # <===========================OTP===========================>
 
             i = 0
 
@@ -583,71 +812,481 @@ class AutoHelper:
                 os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
                 sleep(1)
 
-
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
                 print("Set pullid otp to null")
                 print("Success input otp")
             except Exception:
-                updatemspull = self.heperny.updateSmspullOtp(None, self.pull_id)
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+                
+                
+            # <========================POST-OTP=========================>
+
+            # Google permission
+            try:
+                self.d(text="SKIP").click()
+            except:
+                print("No SKIP button")
+
+
+            # Inputting name
+            try:
+                sleep(5)
+                self.d(resourceId="com.fmwhatsapp:id/registration_name").click(timeout=25)
+                nama = name.upper()
+                for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+            except:
+                print("Failed inputting name")
+            
+            # Clicking NEXT
+            try:
+                self.d(text="NEXT").click()
+            except:
+                print("No NEXT button")
+            
+            # Clicking CANCEL
+            try:
+                self.d(text="CANCEL").click()
+            except:
+                print("No CANCEL button")
+            
+            # Clicking CLOSE
+            try:
+                self.d(text="CLOSE").click()
+            except:
+                print("No CLOSE button")
+                
+                
+            self.heperny.updateAccAppsPullid(1, self.pull_id, self.pull_id, "com.fmwhatsapp", self.data_account[0])
+        else:
+            self.heperny.updateAccApps(1, "com.fmwhatsapp", self.data_account[0])
+            return True
+
+    def registerYo(self, phone_num, name):
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.yowhatsapp")
+            self.d.app_start('com.yowhatsapp')
+            # self.adb("adb -s "+self.device_id+" shell am start -n com.yowhatsapp.Main")
+            print("Permission granted and started app")
+        except:
+            print("Permission not granted and app is not started")
+
+        status = "com.yowhatsapp/com.yowhatsapp.registration.EULA"
+        print("RegisterYoWhatsapp starting...")
+        if status == "com.yowhatsapp/com.yowhatsapp.registration.EULA":
+
+            # Agree and continue
+            try:
+                self.d(text="AGREE AND CONTINUE").click(timeout=15)
+                print("Clicked AGREE AND CONTINUE")
+            except:
+                print("Failed clicking AGREE AND CONTINUE")
+            
+            
+            # Country picking and choosing Indonesia
+            try:
+                self.d(resourceId="com.yowhatsapp:id/registration_country").click(timeout=15)
+                self.d(resourceId="com.yowhatsapp:id/menuitem_search").click(timeout=15)
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click(timeout=15)
+            except: 
+                print("Failed picking country and choosing INDONESIA")
+                
+                
+            # Input number
+            try:
+                self.d(text="phone number").click(timeout=15)
+                for i in phone_num:
+                        self.pressKey(i)
+                self.d(text="NEXT").click(timeout=15)
+            except: 
+                print("Failed inputting number and clicking NEXT")
+            
+            
+            # Switching from Business
+            try:
+                self.d(text="SWITCH").click(timeout=15)
+            except Exception:
+                print("There is no switch request")
+                
+
+            # Confirmation
+            try:
+                self.d(text="OK").click(timeout=15)
+            except Exception:
+                print("No OK button")
+            
+            # <===========================OTP===========================>
+            
+            i = 0
+
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
                 print("Set pullid otp to null")
                 print("Failed input otp")
 
+            # <========================POST-OTP=========================>
+
+            # Backing up from Google Drive
             try:
-                self.d(text="SWITCH").click()
+                self.d(text="SKIP").click(timeout=15)
+            except Exception:
+                print("No skip button")
+                
+                
+            # Inputting name
+            try:
+                sleep(5)
+                nama = name.upper()
+                for i in nama:
+                        if i == " ":
+                            self.pressKey("SPACE")
+                        self.pressKey(i)
             except:
+                print("Failed inputting name")
+
+
+            # Clicking NEXT
+            try:
+                self.d(text="NEXT").click(timeout=15)
+            except Exception:
+                print("No NEXT button")
+
+            # Clickng CANCEL for updates
+            try:
+                self.d(text="CANCEL").click(timeout=15)
+            except:
+                print("No CANCEL button")
+
+            # Clicking CLOSE
+            try:
+                self.d(text="CLOSE").click(timeout=15)
+            except Exception:
+                print("No CLOSE button")
+            
+            self.heperny.updateAccAppsPullid(1, self.pull_id, self.pull_id, "com.yowhatsapp", self.data_account[0])        
+        else:
+            self.heperny.updateAccApps(1, "com.yowhatsapp", self.data_account[0])
+            return True
+            
+    def registerAero(self, phone_num, name):
+        # Granting permission and starting app
+        try:
+            self.grantPermission("com.aero")
+            self.d.app_start("com.aero")
+            # self.adb("adb -s "+self.device_id+" shell am start -n com.aero.Main")
+            print("Permission granted and app started")
+        except: 
+            print("Permission not granted and app not started")
+
+
+        status = "com.aero/com.aero.registration.EULA"
+        print("RegisterWhatsappAero starting...")
+        if status == "com.aero/com.aero.registration.EULA":
+
+            # AGREE AND CONTINUE
+            try:
+                self.d(text="AGREE AND CONTINUE").click(timeout=15)
+                print("Clicked AGREE AND CONTINUE")
+            except:
+                print("Failed clicking AGREE AND CONTINUE")
+
+
+            # Clicking country picker and search bar
+            try:
+                self.d(resourceId="com.aero:id/registration_country").click(timeout=15)
+                self.d(resourceId="com.aero:id/menuitem_search").click(timeout=15)
+                print("Clicked country picker and search bar")
+            except:
+                print("Failed clicking country picker and search bar")
+
+
+            # Typing and choosing INDONESIA
+            try:
+                country = "INDONESIA"
+                sleep(1)
+                for i in country:
+                    self.pressKey(i)
+                self.d(text="Indonesia").click(timeout=15)
+                print("Success choosing INDONESIA")
+            except: 
+                print("Failed typing and choosing INDONESIA")
+
+
+            # Inputting number
+            try:
+                self.d(text="phone number").click(timeout=15)
+                for i in phone_num:
+                    self.pressKey(i)
+                self.d(text="NEXT").click(timeout=15)
+                print("Inputted phone number and clicked NEXT")
+            except: 
+                print("Failed inputting phone number and clicked NEXT")
+
+
+            # Switching from Business
+            try:
+                self.d(text="SWITCH").click(timeout=15)
+            except Exception:
                 print("No switch requested")
+
+
             # Confirmation
-            self.d(text="OK").click()
-            # Verify hanya 7 jam sekali
-            self.d(text="CONTINUE").click()
-            self.d(text="Allow").click()
+            try:
+                self.d(text="OK").click(timeout=15)
+            except Exception:
+                print("No OK button")
 
-            nama = name.upper()
-            for i in nama:
-                if i == " ":
-                    self.pressKey("SPACE")
-                self.pressKey(i)
-            self.d(text="NEXT").click()
-            self.d(text="THANKS!").click()
+            # <===========================OTP===========================>
+            
+            i = 0
 
+            while True:
+                data_acc = self.heperny.getAccounts()
+
+                checkbydb_columotp = self.heperny.checkSmsOtpColumn(self.pull_id)
+                if checkbydb_columotp[4] != None:
+                    numberotp = checkbydb_columotp[4]
+                    print(numberotp)
+                    break
+                else:
+                    print("Waiting SMS Recive OTP")
+                i+=1
+                if i > 60:
+                    return False
+                    break
+                sleep(1)
+            try:
+                print("OTP FOUND "+str(numberotp))
+                os.system(f'adb -s '+self.device_id+' shell input text "'+str(numberotp)+'"')
+                sleep(1)
+
+
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
+                print("Set pullid otp to null")
+                print("Success input otp")
+            except Exception:
+                updatemspull = self.heperny.updateSmspullOtp(None, self.device_id, self.pull_id)
+                print("Set pullid otp to null")
+                print("Failed input otp")
+
+
+            # <=======================POST-OTP=======================>
+
+            # Google backup
+            try:
+                self.d(text="SKIP").click(timeout=15)
+                print("Clicked SKIP")
+            except:
+                print("Failed clicking SKIP")
+
+
+            # Inputting name
+            try:
+                nama = name.upper()
+                for i in nama:
+                    if i == " ":
+                        self.pressKey("SPACE")
+                    self.pressKey(i)
+                print("Success inputting name")
+            except:
+                print("Failed inputting name")
+
+
+            # Clicking NEXT
+            try:
+                self.d(text="NEXT").click(timeout=15)
+            except Exception:
+                print("No NEXT button")
+
+
+            # Clicking LATER
+            try:
+                self.d(text="LATER").click(timeout=15)
+            except Exception:
+                print("No LATER button")
+
+
+            # Clicking THANKS
+            try:
+                self.d(text="THANKS!").click(timeout=15)
+            except Exception:
+                print("No THANKS button")
+
+            self.heperny.updateAccAppsPullid(1, self.pull_id, self.pull_id, "com.aero", self.data_account[0])
         else:
             self.heperny.updateAccApps(1, "com.aero", self.data_account[0])
             return True
 
+    def updateAPIMessagesSTatus(self, device_id, package_name, target, message, status):
+        url = f"{cfg.app['apiURL']}/api/job/status"
+
+        payload={'device_id': device_id,
+        'package_name': package_name,
+        'target': target,
+        'message': message,
+        'status': status,
+        '': ''}
+        files=[
+
+        ]
+        headers = {}
+
+        response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+        print(response.text)
+    
     def sendMessage(self, phone_num, packageName, message):
+        self.clearRecentApp()
         # Buka chatroom whatsapp
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone='+ phone_num + '" ' + packageName)
         # Tulis pesan
-        sleep(1)
+        try:
+            self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+        except:
+            print("ERROR PUSH API")
+
+        try:
+            self.d(resourceId="" + packageName + ':id/entry').clear_text()
+        except:
+            print("ERROR NO-wa AKUN")
+            self.clearRecentApp()
+            return
+
         pesan = message.upper()
+
         for i in pesan:
             if i == " ":
                 self.pressKey("SPACE")
             self.pressKey(i)
         # CLick send
-        os.system(f'adb -s '+ self.device_id +' shell input tap 1000 2205')
+        status_send = False
 
-    def pushPhoto(self, phone_num, packageName, message=None):
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM/Camera')
+        sleep(0.5)
+
+        try:
+            # self.d(resourceId="" + packageName + ':id/send').click()
+            os.system(f'adb -s {self.device_id} shell input tap 1010 2208')
+            status_send = True
+        except:
+            status_send = False
+        
+        
+        if status_send == True:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, 1)
+            except:
+                print("ERROR PUSH API")
+        else:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+            except:
+                print("ERROR PUSH API")
+            
+
+
+    def pushPhoto(self, phone_num, packageName, message, fn):
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/'+ fn +' /storage/emulated/0/DCIM/')
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/peekingsponge.jpg -p ' + packageName)
+        try:
+            self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+        except:
+            print("ERROR PUSH API")
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/'+ fn +' -p ' + packageName)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
+        self.d(resourceId="" + packageName + ':id/caption').set_text(message)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/send").click()
+        status_send = False
 
-    def pushVideo(self, phone_num, packageName, message=None):
+        try:
+            self.d(resourceId="" + packageName + ':id/send').click()
+            status_send = True
+        except:
+            status_send = False
+        
+        
+        if status_send == True:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, 1)
+            except:
+                print("ERROR PUSH API")
+        else:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+            except:
+                print("ERROR PUSH API")
+
+    def pushVideo(self, phone_num, packageName, message, fn):
         # Push
-        os.system(f'adb -s '+ self.device_id +' push MEDIA/video.mp4 /storage/emulated/0/DCIM/Camera')
+        os.system(f'adb -s '+ self.device_id +' push MEDIA/'+ fn +' /storage/emulated/0/DCIM/')
         sleep(2)
+        try:
+            self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+        except:
+            print("ERROR PUSH API")
         # Send menu
-        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "62'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/Camera/video.mp4 -p ' + packageName + '')
+        os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.SEND -t text/plain -e jid "'+ phone_num +'@s.whatsapp.net" --eu android.intent.extra.STREAM file:///storage/emulated/0/DCIM/'+ fn +' -p ' + packageName)
         sleep(2)
-        os.system(f'adb -s '+ self.device_id +' shell input tap 888 1270')
+        try:
+            self.d(text="OK").click(timeout=25)
+        except:
+            print("Failed clicking OK")
+        self.d(resourceId="" + packageName + ':id/caption').set_text(message)
         sleep(1)
-        self.d(resourceId="com.whatsapp:id/caption").set_text(message)
-        sleep(1)
-        self.d(resourceId="com.whatsapp:id/send").click()
+        status_send = False
+
+        try:
+            self.d(resourceId="" + packageName + ':id/send').click()
+            status_send = True
+        except:
+            status_send = False
+        
+        
+        if status_send == True:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, 1)
+            except:
+                print("ERROR PUSH API")
+        else:
+            try:
+                self.updateAPIMessagesSTatus(self.device_id, packageName, phone_num, message, -1)
+            except:
+                print("ERROR PUSH API")
+        
+    def sendMedia(self, phone_num, packageName, message=None):
+        pass
         
     def listAllWhatsapp(self):
         a = self.adbs(f'adb -s '+ self.device_id +' shell cmd package list packages | grep -E "whatsapp\|aero"')
@@ -656,11 +1295,14 @@ class AutoHelper:
             print(i.split(':')[1])
 
     def checkActivity(self):
-        a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
-        b = a.split()[2][:-1]
-        c = b.split("/")[1]
-        return b
-
+        try:
+            a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep mCurrentFocus')
+            b = a.split()[2][:-1]
+            c = b.split("/")[1]
+            return c
+        except:
+            return None
+                
     def checkStatus(self):
         status = self.checkActivity()
         try:
@@ -692,3 +1334,8 @@ class AutoHelper:
         #     d(text="Allow").click()
         # finally:
         os.system(f'adb -s '+ self.device_id +' shell input tap 900 190')
+        
+    def resetAdb(self):
+        os.system(f'adb kill-server')
+        sleep(15)
+        os.system(f'adb start-server')
