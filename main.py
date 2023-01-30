@@ -44,6 +44,10 @@ autoHelper = helper.AutoHelper()
 
 
 # autoHelper.sendMessage("6281311951704", "com.whatsapp", "Hello there")
-autoHelper.dumpUi('R9CT4000AAM')
+# autoHelper.dumpUi('R9CT4000AAM')
+
+autoHelper.changeProfilePicture()
+# autoHelper.changeName("Squidward Tentacle")
+# autoHelper.changeBio("SPONGEBOOOOOOBBBBB!!!!!!!!!")
 
 # autoHelper.clearRecentApp()

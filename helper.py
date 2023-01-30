@@ -843,12 +843,42 @@ class AutoHelper:
         finally:
             self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
     
-    def openWASettings(self):
-        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
-        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
-    
     def changeProfilePicture(self):
-        pass
+        # Start the activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+        
+        # Pushing the picture
+        os.system(f'adb -s  {self.device_id} push MEDIA/peekingsponge.jpg /storage/emulated/0/DCIM')
+        sleep(2)
+        
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+        
+        # Click "settings"
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+        
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+        
+        # Click change picture
+        self.d(resourceId="com.whatsapp:id/change_photo_btn").click()
+        
+        # Click Gallery
+        self.d(text="Gallery").click()
+        
+        # Click "All photos"
+        self.d(text="DCIM").click()
+        
+        # Click latest picture
+        self.d(index="1", description="Photo").click()
+        
+        # Click "Done"
+        self.d(resourceId="com.whatsapp:id/ok_btn").click()
+        
+        sleep(2)
+        
+        # Return to the main activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
     
     def changeName(self, name):
         # Start the activity
