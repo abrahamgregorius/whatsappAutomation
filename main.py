@@ -42,6 +42,8 @@ autoHelper = helper.AutoHelper()
 
 # 62 - 85811403649
 
-# autoHelper.dumpUi('R9CT4007GBM')
 
-autoHelper.clearRecentApp()
+# autoHelper.sendMessage("6281311951704", "com.whatsapp", "Hello there")
+autoHelper.dumpUi('R9CT4000AAM')
+
+# autoHelper.clearRecentApp()

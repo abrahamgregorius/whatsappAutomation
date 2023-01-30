@@ -14,7 +14,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4007GBM"
+    device_id = "R9CT4000AAM"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -44,7 +44,7 @@ class AutoHelper:
         os.system(f'adb -s '+ device_id +' shell uiautomator dump /sdcard/' + device_id + "_" + currentTime + '.xml ')
         print(device_id + "_" + currentTime)
         sleep(1)
-        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml ~/Desktop/koko/flow/whatsappRegister' + device_id + currentTime + '.xml')
+        os.system(f'adb -s '+ device_id +' pull /sdcard/' + device_id + "_" + currentTime + '.xml ~/Desktop/koko/flow/whatsappRegister/uidump/' + device_id + currentTime + '.xml')
         print(currentTime)
 
     def installPackages(self):
@@ -816,7 +816,7 @@ class AutoHelper:
         for i in b:
             print(i.split(':')[1])
 
-    def checkActivity(self):
+    def checkActivity(self):    
         try:
             a = self.adbs(f'adb -s '+ self.device_id +' shell dumpsys activity activities | grep -E "mCurrentFocus"')
             b = a.split()[2][:-1]
@@ -842,6 +842,15 @@ class AutoHelper:
                 print("Device is banned")
         finally:
             self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
+    
+    def changeProfilePicture(self):
+        pass
+    
+    def changeName(self):
+        pass
+    
+    def changeBio(self):
+        pass
     
     def makeCall(self, phone_num, packageName):
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)

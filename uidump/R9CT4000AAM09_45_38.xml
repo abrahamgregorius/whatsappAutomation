@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hierarchy rotation="0">
+	<node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,124][1069,799]">
+		<node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,124][1069,799]">
+			<node index="0" text="" resource-id="" class="android.widget.ListView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,124][1069,799]">
+				<node index="0" text="" resource-id="" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,124][1069,259]">
+					<node index="0" text="" resource-id="com.whatsapp:id/content" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,124][1069,259]">
+						<node index="0" text="" resource-id="" class="android.widget.RelativeLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,161][1024,222]">
+							<node index="0" text="New group" resource-id="com.whatsapp:id/title" class="android.widget.TextView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,161][1024,222]" />
+						</node>
+					</node>
+				</node>
+				<node index="1" text="" resource-id="" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,259][1069,394]">
+					<node index="0" text="" resource-id="com.whatsapp:id/content" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,259][1069,394]">
+						<node index="0" text="" resource-id="" class="android.widget.RelativeLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,296][1024,357]">
+							<node index="0" text="New broadcast" resource-id="com.whatsapp:id/title" class="android.widget.TextView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,296][1024,357]" />
+						</node>
+					</node>
+				</node>
+				<node index="2" text="" resource-id="" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,394][1069,529]">
+					<node index="0" text="" resource-id="com.whatsapp:id/content" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,394][1069,529]">
+						<node index="0" text="" resource-id="" class="android.widget.RelativeLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,431][1024,492]">
+							<node index="0" text="Linked devices" resource-id="com.whatsapp:id/title" class="android.widget.TextView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,431][1024,492]" />
+						</node>
+					</node>
+				</node>
+				<node index="3" text="" resource-id="" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,529][1069,664]">
+					<node index="0" text="" resource-id="com.whatsapp:id/content" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,529][1069,664]">
+						<node index="0" text="" resource-id="" class="android.widget.RelativeLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,566][1024,627]">
+							<node index="0" text="Starred messages" resource-id="com.whatsapp:id/title" class="android.widget.TextView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,566][1024,627]" />
+						</node>
+					</node>
+				</node>
+				<node index="4" text="" resource-id="" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,664][1069,799]">
+					<node index="0" text="" resource-id="com.whatsapp:id/content" class="android.widget.LinearLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[518,664][1069,799]">
+						<node index="0" text="" resource-id="" class="android.widget.RelativeLayout" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,701][1024,762]">
+							<node index="0" text="Settings" resource-id="com.whatsapp:id/title" class="android.widget.TextView" package="com.whatsapp" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[563,701][1024,762]" />
+						</node>
+					</node>
+				</node>
+			</node>
+		</node>
+	</node>
+</hierarchy>
