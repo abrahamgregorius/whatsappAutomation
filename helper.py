@@ -843,14 +843,68 @@ class AutoHelper:
         finally:
             self.sendMessage("Halo", self.generatePackage(), self.generateNumber())
     
+    def openWASettings(self):
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+    
     def changeProfilePicture(self):
         pass
     
-    def changeName(self):
-        pass
-    
-    def changeBio(self):
-        pass
+    def changeName(self, name):
+        # Start the activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+        
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+        
+        # Click "settings"
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+        
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+        
+        # Click "Name"
+        self.d(resourceId="com.whatsapp:id/profile_info_name_card").click()
+        
+        # Click the text field
+        self.d(resourceId="com.whatsapp:id/edit_text").click()
+        
+        # Setting the name into the field
+        self.d(resourceId="com.whatsapp:id/edit_text").set_text(str(name))
+        
+        # Saving the name
+        self.d(resourceId="com.whatsapp:id/save_button").click()
+        
+        # Going back to the main activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+        
+    def changeBio(self, name):
+        # Starting the activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+        
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+        
+        # Click "Settings"
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+        
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+        
+        # Click "About"
+        self.d(resourceId="com.whatsapp:id/profile_info_status_card").click()
+        
+        # Click custom about
+        self.d(resourceId="com.whatsapp:id/status_layout").click()
+        
+        # Setting name into the field
+        self.d(resourceId="com.whatsapp:id/edit_text").set_text(str(name))
+        
+        # Saving the name
+        self.d(resourceId="com.whatsapp:id/save_button").click()
+        
+        # Going back to the main activity
+        os.system(f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
     
     def makeCall(self, phone_num, packageName):
         os.system(f'adb -s '+ self.device_id +' shell am start -a android.intent.action.VIEW -d "https://api.whatsapp.com/send?phone=62'+ phone_num + '" ' + packageName)
