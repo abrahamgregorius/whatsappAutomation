@@ -9,6 +9,8 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 autoHelper = helper.AutoHelper()
 
+autoHelper.openWa()
+
 #     first = Main("Nenek", helper.generateNumber(), "R9CT4007GBM")
 #     first.pushVideo(helper.generatePackage())
 

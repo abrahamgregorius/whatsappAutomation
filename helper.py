@@ -14,7 +14,7 @@ packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4
 
 class AutoHelper:
     numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
-    device_id = "R9CT4000AAM"
+    device_id = "R9CT300FQRE"
     d = u2.connect(device_id)
 
     def __init__(self):
@@ -78,6 +78,98 @@ class AutoHelper:
         }
         res = random.choice(list(monthCoordinates.values()))
         return res
+
+    def changeProfilePicture(self):
+        # Start the activity
+        os.system(f'adb shell am start -n com.whatsapp/com.whatsapp.Main')
+        # Push photo
+        os.system(f'adb push media/bayi.jpeg /storage/emulated/0/DCIM/Camera')
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+        # Click "Settings"
+        self.d(text="Settings").click()
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+        # Click camera button
+        self.d(resourceId="com.whatsapp:id/change_photo_btn").click()
+        # Click gallery
+        self.d(text="Gallery").click()
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/more").click()
+        # Click File Manager
+        self.d(text="File Manager").click()
+        # Choose DCIM directory
+        self.d(text="DCIM").click()
+        # Select the photo by the name
+        self.d(text="bayi").click()
+        # Click OK and go to edit menu
+        self.d(text="OK").click()
+        # Click DONE
+        self.d(text="DONE").click()
+        # Return to activity
+        os.system(f'adb shell am start -n com.whatsapp/com.whatsapp.Main')
+
+
+    def changeName(self, name):
+        # Start the activity
+        os.system(
+            f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+
+        # Click "settings"
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+
+        # Click "Name"
+        self.d(resourceId="com.whatsapp:id/profile_info_name_card").click()
+
+        # Click the text field
+        self.d(resourceId="com.whatsapp:id/edit_text").click()
+
+        # Setting the name into the field
+        self.d(resourceId="com.whatsapp:id/edit_text").set_text(str(name))
+
+        # Saving the name
+        self.d(resourceId="com.whatsapp:id/save_button").click()
+
+        # Going back to the main activity
+        os.system(
+            f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+
+    def changeBio(self, name):
+        # Starting the activity
+        os.system(
+            f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+
+        # Click three circle button
+        self.d(resourceId="com.whatsapp:id/menuitem_overflow").click()
+
+        # Click "Settings"
+        self.d(text="Settings", resourceId="com.whatsapp:id/title").click()
+
+        # Click profile info
+        self.d(resourceId="com.whatsapp:id/profile_info").click()
+
+        # Click "About"
+        self.d(resourceId="com.whatsapp:id/profile_info_status_card").click()
+
+        # Click custom about
+        self.d(resourceId="com.whatsapp:id/status_layout").click()
+
+        # Setting name into the field
+        self.d(resourceId="com.whatsapp:id/edit_text").set_text(str(name))
+
+        # Saving the name
+        self.d(resourceId="com.whatsapp:id/save_button").click()
+
+        # Going back to the main activity
+        os.system(
+            f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
+
 
     def randomDay(self):
         day = random.randrange(1, 28, 1)
@@ -824,6 +916,9 @@ class AutoHelper:
             return c
         except Exception:
             return None
+        
+    def openWa(self):
+        os.system(f'adb -s {self.device_id} shell am start com.whatsapp')
 
     def checkStatus(self):
         status = self.checkActivity()
