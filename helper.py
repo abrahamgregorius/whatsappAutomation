@@ -38,6 +38,32 @@ class AutoHelper:
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
 
+
+    def clickById(self, id):
+        self.d(resourceId=f"{id}").click()
+        
+    def clickByText(self, text):
+        self.d(textContains=f"{text}").click()
+        
+    def clickByXY(self, x, y):
+        os.system(f'adb -s {self.device_id} input click {x} {y}')
+        
+    def getValueByText(self, text):
+        a = self.d(textContains=f"{text}").get_text()
+        print(a)
+        return a
+        
+    def getValueById(self, id):
+        a = self.d(resourceId=f"{id}").get_text()
+        print(a)
+        return a
+        
+    def getPLMN(self, text):
+        os.system(f"adb -s {self.device_id} shell am start com.android.phone/com.android.phone.settings.RadioInfo")
+        a = self.d(textContains=f"{text}").get_text()
+        b = str(a).split()[1].strip("PLMN()")
+        print(b)
+
     def dumpUi(self, device_id):
         # os.system(f'adb kill-server')
         currentTime = time.ctime().split(" ")[3].replace(":", "_")
