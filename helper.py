@@ -13,7 +13,6 @@ packagename = "com.whatsapp"
 packdata = ["com.whatsapp", "com.fmwhatsapp", "com.yowhatsapp", "com.whatsapp.w4b", "com.aero"]
 
 class AutoHelper:
-    numdata = ["85811403649", "895410810679", "895410810680", "895410808876"]
     device_id = "R9CT300FQRE"
     d = u2.connect(device_id)
 
@@ -37,7 +36,6 @@ class AutoHelper:
 
     def pressSend(self):
         os.system(f'adb -s ' + self.device_id + ' shell input tap 985 2230') 
-
 
     def clickById(self, id):
         self.d(resourceId=f"{id}").click()

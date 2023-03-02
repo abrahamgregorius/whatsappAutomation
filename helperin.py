@@ -323,51 +323,6 @@ class AutoHelper:
             return num
         else:
             return False
-    
-        
-    
-    def getImsi(self):
-        os.system(f"adb -s {self.device_id} shell am start com.android.phone/com.android.phone.settings.RadioInfo")
-        a = self.d(resourceId="com.android.phone:id/imsi").get_text()
-        plmn = int(str(a)[:5])
-
-        if plmn == "51001":
-            print("Indosat")
-            dial = "*123*30#"
-    
-        elif plmn == "51008" or plmn == "51011":
-            a = 0 
-            while True:
-                if a < 2: 
-                    print("Axis")
-                    card_type_op = "Axis"
-                    dial = "*123*7*5#"  
-                elif a > 2 and a < 5:
-                    print("XL")
-                    card_type_op = "XL"
-                    dial = "*123*7*1*2*1*1#"
-                if a > 5:
-                    break
-                a += 1
-        
-        elif data_imsi[2] == "51009":
-            print("Smartfreen")
-            card_type_op = "Smartfreen"
-            dial = "*999#"
-        
-        elif data_imsi[2] == "51089":
-            print("Tree")
-            card_type_op = "Tree"
-            dial = "*123#"
-        
-        elif data_imsi[2] == "51010":
-            dial = "*808*1#"
-            print("Telkomsel")
-            card_type_op = "Telkomsel"
-        
-        else:
-            card_type_op = None
-            dial = "*123#"
 
 
     def dumpUi(self, device_id):
