@@ -58,6 +58,85 @@ class AutoHelper:
         print(a)
         return a
         
+    def get_phone_number(self):
+        # Enter phone info menu
+        os.system(f'adb -s {self.device_id} shell am start -n com.android.phone/com.android.phone.settings.RadioInfo')
+        # Get IMSI
+        imsi = self.getValueById("com.android.phone:id/imsi")
+        # Get PLMN
+        plmn = str(imsi)[:5]
+        
+        # <===========================================================================>
+       
+        # Indosat
+        if plmn == "51001":
+            print("Indosat")
+            dial = "*123*30#"
+            provider = "Indosat"
+        # Axis
+        elif plmn == "51008": 
+            print("Axis")
+            dial = "*123*7*5#"
+            provider = "Axis"
+        # XL
+        elif plmn == "51011":
+            print("XL")
+            dial = "*123*7*1*2*1*1#"
+            provider = "XL"
+        # Smartfren
+        elif plmn == "51009":
+            print("Smartfren")
+            dial = "*999#"
+            provider = "Smartfren"
+        # Tree
+        elif plmn == "51089":
+            print("Tree")
+            dial = "*123#"
+            provider = "Tree"
+        # Telkomsel
+        elif plmn == "51010":
+            print("Telkomsel")
+            dial = "*808*1#"
+            provider = "Telkomsel"
+        else:
+            print(provider)
+            provider = None
+            dial = "*123#"
+        
+        # <===========================================================================>
+                 
+        # Enter dialer activity
+        os.system(f'adb -s {self.device_id} shell am start com.samsung.android.dialer/com.samsung.android.dialer.DialtactsActivity')
+        # Getting phone number by MMI Code
+        os.system(f'adb -s {self.device_id} shell input text {dial}')
+        # Pressing call
+        try:
+            os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_CALL')
+        except:
+            print("No dial button")
+        # Wait
+        sleep(10)
+        
+        # <===========================================================================>
+        
+        # Indosat
+        if provider == "Indosat":
+            num = str(self.d(resourceId="com.android.phone:id/message").get_text()).split()[2]
+            print(num)
+            return num   
+        # Telkomsel
+        elif provider == "Telkomsel":
+            num = str(self.d(resourceId="com.android.phone:id/message").get_text()).split()[2]
+            print(num)
+            return num
+        # XL
+        elif provider == "XL":
+            num = str(self.d(resourceId="android:id/message").get_text()).split(" ")[6]
+            print(num)
+            return num
+        else:
+            return False
+        
     def getPLMN(self, text):
         os.system(f"adb -s {self.device_id} shell am start com.android.phone/com.android.phone.settings.RadioInfo")
         a = self.d(textContains=f"{text}").get_text()
