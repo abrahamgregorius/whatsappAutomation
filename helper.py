@@ -136,12 +136,6 @@ class AutoHelper:
             return num
         else:
             return False
-        
-    def getPLMN(self, text):
-        os.system(f"adb -s {self.device_id} shell am start com.android.phone/com.android.phone.settings.RadioInfo")
-        a = self.d(textContains=f"{text}").get_text()
-        b = str(a).split()[1].strip("PLMN()")
-        print(b)
 
     def dumpUi(self, device_id):
         # os.system(f'adb kill-server')
@@ -214,7 +208,6 @@ class AutoHelper:
         # Return to activity
         os.system(f'adb shell am start -n com.whatsapp/com.whatsapp.Main')
 
-
     def changeName(self, name):
         # Start the activity
         os.system(
@@ -275,7 +268,6 @@ class AutoHelper:
         os.system(
             f'adb -s {self.device_id} shell am start -n com.whatsapp/com.whatsapp.Main')
 
-
     def randomDay(self):
         day = random.randrange(1, 28, 1)
         return day
@@ -325,7 +317,6 @@ class AutoHelper:
         sleep(3)
         self.pressKey("HOME")
         
-
     def grantPermission(self, packageName):
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.READ_CALL_LOG')
         os.system(f'adb -s '+ self.device_id +' shell pm grant '+ packageName +' android.permission.ACCESS_FINE_LOCATION')
@@ -490,8 +481,6 @@ class AutoHelper:
         except:
             print("Failed clicking NEXT")
 
-
-
     def registerBusiness(self, phone_num, name):
         
         # Granting permission and starting app
@@ -645,8 +634,6 @@ class AutoHelper:
         except:
             print("Failed clicking NOT NOW")
 
-
-
     def registerFm(self, phone_num, name):        
         # Granting permission and starting app
         self.grantPermission("com.fmwhatsapp")
@@ -754,8 +741,6 @@ class AutoHelper:
             self.d(text="OK").click(timeout=25)
         except:
             print("No OK button")
-
-
         
     def registerYo(self, phone_num, name):        
         # Granting permission and starting app
@@ -854,8 +839,6 @@ class AutoHelper:
             self.d(text="OK").click(timeout=25)
         except:
             print("No OK button")
-
-
 
     def registerAero(self, phone_num, name):
         # Granting permission and starting app
@@ -967,7 +950,6 @@ class AutoHelper:
             self.d(text="OK").click(timeout=15)
         except Exception:
             print("No OK button")
-
 
     def sendMessage(self, phone_num, packageName, message):
         # Buka chatroom whatsapp - use country code when inputting number 
