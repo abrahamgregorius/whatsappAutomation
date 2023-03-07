@@ -56,31 +56,175 @@ class AutoHelper:
         print(a)
         return a
         
-    def get_phone_number(self):
-        # Enter phone info menu
-        os.system(f'adb -s {self.device_id} shell am start -n com.android.phone/com.android.phone.settings.RadioInfo')
+    # Requires dual sim
+    def get_phone_number(self, sim):
+        # Conditioning
+        if str(sim) == "1":
+            # Swipe to setting in notification bar
+            for i in range(2):
+                os.system(f'adb -s {self.device_id} shell input swipe 500 10 500 1500')
+
+            # Choosing SIM 1
+            try:
+                self.d(textContains="Calls").click()
+                self.d(textContains="SIM 1").click()
+            except:
+                print("No dual sim")
+            
+            # Back from notification bar
+            for i in range(3):
+                os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_BACK')
+                sleep(.5)
+            
+            # Enter phone info menu
+            os.system(f'adb -s {self.device_id} shell am start -n com.android.phone/com.android.phone.settings.RadioInfo')
+            
+            # Set phone info to Phone 0
+            try:
+                self.d(textContains="Phone 0").click()
+            except:
+                self.d(textContains="Phone 1").click()
+                
+            self.d(textContains="Phone 0").click()
+        
+        elif str(sim) == "2":
+            os.system(f'adb -s {self.device_id} shell input swipe 500 10 500 1500')
+            os.system(f'adb -s {self.device_id} shell input swipe 500 10 500 1500')
+            
+            self.d(textContains="Calls").click()
+            self.d(textContains="SIM 2").click()
+            
+            for i in range(3):
+                os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_BACK')
+                sleep(.5)
+
+            os.system(f'adb -s {self.device_id} shell am start -n com.android.phone/com.android.phone.settings.RadioInfo')
+            
+            try:
+                self.d(textContains="Phone 0").click()
+            except:
+                self.d(textContains="Phone 1").click()
+            
+            self.d(textContains="Phone 1").click()
+            
         # Get IMSI
-        imsi = self.getValueById("com.android.phone:id/imsi")
+        imsi = self.d(resourceId="com.android.phone:id/imsi").get_text()
         # Get PLMN
         plmn = str(imsi)[:5]
         
         # <===========================================================================>
-       
+        
         # Indosat
         if plmn == "51001":
             print("Indosat")
             dial = "*123*30#"
             provider = "Indosat"
-        # Axis
-        elif plmn == "51008": 
-            print("Axis")
-            dial = "*123*7*5#"
-            provider = "Axis"
-        # XL
-        elif plmn == "51011":
-            print("XL")
-            dial = "*123*7*1*2*1*1#"
-            provider = "XL"
+        # Axis or XL
+        elif plmn == "51008" or plmn == "51011": 
+            i = 0
+            while i <= 1: 
+                
+                # AXIS Handler
+                try:
+                    print("Axis")
+                    dial = "*808*7*5#"
+                    provider = "Axis"
+
+                    # Enter dialer activity
+                    os.system(f'adb -s {self.device_id} shell am start com.samsung.android.dialer/com.samsung.android.dialer.DialtactsActivity')
+                    
+                    # Getting phone number by MMI Code
+                    os.system(f'adb -s {self.device_id} shell input text {dial}')
+                    
+                    # Pressing call
+                    try:
+                        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_CALL')
+                    except:
+                        print("No dial button")
+
+                    # Wait
+                    i = 0
+                    while True:
+                        try:
+                            a = self.d(resourceId="android:id/button1").exists()
+                            b = self.d(resourceId="android:id/button2").exists()
+                            if a == True or b == True: 
+                                print("responding")
+                                break
+                            
+                        except:
+                            if i == 5:
+                                print("melebihi batas")
+                                break
+                        i+=1
+                        
+
+                    # Getting phone number
+                    num = str(self.d(resourceId="android:id/message").get_text()).split(" ")[6]
+                    print(num)
+
+
+                    self.d(resourceId="android:id/button2").click(timeout=8)
+                    
+                    if num[:2] == "62":
+                        return num[2:]
+                    else:
+                        pass
+                except: 
+                    print("Not AXIS")
+
+                # XL Handler
+                try:
+                    print("XL")
+                    dial = "*808*7*1*2*1*1#"
+                    provider = "XL"
+
+                    # Enter dialer activity
+                    os.system(f'adb -s {self.device_id} shell am start com.samsung.android.dialer/com.samsung.android.dialer.DialtactsActivity')
+                    # Getting phone number by MMI Code
+                    os.system(f'adb -s {self.device_id} shell input text {dial}')
+                    # Pressing call
+                    try:
+                        os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_CALL')
+                    except:
+                        print("No dial button")
+
+                    i = 0
+                    # Wait
+                    while True:
+                        try:
+                            a = self.d(resourceId="android:id/button1").exists()
+                            b = self.d(resourceId="android:id/button2").exists()
+                            if a == True or b == True:
+                                print("ketemu")
+                                break
+                        except:
+                            if i >= 5:
+                                print("melebihi batas")
+                                break
+                        i+=1
+
+
+                    # Getting phone number
+                    num = str(self.d(resourceId="android:id/message").get_text()).split(" ")[6]
+                    print(num)
+
+                    # Clicking OK or Cancel
+                    try:
+                        self.d(resourceId="android:id/button2").click()
+                    except:
+                        print("button2 doesn't exist")
+                    try:
+                        self.d(resourceId="android:id/button1").click()
+                    except:
+                        print("button1 doesn't exist")
+
+                    return num[2:]
+
+                except:
+                    print("Not XL")
+                    exit()
+                
         # Smartfren
         elif plmn == "51009":
             print("Smartfren")
@@ -97,12 +241,12 @@ class AutoHelper:
             dial = "*808*1#"
             provider = "Telkomsel"
         else:
-            print(provider)
             provider = None
             dial = "*123#"
+            print(provider)
         
         # <===========================================================================>
-                 
+                    
         # Enter dialer activity
         os.system(f'adb -s {self.device_id} shell am start com.samsung.android.dialer/com.samsung.android.dialer.DialtactsActivity')
         # Getting phone number by MMI Code
@@ -112,29 +256,80 @@ class AutoHelper:
             os.system(f'adb -s {self.device_id} shell input keyevent KEYCODE_CALL')
         except:
             print("No dial button")
+        
+        i = 0
         # Wait
-        sleep(10)
+        while True:
+            try:
+                a = self.d(resourceId="android:id/button1").exists()
+                b = self.d(resourceId="android:id/button2").exists()
+                if a == True or b == True:
+                    print("ketemu")
+                    break
+            except:
+                if i >= 5:
+                    print("melebihi batas")
+                    break
+            i+=1
+            
+            
         
         # <===========================================================================>
         
         # Indosat
         if provider == "Indosat":
             num = str(self.d(resourceId="com.android.phone:id/message").get_text()).split()[2]
+            
+            try:
+                self.d(resourceId="android:id/button2").click(timeout=5)
+            except:
+                print("button2 doesn't exist")
+                return
+            try:
+                self.d(resourceId="android:id/button1").click(timeout=5)
+            except:
+                print("button1 doesn't exist")
+            
             print(num)
-            return num   
+            return num[1:]
         # Telkomsel
         elif provider == "Telkomsel":
             num = str(self.d(resourceId="com.android.phone:id/message").get_text()).split()[2]
+            
+            try:
+                self.d(resourceId="android:id/button2").click(timeout=5)
+            except:
+                print("button2 doesn't exist")
+                return
+            try:
+                self.d(resourceId="android:id/button1").click(timeout=5)
+            except:
+                print("button1 doesn't exist")
+            
             print(num)
-            return num
+            return num[2:]
         # XL
         elif provider == "XL":
             num = str(self.d(resourceId="android:id/message").get_text()).split(" ")[6]
+            
+            # Clicking OK or Cancel
+            try:
+                self.d(resourceId="android:id/button2").click(timeout=5)
+            except:
+                print("button2 doesn't exist")
+                return
+            try:
+                self.d(resourceId="android:id/button1").click(timeout=5)
+            except:
+                print("button1 doesn't exist")
+            
             print(num)
-            return num
-        else:
-            return False
-
+            return num[2:]
+        
+        # Tree
+        elif provider == "Tree":
+            num = str(self.d(resourceId="android:id/message").get_text()).split(" ")
+           
     def dumpUi(self, device_id):
         # os.system(f'adb kill-server')
         currentTime = time.ctime().split(" ")[3].replace(":", "_")
