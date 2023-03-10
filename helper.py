@@ -56,6 +56,40 @@ class AutoHelper:
         print(a)
         return a
         
+    def toggleDualMessenger(self):
+        # Enter Dual Messenger activity
+        os.system(f'adb -s {self.device_id} shell am start com.samsung.android.da.daagent/com.samsung.android.da.daagent.activity.DualAppActivity')
+        
+        # Selecting WhatsApp
+        self.clickByText('WhatsApp')
+        
+        # Loop for checking
+        a = 0
+        while True:
+            try:
+                check = self.d(resourceId="android:id/button1").exists()
+                if check == True:
+                    print("over")
+                    break
+                elif a >= 10:
+                    break
+            except:
+                print("Failed")
+                break
+            a+=1
+        
+        # Click install
+        self.d(resourceId="android:id/button1").click()
+        
+        # Run this if its the first time
+        try:
+            self.d(textContains="Confirm").click(timeout=5)
+            self.d(textContains="Next").click(timeout=5)
+            self.d(textContains="Yes").click(timeout=5)
+        except:
+            print("Not the first time")
+    
+        
     # Requires dual sim
     def get_phone_number(self, sim):
         # Conditioning

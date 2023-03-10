@@ -4,8 +4,8 @@ Libraries:
 - os
 - random
 - time
-    - sleep
 - requests
 - uiautomator2
 - subprocess
 - time
+
