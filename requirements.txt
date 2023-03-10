@@ -1,5 +1,13 @@
 Requirements:
 
+
+Python 3.10.6
+Pip 22.0.2
+ADB 1.0.41
+
+Device:
+Samsung A22 5G
+
 Libraries:
 - os
 - random
